@@ -1,116 +1,204 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+  <q-layout view="hHh Lpr fFf">
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+    <!--  通用头部  -->
+    <header>
+      <div style="min-width: 1200px;height: 200px">
+        <!--    图片    -->
+        <q-img :src="banner" class="full-width full-height">
+          <div class="absolute-center head" style="background-color: unset">
+            <!--      标题      -->
+            <span class="cursor-pointer super-link" style="font-size: 44px;" @click="gotoHome">
+              石家庄市数字医疗康复技术创新中心
+            </span>
+            <div class="float-right" style="width: 380px">
+              <!--       头链接       -->
+              <div class="head_list">
+                <span @click="gotoLogin" class="super-link">登录</span>
+                <span @click="gotoSchool" class="super-link">石家庄学院</span>
+              </div>
 
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
+              <!--       图片       -->
+              <q-img :src="banner_text" style="margin-top: 40px;" class="float-right"/>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+            </div>
+          </div>
+        </q-img>
+      </div>
+      <!--    面包屑    -->
+      <div class="head-background row justify-center">
+        <div class="width-1200 col-auto row justify-center">
+          <div
+            class="head-item col cursor-pointer text-white"
+            v-for="i in HEAD_ITEMS.length"
+            @mouseover="mouseOverMenu(HEAD_ITEMS[i-1])"
+            @mouseout="mouseOutMenu"
+            :style="headStyles[i-1]"
+          >
+            {{ HEAD_ITEMS[i - 1].label }}
+            <q-slide-transition v-show="HEAD_ITEMS[i-1].label === hoverItem.label"
+                                style="position: relative;top: -1.04%">
+              <q-list dense bordered>
+                <q-item
+                  style="z-index: 1"
+                  class="head-background head-item"
+                  dense
+                  v-for="child in HEAD_ITEMS[i-1].children"
+                  @mouseover="mouseOverMenu(HEAD_ITEMS[i-1])"
+                  @mouseout="mouseOutMenu"
+                >
+                  <q-item-section style="z-index: 1">{{ child.label }}</q-item-section>
+                </q-item>
+              </q-list>
+            </q-slide-transition>
+          </div>
+        </div>
+      </div>
+    </header>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
-
+    <!--  内容  -->
     <q-page-container>
-      <router-view />
+      <router-view/>
     </q-page-container>
+
+    <!--  页脚  -->
+    <footer>
+
+    </footer>
   </q-layout>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+<script setup>
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+import {ref} from "vue";
+import {SERVER_NAME} from "components/Model";
+import {useRoute, useRouter} from "vue-router";
+import {HEAD_ITEMS, SELECT_COLOR, UNSELECT_COLOR} from "components/head-item";
 
-export default defineComponent({
-  name: 'MainLayout',
+const $router = useRouter();
+const $route = useRoute();
 
-  components: {
-    EssentialLink
-  },
+// 头部-图片
+const banner = ref(SERVER_NAME + "/static/banner.png");
+const banner_text = ref(SERVER_NAME + "/static/banner_text.png");
+const school = ref("https://www.sjzc.edu.cn/");
 
-  setup () {
-    const leftDrawerOpen = ref(false)
+// 头部-下拉菜单
+const hoverItem = ref({label: ''});
+const canReset = ref(false);
+const headStyles = ref([]);
 
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+start();
+
+// 初始化
+function start() {
+  stylesInit();
+}
+
+// 初始化样式数组
+function stylesInit() {
+  // 天选之人是谁呢
+  const selected = $route.params.first;
+  // 初始化
+  for (let i = 0; i < HEAD_ITEMS.length; i++) {
+    if (selected === HEAD_ITEMS[i].label) {
+      headStyles.value[i] = {backgroundColor: SELECT_COLOR};
+      break;
     }
   }
-})
+}
+
+// 鼠标悬浮-下拉菜单
+function mouseOverMenu(item) {
+  canReset.value = false;
+  hoverItem.value = item;
+}
+
+// 鼠标离开-下拉菜单
+function mouseOutMenu() {
+  // 设置允许删除
+  canReset.value = true;
+
+  setTimeout(() => {
+
+    if (canReset.value) {
+      hoverItem.value = {label: ''};
+    }
+
+  }, 233)
+
+}
+
+// 回到主页
+function gotoHome() {
+  $router.push("/");
+}
+
+// 去登录页
+function gotoLogin() {
+  $router.push("/login");
+}
+
+// 去石家庄学院官网
+function gotoSchool() {
+  window.open(school.value);
+}
+
 </script>
+
+<style scoped>
+
+.head-item {
+  text-align: center;
+  line-height: 50px;
+  font-size: 16px;
+  height: 50px;
+  transition: all .2s ease-in-out;
+}
+
+.head-item:hover {
+  background-color: #007eff;
+}
+
+.width-1200 {
+  width: 1200px;
+}
+
+.head-background {
+  background: #125ca8;
+}
+
+.head {
+  width: 1200px;
+  height: 200px;
+  padding: 40px 0;
+}
+
+.head_list span {
+  position: relative;
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+.head_list span + span:after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 12px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background: #fff;
+}
+
+.super-link {
+  transition: all .35s ease-in-out;
+}
+
+.super-link:hover {
+  color: rgb(17, 141, 241);
+}
+
+</style>
