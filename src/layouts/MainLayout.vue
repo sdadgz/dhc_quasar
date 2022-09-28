@@ -35,17 +35,22 @@
             @mouseout="mouseOutMenu"
             :style="headStyles[i-1]"
           >
-            {{ HEAD_ITEMS[i - 1].label }}
+            <!--      label      -->
+            <div @click="headHandler(HEAD_ITEMS[i-1])">
+              {{ HEAD_ITEMS[i - 1].label }}
+            </div>
+            <!--      下拉菜单      -->
             <q-slide-transition v-show="HEAD_ITEMS[i-1].label === hoverItem.label"
                                 style="position: relative;top: -1.04%">
               <q-list dense bordered>
-                <q-item
-                  style="z-index: 1"
-                  class="head-background head-item"
-                  dense
-                  v-for="child in HEAD_ITEMS[i-1].children"
-                  @mouseover="mouseOverMenu(HEAD_ITEMS[i-1])"
-                  @mouseout="mouseOutMenu"
+                <q-item clickable
+                        style="z-index: 1"
+                        class="head-background head-item"
+                        dense
+                        v-for="child in HEAD_ITEMS[i-1].children"
+                        @mouseover="mouseOverMenu(HEAD_ITEMS[i-1])"
+                        @mouseout="mouseOutMenu"
+                        @click="sonHeadHandler(HEAD_ITEMS[i-1], child)"
                 >
                   <q-item-section style="z-index: 1">{{ child.label }}</q-item-section>
                 </q-item>
@@ -71,7 +76,7 @@
 <script setup>
 
 import {ref} from "vue";
-import {SERVER_NAME} from "components/Model";
+import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 import {HEAD_ITEMS, SELECT_COLOR, UNSELECT_COLOR} from "components/head-item";
 
@@ -90,15 +95,38 @@ const headStyles = ref([]);
 
 start();
 
+// 点击头部
+async function headHandler(item) {
+  await $router.push("/" + item.label);
+  await start();
+}
+
+// 子级头部点击
+async function sonHeadHandler(father, son) {
+  const path = "/" + father.label + "/" + son.label;
+  await $router.push(path);
+  await start();
+}
+
 // 初始化
 function start() {
+  // 纠错，首页特殊
+  if ($route.params.first === HEAD_ITEMS[0].label) {
+    $router.push("/" + HEAD_ITEMS[0].label);
+    console.log("错误的匹配");
+  }
   stylesInit();
 }
 
 // 初始化样式数组
 function stylesInit() {
+  // 清空
+  headStyles.value = [];
   // 天选之人是谁呢
-  const selected = $route.params.first;
+  let selected = $route.params.first
+  if (selected === undefined) {
+    selected = HEAD_ITEMS[0].label;
+  }
   // 初始化
   for (let i = 0; i < HEAD_ITEMS.length; i++) {
     if (selected === HEAD_ITEMS[i].label) {
@@ -136,7 +164,7 @@ function gotoHome() {
 
 // 去登录页
 function gotoLogin() {
-  $router.push("/login");
+  $router.push("/user/login");
 }
 
 // 去石家庄学院官网
