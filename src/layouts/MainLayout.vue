@@ -8,7 +8,7 @@
         <q-img :src="banner" class="full-width full-height">
           <div class="absolute-center head" style="background-color: unset">
             <!--      标题      -->
-            <span class="cursor-pointer super-link" style="font-size: 44px;" @click="gotoHome">
+            <span class="cursor-pointer super-link" style="font-size: 44px;" @click="goHome">
               石家庄市数字医疗康复技术创新中心
             </span>
             <div class="float-right" style="width: 380px">
@@ -93,8 +93,6 @@ const hoverItem = ref({label: ''});
 const canReset = ref(false);
 const headStyles = ref([]);
 
-start();
-
 // 点击头部
 async function headHandler(item) {
   await $router.push("/" + item.label);
@@ -110,12 +108,50 @@ async function sonHeadHandler(father, son) {
 
 // 初始化
 function start() {
-  // 纠错，首页特殊
-  if ($route.params.first === HEAD_ITEMS[0].label) {
+  fixUrl(); // 纠错，首页特殊
+  stylesInit(); // 头部样式初始化
+}
+
+// 路由纠错
+function fixUrl() {
+  const first = $route.params.first;
+  const second = $route.params.second;
+
+  // 错吧首页当成常人
+  if (first === HEAD_ITEMS[0].label) {
     $router.push("/" + HEAD_ITEMS[0].label);
-    console.log("错误的匹配");
+    console.warn("允许范围内的警告：因地址栏是中文");
+    return;
   }
-  stylesInit();
+
+  // 不存在的label当作url了\
+  const fb = isExists(HEAD_ITEMS, first);
+  if (fb) {
+    // 一级匹配√
+    const sb = isExists(fb, second);
+    if (second && !sb) {
+      goHome();
+    }
+  } else {
+    // 一级对不上
+    const path = $route.path;
+    const split = path.split('/');
+    // 首页特殊
+    if (split[1] !== HEAD_ITEMS[0].label) {
+      // 不是首页，遣返
+      goHome();
+    }
+  }
+}
+
+// 列表中是否存在某值
+function isExists(list, val) {
+  for (let item of list) {
+    if (item.label === val) {
+      return item.children ? item.children : true;
+    }
+  }
+  return false;
 }
 
 // 初始化样式数组
@@ -123,8 +159,8 @@ function stylesInit() {
   // 清空
   headStyles.value = [];
   // 天选之人是谁呢
-  let selected = $route.params.first
-  if (selected === undefined) {
+  let selected = $route.params.first;
+  if (!selected) {
     selected = HEAD_ITEMS[0].label;
   }
   // 初始化
@@ -140,6 +176,11 @@ function stylesInit() {
 function mouseOverMenu(item) {
   canReset.value = false;
   hoverItem.value = item;
+
+  // 首页特殊不显示
+  if (item.label === HEAD_ITEMS[0].label) {
+    hoverItem.value = {label: ''};
+  }
 }
 
 // 鼠标离开-下拉菜单
@@ -158,7 +199,7 @@ function mouseOutMenu() {
 }
 
 // 回到主页
-function gotoHome() {
+function goHome() {
   $router.push("/");
 }
 
@@ -171,6 +212,8 @@ function gotoLogin() {
 function gotoSchool() {
   window.open(school.value);
 }
+
+start();
 
 </script>
 
@@ -229,4 +272,24 @@ function gotoSchool() {
   color: rgb(17, 141, 241);
 }
 
+</style>
+
+<style>
+
+body {
+  overflow-y: auto;
+  background-color: #eff3f9;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  background-color: #018EE8;
+}
 </style>

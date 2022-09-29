@@ -4,7 +4,12 @@ export const UNSELECT_COLOR = '#125ca8';
 export const HEAD_ITEMS = [
   {
     label: "首页",
-    children: []
+    children: [
+      {label: '中心新闻'},
+      {label: '重点成果'},
+      {label: '行业动态'},
+      {label: '技术前沿'}
+    ]
   },
   {
     label: "中心概况",

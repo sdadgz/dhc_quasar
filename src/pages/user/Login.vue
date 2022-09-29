@@ -13,7 +13,7 @@
     <div class="col column justify-center p-4">
       <!--   标题链接   -->
       <div class="col-auto row justify-center">
-        <strong @click="goHome" class="super-link link col-auto"
+        <strong @click="gotoUser" class="super-link link col-auto"
                 style="font-size: 14px">数字医疗康复技术创新中心后台</strong>
       </div>
       <!--   简介   -->
@@ -50,6 +50,7 @@
             dense
             :rules="notNull"
             lazy-rules
+            type="password"
           />
         </div>
         <!--    登录按钮    -->
@@ -86,6 +87,11 @@ function goHome() {
   $router.push('/');
 }
 
+// 后台管理系统
+function gotoUser(){
+  $router.push('/user');
+}
+
 // 登录按钮
 function loginHandler() {
 
@@ -107,6 +113,9 @@ function loginHandler() {
     const databaseUsername = res.data.username;
     localStorage.setItem("token", token);
     localStorage.setItem("username", databaseUsername);
+
+    // 到该去的地方
+    gotoUser();
   })
 }
 
