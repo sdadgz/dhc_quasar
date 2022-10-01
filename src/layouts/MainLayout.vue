@@ -270,6 +270,7 @@ start();
 
 .super-link:hover {
   color: rgb(17, 141, 241);
+  text-decoration: underline;
 }
 
 </style>
