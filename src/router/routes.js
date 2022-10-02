@@ -18,7 +18,7 @@ const routes = [
       },
       {
         path: ':second',
-        component: () => import('pages/IndexPage.vue') // 指向分页
+        component: () => import('pages/main/MainPage.vue') // 指向分页
       }
     ]
   },
@@ -44,11 +44,11 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('pages/IndexPage.vue') // 指向概括
+        component: () => import('pages/main/MainPage.vue') // 指向概括
       },
       {
         path: ':second',
-        component: () => import('pages/IndexPage.vue') // 指向分页
+        component: () => import('pages/main/MainPage.vue') // 指向分页
       }
     ]
   },

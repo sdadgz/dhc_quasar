@@ -89,12 +89,10 @@ import {ref} from "vue";
 import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {useRouter} from "vue-router";
 import {HEAD_ITEMS} from "components/head-item";
-import {EMPTY_STRING, SPLIT, UNDEFINED} from "components/MagicValue";
+import {EMPTY_STRING, HOME, SPLIT, UNDEFINED} from "components/MagicValue";
 import {api} from "boot/axios";
 
 const $router = useRouter();
-
-const src = ref(SERVER_NAME + "/static/a/a.html");
 
 const html = ref("<!--?xml version=\"1.0\" encoding=\"utf-8\"?--><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
   "<html xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">\n" +
@@ -149,7 +147,7 @@ function essayReset() {
 const uploadField = ref(EMPTY_STRING);
 
 // 重置提交领域
-function resetField(){
+function resetField() {
   uploadField.value = EMPTY_STRING;
 }
 
@@ -227,7 +225,7 @@ function essayUploaderReset() {
 
 // 到主页
 function goHome() {
-  $router.push('/');
+  $router.push(HOME);
 }
 
 // 一级标题点击
@@ -274,7 +272,6 @@ function essayUploadFinish(info) {
     CommFail(res.msg);
   } else {
     // 正常处理
-    // imgInfo.value = res.data.id;
     CommSeccess("上传成功");
   }
 }
@@ -307,6 +304,7 @@ function essayUploadFinish(info) {
 
 <style>
 
+/* 只能仍这里了，会出现样式污染 */
 .document {
   font-size: 16px;
 }

@@ -74,6 +74,7 @@ import {SERVER_NAME} from "components/Models";
 import {useRouter} from "vue-router";
 import {api} from "boot/axios";
 import {CommFail, CommSeccess} from "components/notifyTools";
+import {HOME} from "components/MagicValue";
 
 const $router = useRouter();
 
@@ -84,7 +85,7 @@ const password = ref();
 
 // 数字医疗中心
 function goHome() {
-  $router.push('/');
+  $router.push(HOME);
 }
 
 // 后台管理系统

@@ -75,10 +75,11 @@
 
 <script setup>
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 import {HEAD_ITEMS, SELECT_COLOR, UNSELECT_COLOR} from "components/head-item";
+import {HOME} from "components/MagicValue";
 
 const $router = useRouter();
 const $route = useRoute();
@@ -96,14 +97,12 @@ const headStyles = ref([]);
 // 点击头部
 async function headHandler(item) {
   await $router.push("/" + item.label);
-  await start();
 }
 
 // 子级头部点击
 async function sonHeadHandler(father, son) {
   const path = "/" + father.label + "/" + son.label;
   await $router.push(path);
-  await start();
 }
 
 // 初始化
@@ -200,7 +199,7 @@ function mouseOutMenu() {
 
 // 回到主页
 function goHome() {
-  $router.push("/");
+  $router.push(HOME);
 }
 
 // 去登录页
@@ -212,6 +211,11 @@ function gotoLogin() {
 function gotoSchool() {
   window.open(school.value);
 }
+
+// 监控
+watch(() => $route.path, () => {
+  start();
+}, {immediate: true})
 
 start();
 
@@ -265,7 +269,7 @@ start();
 }
 
 .super-link {
-  transition: all .35s ease-in-out;
+  transition: all .2s ease-in-out;
 }
 
 .super-link:hover {
@@ -293,4 +297,5 @@ body {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
   background-color: #018EE8;
 }
+
 </style>

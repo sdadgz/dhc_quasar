@@ -1,5 +1,5 @@
 <template>
-  <div class="flex row justify-center" style="background-color: #eff3f9">
+  <div class="flex row justify-center">
     <div class="width-1200 col-auto">
       <div class="container">
         <div class="imgs">
@@ -51,5 +51,7 @@ import {ref} from "vue";
 .container {
   background-color: white;
   margin: 20px 0;
+  min-height: 50vh;
 }
+
 </style>
