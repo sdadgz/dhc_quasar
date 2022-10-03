@@ -11,15 +11,18 @@
   </div>
 </template>
 
+
 <script setup>
 
 import {useRoute, useRouter} from "vue-router";
 import {ref, watch} from "vue";
 import {sleep} from "components/Tools";
-import {CAN_CANT, HOME, LEVER, POSITION_HOME, UNDEFINED} from "components/MagicValue";
+import {HOME, LEVER, POSITION_HOME, UNDEFINED} from "components/MagicValue";
 
 const $router = useRouter();
 const $route = useRoute();
+
+const show = ref(true);
 
 // t0
 const homeLabel = ref(POSITION_HOME);
@@ -36,7 +39,7 @@ function breadInit() {
   firstLabel.value = $route.params.first;
   firstTo.value = LEVER + firstLabel.value;
   secondLabel.value = $route.params.second;
-  secondTo.value = firstTo.value + LEVER + secondLabel.value + CAN_CANT;
+  secondTo.value = firstTo.value + LEVER + secondLabel.value;
 }
 
 // 初始化
@@ -52,6 +55,7 @@ watch(() => $route.params, () => {
 start();
 
 </script>
+
 
 <style scoped>
 

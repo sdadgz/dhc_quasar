@@ -8,21 +8,6 @@ const routes = [
     redirect: '/' + HEAD_ITEMS[0].label // 重定向到主页
   },
   {
-    // 首页及分页页
-    path: '/' + HEAD_ITEMS[0].label,
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {
-        path: '',
-        component: () => import('pages/main/HomePage.vue')
-      },
-      {
-        path: ':second',
-        component: () => import('pages/main/MainPage.vue') // 指向分页
-      }
-    ]
-  },
-  {
     // 海克斯科技用户页
     path: '/user',
     component: () => import('layouts/EmptyLayout.vue'),
@@ -38,16 +23,23 @@ const routes = [
     ]
   },
   {
+    // 首页及分页页
+    path: '/' + HEAD_ITEMS[0].label,
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('pages/main/HomePage.vue')
+      }
+    ]
+  },
+  {
     // 分页页
     path: '/:first',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '',
-        component: () => import('pages/main/MainPage.vue') // 指向概括
-      },
-      {
-        path: ':second',
+        path: ':second?',
         component: () => import('pages/main/MainPage.vue') // 指向分页
       }
     ]

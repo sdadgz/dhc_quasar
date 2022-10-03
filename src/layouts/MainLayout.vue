@@ -117,7 +117,7 @@ function fixUrl() {
   const second = $route.params.second;
 
   // 错吧首页当成常人
-  if (first === HEAD_ITEMS[0].label) {
+  if (first === HEAD_ITEMS[0].label && !second) {
     $router.push("/" + HEAD_ITEMS[0].label);
     console.warn("允许范围内的警告：因地址栏是中文");
     return;
