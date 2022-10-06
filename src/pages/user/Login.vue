@@ -101,7 +101,7 @@ function loginHandler() {
     return;
   }
 
-  api.post(SERVER_NAME + "/user/login", {
+  api.post("/user/login", {
     "name": username.value,
     "password": password.value
   }).then(res => {

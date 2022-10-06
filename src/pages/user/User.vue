@@ -45,6 +45,7 @@
               </q-list>
             </q-btn-dropdown>
           </div>
+
         </q-card-section>
 
         <!--    上传器    -->
@@ -64,6 +65,150 @@
         <q-card-section class="row justify-between">
           <q-btn label="重置" color="orange-7" class="col-auto min-w-100" @click="essayReset"/>
           <q-btn label="提交" color="blue-14" class="col-auto min-w-100" @click="essayCommit"/>
+        </q-card-section>
+      </q-card>
+
+      <!--   文章表   -->
+      <q-card class="container col-auto">
+        <q-card-section>
+          <q-table
+            :columns="columns"
+            :rows="rows"
+            row-key="id"
+            hide-pagination
+            selection="multiple"
+            v-model:selected="selected"
+            :selected-rows-label="getSelectedString"
+            :loading="tableLoading"
+            :pagination="pagination"
+          >
+
+            <!--      标题      -->
+            <template v-slot:body-cell-title="props">
+              <q-td :props="props" class="cursor-pointer" title="点击编辑">
+                {{ props.value }}
+                <q-popup-edit
+                  v-model="props.row.title"
+                  v-slot="scope"
+                  title="修改标题"
+                  @before-show="beforeShowHandler(props.row[`essay.title`],props.row.essayId)"
+                >
+                  <transition
+                    appear
+                    enter-active-class="animated zoomIn"
+                    leave-active-class="animated zoomOut"
+                  >
+                    <div class="q-pa-md q-gutter-md">
+                      <q-input v-model="inputField" dense autofocus/>
+
+                      <!--           提交重置按钮           -->
+                      <div class="row justify-between">
+                        <q-btn class="col-auto" @click="beforeShowHandler(props.row[`essay.title`],props.row.essayId)"
+                               color="secondary" label="重置"/>
+                        <q-btn class="col-auto" @click="tableTitleSave" color="primary" label="提交"/>
+                      </div>
+                    </div>
+                  </transition>
+                </q-popup-edit>
+              </q-td>
+            </template>
+
+            <!--     位置       -->
+            <template v-slot:body-cell-field="props">
+              <q-td :props="props" class="cursor-pointer" title="点击编辑">
+                {{ props.value }}
+                <!--       弹出代理         -->
+                <q-popup-edit
+                  v-model="props.row.field"
+                  v-slot="scope"
+                  title="修改位置"
+                  @before-show="beforeShowHandler(props.row.field,props.row.id);"
+                >
+                  <transition
+                    appear
+                    enter-active-class="animated zoomIn"
+                    leave-active-class="animated zoomOut"
+                  >
+                    <div class="q-pa-md q-gutter-md">
+                      <q-input v-model="inputField" dense autofocus readonly/>
+
+                      <!--          下拉选项            -->
+                      <div class="row justify-between">
+
+                        <!--     一级     -->
+                        <div class="column col margin-1" style="margin-left: 0;">
+                          <span class="col-auto">一级标题</span>
+                          <q-btn-dropdown class="col-auto" color="secondary" :label="firstField">
+                            <q-list>
+                              <q-item v-for="item in HEAD_ITEMS" clickable v-close-popup
+                                      @click="tableFirstFieldHandler(item)">
+                                <q-item-section>
+                                  {{ item.label }}
+                                </q-item-section>
+                              </q-item>
+                            </q-list>
+                          </q-btn-dropdown>
+                        </div>
+
+                        <!--    二级      -->
+                        <div class="column col margin-1" style="margin-right: 0;">
+                          <span class="col-auto">二级标题</span>
+                          <q-btn-dropdown class="col-auto" color="info" :label="secondField">
+                            <q-list v-if="firstField !== UNDEFINED">
+                              <q-item v-for="item in getHeadSon()" v-close-popup clickable
+                                      @click="tableSecondFieldHandler(item)">
+                                <q-item-section>
+                                  {{ item.label }}
+                                </q-item-section>
+                              </q-item>
+                            </q-list>
+                            <!--       缺省，显示全部       -->
+                            <q-list v-else>
+                              <template v-for="list in HEAD_ITEMS">
+                                <q-item v-for="item in list.children" clickable v-close-popup
+                                        @click="tableSecondFieldHandler(item)">
+                                  <q-item-section>
+                                    {{ item.label }}
+                                  </q-item-section>
+                                </q-item>
+                              </template>
+                            </q-list>
+                          </q-btn-dropdown>
+                        </div>
+
+                      </div>
+
+                      <!--          提交重置按钮            -->
+                      <div class="row justify-between">
+                        <q-btn class="col-auto" @click="beforeShowHandler(props.row.field,props.row.id)"
+                               color="secondary" label="重置"/>
+                        <q-btn class="col-auto" @click="tableFieldSave" color="primary" label="提交"/>
+                      </div>
+                    </div>
+                  </transition>
+                </q-popup-edit>
+              </q-td>
+            </template>
+
+          </q-table>
+
+          <!--     分页     -->
+          <div class="q-pa-lg flex flex-center" v-if="pageTotal > 0">
+            <q-pagination
+              :max="pageTotal"
+              direction-links
+              boundary-numbers
+              :max-pages="pageMax"
+              v-model="currentPage"
+              @click="pageHandler"
+            />
+          </div>
+
+          <!--     加载     -->
+          <q-inner-loading :showing="tableLoading">
+            <q-spinner-gears size="50px" color="primary"/>
+          </q-inner-loading>
+
         </q-card-section>
       </q-card>
 
@@ -87,10 +232,183 @@ import {ref} from "vue";
 import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {useRouter} from "vue-router";
 import {HEAD_ITEMS} from "components/head-item";
-import {EMPTY_STRING, HOME, SPLIT, UNDEFINED} from "components/MagicValue";
+import {EMPTY_STRING, HOME, PAGE_MAX, PAGE_SIZE, SPLIT, START_PAGE, UNDEFINED, ZERO} from "components/MagicValue";
 import {api} from "boot/axios";
+import {ESSAY_COLUMNS} from "components/user/table";
 
 const $router = useRouter();
+
+// 分页表内
+const firstField = ref(UNDEFINED);
+const secondField = ref(UNDEFINED);
+const inputField = ref(UNDEFINED);
+const essayId = ref(ZERO);
+
+// 表格内弹出代理前
+function beforeShowHandler(val, id) {
+  inputField.value = val;
+  essayId.value = id;
+  initTableField();
+}
+
+// 表格内标题保存
+function tableTitleSave() {
+  api.put('/essay/update', null, {
+    params: {
+      "id": essayId.value,
+      "title": inputField.value
+    }
+  }).then(res => {
+    const status = res.data.status;
+    if (status) {
+      CommSeccess("修改成功");
+      return res;
+    }
+  }).catch(res => {
+    CommFail("修改失败");
+  }).then(res => {
+    getEssay();
+  })
+}
+
+// 表格内位置修改
+function tableFieldSave() {
+  api.put('/essay/update', null, {
+    params: {
+      'id': essayId.value,
+      'field': inputField.value
+    }
+  }).then(res => {
+    const status = res.data.status;
+    if (status) {
+      CommSeccess("修改成功");
+      return res;
+    } else {
+      CommFail("修改失败");
+    }
+  }).catch(e => {
+    CommFail("修改失败");
+  }).then(res => {
+    getEssay();
+  })
+}
+
+// 位置绑定
+function initTableField() {
+  const split = inputField.value.split(SPLIT);
+  firstField.value = split[0];
+  secondField.value = split[1] ? split[1] : UNDEFINED;
+}
+
+// 同步更新inputField
+function setInputField() {
+  inputField.value = firstField.value + (secondField.value === UNDEFINED ? EMPTY_STRING : SPLIT + secondField.value);
+}
+
+// 位置重置
+function resetTableField() {
+  resetFirstField();
+  resetSecondField();
+}
+
+// 一级标题选中
+function tableFirstFieldHandler(item) {
+  firstField.value = item.label;
+  // 为了二级标题
+  resetSecondField();
+  // 同步
+  // setInputField();
+}
+
+// 一级标题重置
+function resetFirstField() {
+  firstField.value = UNDEFINED;
+  // 同步
+  setInputField();
+}
+
+// 二级标题选中
+function tableSecondFieldHandler(item) {
+  secondField.value = item.label;
+  // 同步
+  setInputField();
+}
+
+// 二级标题重置
+function resetSecondField() {
+  secondField.value = UNDEFINED;
+  // 同步
+  setInputField();
+}
+
+// 获取二级标题列表
+function getHeadSon() {
+  const first = firstField.value;
+  let arr = [];
+  arr.push({label: UNDEFINED});
+  for (let i = 0; i < HEAD_ITEMS.length; i++) {
+    if (first === HEAD_ITEMS[i].label) {
+      arr = arr.concat(HEAD_ITEMS[i].children);
+    }
+  }
+  return arr;
+}
+
+// 分页表
+const tableLoading = ref(true); // 表格加载状态
+const pageSize = ref(PAGE_SIZE);
+const pagination = ref({rowsPerPage: pageSize.value}) // 表格显示的最大数量
+const selected = ref([]);
+const columns = ref(ESSAY_COLUMNS);
+const rows = ref([]);
+const queryField = ref(EMPTY_STRING);
+const pageTotal = ref(3);
+const pageMax = ref(PAGE_MAX);
+const currentPage = ref(START_PAGE);
+
+// 分页被点击
+function pageHandler() {
+  getEssay();
+}
+
+// 获取essay
+async function getEssay() {
+  tableLoading.value = true;
+  rows.value = [];
+
+  await api.get('/field', {
+    params: {
+      "field": queryField.value,
+      "currentPage": currentPage.value,
+      "pageSize": pageSize.value
+    }
+  }).then(res => {
+    const lists = res.data.lists;
+    const total = res.data.total;
+
+    // 表格数据
+    for (let i = 0; i < lists.length; i++) {
+      let obj = {};
+      for (let j = 0; j < ESSAY_COLUMNS.length; j++) {
+        Object.assign(obj, {[`${ESSAY_COLUMNS[j].field}`]: eval("lists[i]." + `${ESSAY_COLUMNS[j].field}`)});
+      }
+      // 增加id去重
+      Object.assign(obj, {"id": lists[i].id});
+      rows.value.push(obj);
+    }
+
+    // 总数
+    pageTotal.value = Math.ceil(total / pageSize.value);
+
+  })
+
+  tableLoading.value = false;
+}
+
+// 已选几项
+function getSelectedString() {
+  return selected.value.length === 0 ? '' : `已选择${selected.value.length}项`;
+}
 
 const essayUploadUrl = ref('/essay/upload'); // 文章上传地址
 const essayField = ref(UNDEFINED); // 文章领域 | 二级标题
@@ -239,6 +557,11 @@ function essayUploadFinish(info) {
   }
 }
 
+function start() {
+  getEssay();
+}
+
+start();
 </script>
 
 <style scoped>

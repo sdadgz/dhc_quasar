@@ -5,6 +5,7 @@ export const HOME = '/';
 export const LEVER = '/';
 export const START_PAGE = 1;
 export const PAGE_SIZE = 10;
+export const ZERO = 0;
 
 // 某些位置的值
 export const POSITION_HOME = '创新中心'; // 位置面包屑

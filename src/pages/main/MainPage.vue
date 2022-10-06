@@ -97,7 +97,7 @@ const second = ref($route.params.second);
 const currentPage = ref(START_PAGE);
 const pageSize = ref(PAGE_SIZE);
 const lists = ref([]);
-const pageTotal = ref(100);
+const pageTotal = ref(3);
 const pageMax = ref(PAGE_MAX);
 
 // 分页内容被点击
@@ -119,7 +119,7 @@ function toEssayDetail(essay) {
 // 获取详情
 async function getEssayDetail(id) {
   showEssay.value = true;
-  await api.get(SERVER_NAME + '/essay/text', {
+  await api.get('/essay/text', {
     params: {
       [`${ESSAY_UNIQUE_ID}`]: id
     }
@@ -173,7 +173,7 @@ async function getEssay() {
   // 更新领域
   await setField();
 
-  await api.get(SERVER_NAME + "/essay/page", {
+  await api.get("/essay/page", {
     params: {
       "field": field.value,
       "currentPage": currentPage.value,
@@ -212,12 +212,9 @@ async function start() {
 }
 
 // 监控
-watch(() => $route.path, () => {
+watch(() => $route.fullPath, () => {
   start();
-}, {immediate: true})
-watch(() => $route.query, () => {
-  start();
-}, {immediate: true})
+})
 
 start();
 </script>

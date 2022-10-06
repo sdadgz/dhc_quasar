@@ -15,7 +15,14 @@
 <script setup>
 
 import {ref} from "vue";
+import {api} from "boot/axios";
 
+// 图片数组
+const imgArr = ref([]);
+
+function start(){
+
+}
 
 
 </script>
