@@ -54,10 +54,11 @@
             ref="essayUploader"
             label="目前只支持docx格式"
             :factory="essayUploadFn"
-            @finish="uploadDone = true"
+            @finish="uploadDone = true;getEssay()"
             @uploaded="essayUploadFinish"
             accept=".docx"
             hide-upload-btn
+            multiple
           />
         </q-card-section>
 
@@ -70,6 +71,13 @@
 
       <!--   文章表   -->
       <q-card class="container col-auto">
+
+        <!--    头部按钮    -->
+        <q-card-section>
+          <q-btn label="删除" color="red" icon="delete_forever" @click="deleteSelected"/>
+        </q-card-section>
+
+        <!--    表格    -->
         <q-card-section>
           <q-table
             :columns="columns"
@@ -232,11 +240,68 @@ import {ref} from "vue";
 import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {useRouter} from "vue-router";
 import {HEAD_ITEMS} from "components/head-item";
-import {EMPTY_STRING, HOME, PAGE_MAX, PAGE_SIZE, SPLIT, START_PAGE, UNDEFINED, ZERO} from "components/MagicValue";
+import {
+  CODE_200,
+  EMPTY_STRING,
+  HOME,
+  PAGE_MAX,
+  PAGE_SIZE,
+  SPLIT,
+  START_PAGE,
+  UNDEFINED,
+  ZERO
+} from "components/MagicValue";
 import {api} from "boot/axios";
 import {ESSAY_COLUMNS} from "components/user/table";
+import {Notify, useQuasar} from "quasar";
 
+const $q = useQuasar();
 const $router = useRouter();
+
+// 删除文章
+function deleteSelected() {
+  $q.notify({
+    message: '确定要删除所选项目吗？',
+    type: 'negative',
+    position: 'top',
+    actions: [
+      {
+        label: '确定', color: 'yellow', handler: () => {
+          // 至少选择一个
+          const essayList = selected.value;
+          const idList = [];
+          essayList.forEach(item => {
+            idList.push(item.essayId);
+          })
+
+          if (essayList.length < 1) {
+            CommWarn("至少选一个啊");
+            return;
+          }
+
+          api.delete('/essay', {
+            data: {
+              "idList": idList
+            }
+          }).then(res => {
+            if (res.code === CODE_200) {
+              CommSeccess("删除成功");
+            } else {
+              CommFail("删除失败");
+            }
+          }).catch(res => {
+            CommFail("删除失败");
+          }).then(res => {
+            getEssay();
+          })
+        }
+      },
+      {
+        label: '取消', color: 'white'
+      }
+    ]
+  })
+}
 
 // 分页表内
 const firstField = ref(UNDEFINED);
