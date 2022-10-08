@@ -278,7 +278,80 @@
       </q-card>
 
       <!--   图片表   -->
-      <q-card class="container col-auto">
+      <q-card class="container col-auto" style="width: 90vw">
+
+        <!--   删除按钮     -->
+        <q-card-section>
+          <q-btn label="删除" icon="delete_forever" color="red"/>
+        </q-card-section>
+
+        <!--   图片表     -->
+        <q-card-section>
+          <q-table
+            title="图片"
+            :columns="imgColumns"
+            :rows="imgRows"
+            row-key="id"
+            hide-pagination
+            selection="multiple"
+            v-model:selected="imgSelected"
+            :selected-rows-label="getSelectedString"
+            :loading="imgTableLoading"
+            :pagination="imgPagination"
+            grid
+          >
+
+            <template v-slot:top-right>
+              <q-input model-value="" v-model="queryField" placeholder="搜索（位置）" @keyup.enter="searchEssay">
+                <template v-slot:append>
+                  <q-icon name="search" class="cursor-pointer" @click="searchEssay"/>
+                </template>
+              </q-input>
+            </template>
+
+            <template v-slot:item="props">
+              <div class="q-pa-md col-md-3 col-xs-12">
+                <q-card
+                  class="animated"
+                  :class="props.selected ? 'selected' : ''"
+                >
+                  <q-card-section>
+                    <q-img
+                      :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
+                      :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
+                      @click="props.selected = !props.selected"
+                    >
+                      <div class="absolute-bottom text-center">
+                        <span>{{
+                            setTime(props.row.createTime) + (props.row.isDelete ? " 已删除" : "")
+                          }}</span>
+                      </div>
+                    </q-img>
+                  </q-card-section>
+                </q-card>
+              </div>
+            </template>
+
+          </q-table>
+
+          <!--     分页     -->
+          <div class="q-pa-lg flex flex-center" v-if="imgPageTotal > 0">
+            <q-pagination
+              :max="imgPageTotal"
+              direction-links
+              boundary-numbers
+              :max-pages="pageMax"
+              v-model="imgCurrentPage"
+              @click="imgPageHandler"
+            />
+          </div>
+
+          <!--     加载     -->
+          <q-inner-loading :showing="imgTableLoading">
+            <q-spinner-gears size="50px" color="primary"/>
+          </q-inner-loading>
+
+        </q-card-section>
 
       </q-card>
 
@@ -322,7 +395,7 @@ import {
   CAROUSEL_WIDTH,
   CODE_200,
   EMPTY_STRING,
-  HOME,
+  HOME, IMG_PAGE_SIZE,
   PAGE_MAX,
   PAGE_SIZE,
   SPLIT,
@@ -331,18 +404,51 @@ import {
   ZERO
 } from "components/MagicValue";
 import {api} from "boot/axios";
-import {ESSAY_COLUMNS} from "components/user/table";
-import {Notify, useQuasar} from "quasar";
+import {ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
+import {useQuasar} from "quasar";
+import {getRows} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
 
+const imgColumns = ref(IMG_COLUMNS);
+
 const imgUploadUrl = ref('/img/upload'); // 图片上传路径
 const imgUploader = ref(null); // 图片上传器
+const imgRows = ref([]);
+const imgSelected = ref([]);
+const imgTableLoading = ref(true);
+const imgCurrentPage = ref(START_PAGE);
+const imgPageTotal = ref(3);
+const imgPageSize = ref(IMG_PAGE_SIZE);
+const imgPagination = ref({rowsPerPage: imgPageSize.value})
 
 // 获取图片
-function getImg() {
-  console.log("获取图片");
+async function getImg() {
+  imgTableLoading.value = true;
+  imgRows.value = [];
+
+  await api.get('/img/page', {
+    params: {
+      "currentPage": imgCurrentPage.value,
+      "pageSize": imgPageSize.value
+    }
+  }).then(res => {
+    const lists = res.data.lists;
+    const total = res.data.total;
+
+    imgRows.value = getRows(lists, IMG_COLUMNS);
+
+    imgPageTotal.value = Math.ceil(total / imgPageSize.value);
+
+  }).then(res => {
+    imgTableLoading.value = false;
+  })
+}
+
+// 图片分页点击
+function imgPageHandler() {
+  getImg();
 }
 
 // 重置图片上传器
@@ -598,15 +704,7 @@ async function getEssay() {
     const total = res.data.total;
 
     // 表格数据
-    for (let i = 0; i < lists.length; i++) {
-      let obj = {};
-      for (let j = 0; j < ESSAY_COLUMNS.length; j++) {
-        Object.assign(obj, {[`${ESSAY_COLUMNS[j].field}`]: eval("lists[i]." + `${ESSAY_COLUMNS[j].field}`)});
-      }
-      // 增加id去重
-      Object.assign(obj, {"id": lists[i].id});
-      rows.value.push(obj);
-    }
+    rows.value = getRows(lists, ESSAY_COLUMNS);
 
     // 总数
     pageTotal.value = Math.ceil(total / pageSize.value);
@@ -617,8 +715,8 @@ async function getEssay() {
 }
 
 // 已选几项
-function getSelectedString() {
-  return selected.value.length === 0 ? '' : `已选择${selected.value.length}项`;
+function getSelectedString(e) {
+  return `已选择${e}项`;
 }
 
 const essayUploadUrl = ref('/essay/upload'); // 文章上传地址
@@ -737,7 +835,7 @@ function essayHandler_2(item) {
 const inputEssayTitle = ref(EMPTY_STRING); // 用户输入标题
 
 // 用户输入标题重置
-function resetInputEssayTitle(){
+function resetInputEssayTitle() {
   inputEssayTitle.value = EMPTY_STRING;
 }
 
@@ -781,7 +879,15 @@ function essayUploadFinish(info) {
   }
 }
 
+// 设置时间
+function setTime(time) {
+  const firstLever = time.indexOf('-') + 1;
+  const mid = time.indexOf('T');
+  return time.substring(firstLever, mid);
+}
+
 function start() {
+  getImg();
   getEssay();
 }
 
@@ -790,11 +896,13 @@ start();
 
 <style scoped>
 
-.i-test {
-  position: relative;
-  overflow: hidden;
-  height: 1080px;
-  width: 2000px;
+.animated {
+  transition: all .35s ease-in-out;
+}
+
+.selected {
+  background-color: #999999;
+  transform: scale(0.9);
 }
 
 .container {
