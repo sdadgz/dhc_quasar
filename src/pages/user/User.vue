@@ -7,6 +7,20 @@
         <!--    标题    -->
         <q-card-section><strong>文章上传</strong></q-card-section>
 
+        <!--    用户输入标题    -->
+        <q-card-section>
+          <q-input v-model="inputEssayTitle" placeholder="输入文章标题（默认使用文件名作为标题）">
+            <template v-slot:append>
+              <q-icon
+                v-if="inputEssayTitle && inputEssayTitle.length > 0"
+                name="close"
+                class="cursor-pointer"
+                @click="resetInputEssayTitle"
+              />
+            </template>
+          </q-input>
+        </q-card-section>
+
         <!--    选择    -->
         <q-card-section class="row">
           <!--     一级     -->
@@ -370,7 +384,7 @@ function imgUploadFn() {
 }
 
 // 图片上传之后
-function imgUploadFinish(info){
+function imgUploadFinish(info) {
   const res = JSON.parse(info.xhr.response);
   if (res.code === '499') {
     // 未登录
@@ -720,15 +734,28 @@ function essayHandler_2(item) {
   essayField.value = item.label;
 }
 
+const inputEssayTitle = ref(EMPTY_STRING); // 用户输入标题
+
+// 用户输入标题重置
+function resetInputEssayTitle(){
+  inputEssayTitle.value = EMPTY_STRING;
+}
+
 // 文章上传工厂
 function essayUploadFn() {
   return new Promise(resolve => {
     resolve({
       "url": SERVER_NAME + essayUploadUrl.value,
-      "formFields": [{
-        "name": "field",
-        "value": uploadField.value
-      }],
+      "formFields": [
+        {
+          "name": "field",
+          "value": uploadField.value
+        },
+        {
+          "name": "title",
+          "value": inputEssayTitle.value
+        }
+      ],
       "fieldName": "file",
       "headers": [{
         "name": "token",
