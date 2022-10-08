@@ -2,7 +2,7 @@
   <div class="flex row justify-center">
     <div class="width-1200 col-auto">
       <div class="container">
-        <div class="imgs">
+        <div class="imgs" :style="{width: CAROUSEL_WIDTH,height: CAROUSEL_HEIGHT}">
           <Transition name="img">
 
           </Transition>
@@ -16,11 +16,12 @@
 
 import {ref} from "vue";
 import {api} from "boot/axios";
+import {CAROUSEL_HEIGHT, CAROUSEL_WIDTH} from "components/MagicValue";
 
 // 图片数组
 const imgArr = ref([]);
 
-function start(){
+function start() {
 
 }
 
@@ -30,8 +31,6 @@ function start(){
 <style scoped>
 
 .imgs {
-  width: 700px;
-  height: 394px;
   overflow: hidden;
   display: inline-block;
   position: relative;

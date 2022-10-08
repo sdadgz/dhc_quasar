@@ -27,6 +27,7 @@
         <div class="col-auto m-6">用户名</div>
         <div class="col-auto m-6">
           <q-input
+            ref="usernameRef"
             v-model="username"
             :model-value="username"
             placeholder="清输入您的用户名"
@@ -35,6 +36,7 @@
             dense
             :rules="notNull"
             lazy-rules
+            @keyup.enter="usernameEnter"
           />
         </div>
 
@@ -42,6 +44,7 @@
         <div class="col-auto m-6">密码</div>
         <div class="col-auto m-6">
           <q-input
+            ref="passwordRef"
             v-model="password"
             :model-value="password"
             placeholder="清输入您的密码"
@@ -51,6 +54,7 @@
             :rules="notNull"
             lazy-rules
             type="password"
+            @keyup.enter="passwordEnter"
           />
         </div>
         <!--    登录按钮    -->
@@ -73,7 +77,7 @@ import {ref} from "vue";
 import {SERVER_NAME} from "components/Models";
 import {useRouter} from "vue-router";
 import {api} from "boot/axios";
-import {CommFail, CommSeccess} from "components/notifyTools";
+import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {HOME} from "components/MagicValue";
 
 const $router = useRouter();
@@ -81,7 +85,24 @@ const $router = useRouter();
 const backgroundImg = ref(SERVER_NAME + '/static/login_background.jpg'); // 背景图地址
 
 const username = ref(localStorage.getItem("username"));
+const usernameRef = ref(null);
 const password = ref();
+const passwordRef = ref(null);
+
+// 用户名回车
+function usernameEnter() {
+  passwordRef.value.focus();
+}
+
+// 密码回车
+function passwordEnter() {
+  if (username.value && username.value.length > 0) {
+    loginHandler();
+  } else {
+    CommWarn("请输入用户名");
+    usernameRef.value.focus();
+  }
+}
 
 // 数字医疗中心
 function goHome() {
@@ -89,7 +110,7 @@ function goHome() {
 }
 
 // 后台管理系统
-function gotoUser(){
+function gotoUser() {
   $router.push('/user');
 }
 

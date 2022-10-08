@@ -11,6 +11,9 @@ export const ZERO = 0;
 export const POSITION_HOME = '创新中心'; // 位置面包屑
 export const PAGE_MAX = 13;
 export const ESSAY_UNIQUE_ID = 'id'; // essay的唯一标识名称
+// 主页轮播图大小
+export const CAROUSEL_WIDTH = 700;
+export const CAROUSEL_HEIGHT = 394;
 
 // 返回code
 export const CODE_200 = '200';

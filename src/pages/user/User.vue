@@ -1,6 +1,7 @@
 <template>
   <q-page-container class="q-pa-md q-gutter-md">
     <div class="row">
+
       <!--   文章上传   -->
       <q-card class="container col-auto">
         <!--    标题    -->
@@ -67,6 +68,7 @@
           <q-btn label="重置" color="orange-7" class="col-auto min-w-100" @click="essayReset"/>
           <q-btn label="提交" color="blue-14" class="col-auto min-w-100" @click="essayCommit"/>
         </q-card-section>
+
       </q-card>
 
       <!--   文章表   -->
@@ -80,6 +82,7 @@
         <!--    表格    -->
         <q-card-section>
           <q-table
+            title="文章"
             :columns="columns"
             :rows="rows"
             row-key="id"
@@ -90,6 +93,14 @@
             :loading="tableLoading"
             :pagination="pagination"
           >
+
+            <template v-slot:top-right>
+              <q-input model-value="" v-model="queryField" placeholder="搜索（位置）" @keyup.enter="searchEssay">
+                <template v-slot:append>
+                  <q-icon name="search" class="cursor-pointer" @click="searchEssay"/>
+                </template>
+              </q-input>
+            </template>
 
             <!--      标题      -->
             <template v-slot:body-cell-title="props">
@@ -218,6 +229,58 @@
           </q-inner-loading>
 
         </q-card-section>
+
+      </q-card>
+
+      <!--   上传图片   -->
+      <q-card class="container col-auto">
+
+        <!--    标题    -->
+        <q-card-section>
+          <strong>图片上传</strong>
+        </q-card-section>
+
+        <!--    上传器    -->
+        <q-card-section>
+          <q-uploader
+            ref="imgUploader"
+            multiple
+            accept="image/*"
+            hide-upload-btn
+            label="图片上传器"
+            color="indigo"
+            :factory="imgUploadFn"
+            @finish="uploadDone = true;getImg()"
+            @uploaded="imgUploadFinish"
+          />
+        </q-card-section>
+
+        <!--    提交重置按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" color="amber" @click="resetImgUploader"/>
+          <q-btn label="上传" color="orange" @click="imgUploadHandler"/>
+        </q-card-section>
+
+      </q-card>
+
+      <!--   图片表   -->
+      <q-card class="container col-auto">
+
+      </q-card>
+
+      <!--   上传轮播图   -->
+      <q-card class="container col-auto">
+
+        <!--    标题    -->
+        <q-card-section>
+          <strong>轮播图上传</strong>
+        </q-card-section>
+
+      </q-card>
+
+      <!--   轮播图表   -->
+      <q-card class="container col-auto">
+
       </q-card>
 
       <!--   关于   -->
@@ -241,6 +304,8 @@ import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {useRouter} from "vue-router";
 import {HEAD_ITEMS} from "components/head-item";
 import {
+  CAROUSEL_HEIGHT,
+  CAROUSEL_WIDTH,
   CODE_200,
   EMPTY_STRING,
   HOME,
@@ -257,6 +322,73 @@ import {Notify, useQuasar} from "quasar";
 
 const $q = useQuasar();
 const $router = useRouter();
+
+const imgUploadUrl = ref('/img/upload'); // 图片上传路径
+const imgUploader = ref(null); // 图片上传器
+
+// 获取图片
+function getImg() {
+  console.log("获取图片");
+}
+
+// 重置图片上传器
+function resetImgUploader() {
+  if (imgUploader) {
+    imgUploader.value.reset();
+  }
+}
+
+// 上传图片按钮
+function imgUploadHandler() {
+  if (imgUploader) {
+    imgUploader.value.upload();
+  }
+}
+
+// 图片上传工厂
+function imgUploadFn() {
+  return new Promise(resolve => {
+    resolve({
+      "url": SERVER_NAME + imgUploadUrl.value,
+      "formFields": [
+        {
+          "name": "reduceX",
+          "value": CAROUSEL_WIDTH * 2
+        },
+        {
+          'name': "reduceY",
+          "value": CAROUSEL_HEIGHT * 2
+        }
+      ],
+      "fieldName": "file",
+      "headers": [{
+        "name": "token",
+        "value": localStorage.getItem("token")
+      }]
+    })
+  })
+}
+
+// 图片上传之后
+function imgUploadFinish(info){
+  const res = JSON.parse(info.xhr.response);
+  if (res.code === '499') {
+    // 未登录
+    CommFail("未登录");
+    $router.push("/user/login");
+  } else if (res.code !== '200') {
+    // 出现异常
+    CommFail(res.msg);
+  } else {
+    // 正常处理
+    CommSeccess("上传成功");
+  }
+}
+
+// 查询文章
+function searchEssay() {
+  getEssay();
+}
 
 // 删除文章
 function deleteSelected() {
