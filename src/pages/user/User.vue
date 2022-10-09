@@ -281,8 +281,9 @@
       <q-card class="container col-auto" style="width: 90vw">
 
         <!--   删除按钮     -->
-        <q-card-section>
-          <q-btn label="删除" icon="delete_forever" color="red"/>
+        <q-card-section class="q-pa-md q-gutter-md">
+          <q-btn label="删除" icon="delete_forever" color="red" @click="deleteImg(imgSelected)"/>
+          <q-btn label="重置" icon="autorenew" color="cyan" @click="resetImgTable" :loading="resetBtnLoading"/>
         </q-card-section>
 
         <!--   图片表     -->
@@ -312,14 +313,14 @@
             <template v-slot:item="props">
               <div class="q-pa-md col-md-3 col-xs-12">
                 <q-card
-                  class="animated"
+                  class="animated cursor-pointer"
                   :class="props.selected ? 'selected' : ''"
+                  @click="props.selected = !props.selected"
                 >
                   <q-card-section>
                     <q-img
                       :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
                       :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
-                      @click="props.selected = !props.selected"
                     >
                       <div class="absolute-bottom text-center">
                         <span>{{
@@ -328,6 +329,34 @@
                       </div>
                     </q-img>
                   </q-card-section>
+
+                  <!--        弹出代理          -->
+                  <q-popup-proxy context-menu>
+                    <q-slide-transition appear>
+                      <q-list separator>
+                        <!--          查看原图            -->
+                        <q-item clickable v-ripple @click="goto(props.row.url)">
+                          <q-item-section>
+                            查看原图
+                          </q-item-section>
+                        </q-item>
+
+                        <!--            删除            -->
+                        <q-item v-if="!props.row.isDelete" clickable v-ripple @click="deleteImg([props.row])">
+                          <q-item-section>
+                            删除
+                          </q-item-section>
+                        </q-item>
+
+                        <!--           恢复             -->
+                        <q-item v-else clickable v-ripple @click="">
+                          <q-item-section>
+                            恢复
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-slide-transition>
+                  </q-popup-proxy>
                 </q-card>
               </div>
             </template>
@@ -393,7 +422,7 @@ import {HEAD_ITEMS} from "components/head-item";
 import {
   CAROUSEL_HEIGHT,
   CAROUSEL_WIDTH,
-  CODE_200,
+  CODE_200, DEFAULT_DELAY,
   EMPTY_STRING,
   HOME, IMG_PAGE_SIZE,
   PAGE_MAX,
@@ -407,12 +436,58 @@ import {api} from "boot/axios";
 import {ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
 import {useQuasar} from "quasar";
 import {getRows} from "components/Tools";
+import qs from "qs";
 
 const $q = useQuasar();
 const $router = useRouter();
 
-const imgColumns = ref(IMG_COLUMNS);
+// 获取数组中的idList
+function getIdList(arr) {
+  const res = [];
+  arr.forEach(item => {
+    res.push(item.id);
+  })
+  return res;
+}
 
+// 重置按钮动画
+const resetBtnLoading = ref(false);
+
+// 图片表重置
+function resetImgTable() {
+  resetBtnLoading.value = true;
+  imgSelected.value = [];
+
+  // 定时恢复
+  setTimeout(() => {
+    resetBtnLoading.value = false;
+  }, DEFAULT_DELAY)
+}
+
+// 删除图片
+function deleteImg(idList) {
+  idList = getIdList(idList);
+  api.delete('/img', {
+    data: {
+      idList: idList,
+    }
+  }).then(res => {
+    CommSeccess("删除成功");
+  }).catch(res => {
+    CommFail("删除失败");
+  }).then(res => {
+    getImg();
+  }).then(res => {
+    resetImgTable();
+  })
+}
+
+// 跳转
+function goto(url) {
+  window.open(url);
+}
+
+const imgColumns = ref(IMG_COLUMNS);
 const imgUploadUrl = ref('/img/upload'); // 图片上传路径
 const imgUploader = ref(null); // 图片上传器
 const imgRows = ref([]);

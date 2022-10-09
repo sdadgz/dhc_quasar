@@ -16,6 +16,8 @@ export const ESSAY_UNIQUE_ID = 'id'; // essay的唯一标识名称
 // 主页轮播图大小
 export const CAROUSEL_WIDTH = 700;
 export const CAROUSEL_HEIGHT = 394;
+// 动画时长
+export const DEFAULT_DELAY = 666;
 
 // 返回code
 export const CODE_200 = '200';
