@@ -280,10 +280,11 @@
       <!--   图片表   -->
       <q-card class="container col-auto" style="width: 90vw">
 
-        <!--   删除按钮     -->
+        <!--   按钮     -->
         <q-card-section class="q-pa-md q-gutter-md">
+          <q-btn label="恢复" icon="restore" color="green-13" @click="recoverImgTable" :loading="recoverBtnLoading"/>
           <q-btn label="删除" icon="delete_forever" color="red" @click="deleteImg(imgSelected)"/>
-          <q-btn label="重置" icon="autorenew" color="cyan" @click="resetImgTable" :loading="resetBtnLoading"/>
+          <q-btn label="重置" icon="autorenew" color="cyan" @click="resetImgTableHandler" :loading="resetBtnLoading"/>
         </q-card-section>
 
         <!--   图片表     -->
@@ -322,7 +323,7 @@
                       :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
                       :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
                     >
-                      <div class="absolute-bottom text-center">
+                      <div class="absolute-bottom text-center" :style="{backgroundColor: props.row.isDelete ? 'rgba(255,0,0,.5)' : ''}">
                         <span>{{
                             setTime(props.row.createTime) + (props.row.isDelete ? " 已删除" : "")
                           }}</span>
@@ -441,6 +442,15 @@ import qs from "qs";
 const $q = useQuasar();
 const $router = useRouter();
 
+// 重置按钮点击
+function resetImgTableHandler() {
+  resetBtnLoading.value = true;
+  resetImgTable();
+  setTimeout(() => {
+    resetBtnLoading.value = false;
+  }, DEFAULT_DELAY);
+}
+
 // 获取数组中的idList
 function getIdList(arr) {
   const res = [];
@@ -450,18 +460,23 @@ function getIdList(arr) {
   return res;
 }
 
-// 重置按钮动画
+// 按钮动画
 const resetBtnLoading = ref(false);
+const recoverBtnLoading = ref(false);
+
+// 图片表恢复按钮
+function recoverImgTable() {
+  recoverBtnLoading.value = true;
+  recoverImg(imgSelected.value);
+
+  setTimeout(() => {
+    recoverBtnLoading.value = false;
+  }, DEFAULT_DELAY);
+}
 
 // 图片表重置
 function resetImgTable() {
-  resetBtnLoading.value = true;
   imgSelected.value = [];
-
-  // 定时恢复
-  setTimeout(() => {
-    resetBtnLoading.value = false;
-  }, DEFAULT_DELAY)
 }
 
 // 删除图片
@@ -475,6 +490,22 @@ function deleteImg(idList) {
     CommSeccess("删除成功");
   }).catch(res => {
     CommFail("删除失败");
+  }).then(res => {
+    getImg();
+  }).then(res => {
+    resetImgTable();
+  })
+}
+
+// 恢复图片
+function recoverImg(idList) {
+  idList = getIdList(idList);
+  api.put('/img', {
+    idList: idList,
+  }).then(res => {
+    CommSeccess("恢复成功");
+  }).catch(res => {
+    CommFail("恢复失败");
   }).then(res => {
     getImg();
   }).then(res => {
