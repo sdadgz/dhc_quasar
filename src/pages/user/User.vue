@@ -283,7 +283,7 @@
         <!--   按钮     -->
         <q-card-section class="q-pa-md q-gutter-md">
           <q-btn label="恢复" icon="restore" color="green-13" @click="recoverImgTable" :loading="recoverBtnLoading"/>
-          <q-btn label="删除" icon="delete_forever" color="red" @click="deleteImg(imgSelected)"/>
+          <q-btn label="删除" icon="delete_forever" color="red" @click="deleteImg"/>
           <q-btn label="重置" icon="autorenew" color="cyan" @click="resetImgTableHandler" :loading="resetBtnLoading"/>
           <q-btn label="全选" icon="checklist_rtl" color="blue" class="absolute"
                  v-morph:true:selected:233.tween="imgSelectedBtnMorph" @click="imgSelectedAll"/>
@@ -348,7 +348,7 @@
                         </q-item>
 
                         <!--            删除            -->
-                        <q-item v-if="!props.row.isDelete" clickable v-ripple @click="deleteImg([props.row])">
+                        <q-item v-if="!props.row.isDelete" clickable v-ripple @click="deleteImgHandler([props.row])">
                           <q-item-section>
                             删除
                           </q-item-section>
@@ -422,7 +422,7 @@
 
 import {SERVER_NAME} from "components/Models";
 import {ref, watch} from "vue";
-import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
+import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {useRouter} from "vue-router";
 import {HEAD_ITEMS} from "components/head-item";
 import {
@@ -450,9 +450,7 @@ const $router = useRouter();
 
 // 选中当前页全部图片
 function imgSelectedAll() {
-  console.log(imgSelected.value);
   imgSelected.value.push(...imgRows.value);
-  console.log(imgSelected.value);
 }
 
 // 取消当前页选中
@@ -509,9 +507,14 @@ function resetImgTable() {
   imgSelected.value = [];
 }
 
+// 删除图片被点击
+function deleteImg() {
+  DeleteConform(deleteImgHandler);
+}
+
 // 删除图片
-function deleteImg(idList) {
-  idList = getIdList(idList);
+function deleteImgHandler() {
+  const idList = getIdList(imgSelected.value);
   api.delete('/img', {
     data: {
       idList: idList,
@@ -649,46 +652,37 @@ function searchEssay() {
 
 // 删除文章
 function deleteSelected() {
-  $q.notify({
-    message: '确定要删除所选项目吗？',
-    type: 'negative',
-    position: 'top',
-    actions: [
-      {
-        label: '确定', color: 'yellow', handler: () => {
-          // 至少选择一个
-          const essayList = selected.value;
-          const idList = [];
-          essayList.forEach(item => {
-            idList.push(item.essayId);
-          })
+  DeleteConform(deleteEssayHandler);
+}
 
-          if (essayList.length < 1) {
-            CommWarn("至少选一个啊");
-            return;
-          }
+// 删除文章handler
+function deleteEssayHandler() {
+  // 至少选择一个
+  const essayList = selected.value;
+  const idList = [];
+  essayList.forEach(item => {
+    idList.push(item.essayId);
+  })
 
-          api.delete('/essay', {
-            data: {
-              "idList": idList
-            }
-          }).then(res => {
-            if (res.code === CODE_200) {
-              CommSeccess("删除成功");
-            } else {
-              CommFail("删除失败");
-            }
-          }).catch(res => {
-            CommFail("删除失败");
-          }).then(res => {
-            getEssay();
-          })
-        }
-      },
-      {
-        label: '取消', color: 'white'
-      }
-    ]
+  if (essayList.length < 1) {
+    CommWarn("至少选一个啊");
+    return;
+  }
+
+  api.delete('/essay', {
+    data: {
+      "idList": idList
+    }
+  }).then(res => {
+    if (res.code === CODE_200) {
+      CommSeccess("删除成功");
+    } else {
+      CommFail("删除失败");
+    }
+  }).catch(res => {
+    CommFail("删除失败");
+  }).then(res => {
+    getEssay();
   })
 }
 

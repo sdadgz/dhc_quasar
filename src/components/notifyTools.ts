@@ -1,4 +1,6 @@
 import {Notify} from 'quasar'
+import {api} from "../boot/axios";
+import {CODE_200} from "./MagicValue";
 
 export function LoadingNotify() {
   return Notify.create({
@@ -54,5 +56,21 @@ export function CommWarn(message: any) {
     message: message,
     position: 'top',
     group: message,
+  })
+}
+
+export function DeleteConform(fun: () => void) {
+  Notify.create({
+    message: '确定要删除所选项目吗？',
+    type: 'negative',
+    position: 'top',
+    actions: [
+      {
+        label: '确定', color: 'yellow', handler: fun
+      },
+      {
+        label: '取消', color: 'white'
+      }
+    ]
   })
 }
