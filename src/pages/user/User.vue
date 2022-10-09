@@ -285,6 +285,10 @@
           <q-btn label="恢复" icon="restore" color="green-13" @click="recoverImgTable" :loading="recoverBtnLoading"/>
           <q-btn label="删除" icon="delete_forever" color="red" @click="deleteImg(imgSelected)"/>
           <q-btn label="重置" icon="autorenew" color="cyan" @click="resetImgTableHandler" :loading="resetBtnLoading"/>
+          <q-btn label="全选" icon="checklist_rtl" color="blue" class="absolute"
+                 v-morph:true:selected:233.tween="imgSelectedBtnMorph" @click="imgSelectedAll"/>
+          <q-btn label="取消选中" icon="rule" color="indigo-13" class="absolute"
+                 v-morph:false:selected:233.tween="imgSelectedBtnMorph" @click="imgUnSelectedAll"/>
         </q-card-section>
 
         <!--   图片表     -->
@@ -323,7 +327,8 @@
                       :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
                       :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
                     >
-                      <div class="absolute-bottom text-center" :style="{backgroundColor: props.row.isDelete ? 'rgba(255,0,0,.5)' : ''}">
+                      <div class="absolute-bottom text-center"
+                           :style="{backgroundColor: props.row.isDelete ? 'rgba(255,0,0,.5)' : ''}">
                         <span>{{
                             setTime(props.row.createTime) + (props.row.isDelete ? " 已删除" : "")
                           }}</span>
@@ -416,16 +421,18 @@
 <script setup>
 
 import {SERVER_NAME} from "components/Models";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {useRouter} from "vue-router";
 import {HEAD_ITEMS} from "components/head-item";
 import {
   CAROUSEL_HEIGHT,
   CAROUSEL_WIDTH,
-  CODE_200, DEFAULT_DELAY,
+  CODE_200,
+  DEFAULT_DELAY,
   EMPTY_STRING,
-  HOME, IMG_PAGE_SIZE,
+  HOME,
+  IMG_PAGE_SIZE,
   PAGE_MAX,
   PAGE_SIZE,
   SPLIT,
@@ -436,11 +443,34 @@ import {
 import {api} from "boot/axios";
 import {ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
 import {useQuasar} from "quasar";
-import {getRows} from "components/Tools";
-import qs from "qs";
+import {getRows, repeatArr, subArr} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
+
+// 选中当前页全部图片
+function imgSelectedAll() {
+  console.log(imgSelected.value);
+  imgSelected.value.push(...imgRows.value);
+  console.log(imgSelected.value);
+}
+
+// 取消当前页选中
+function imgUnSelectedAll() {
+  imgSelected.value = subArr(imgSelected.value, imgRows.value);
+}
+
+const imgSelectedBtnMorph = ref('true');
+
+// 当前页是否选中图片
+function imgIsEmpty() {
+  if (!imgSelected || !imgRows) {
+    return true;
+  }
+  const selectedList = getIdList(imgSelected.value);
+  const rowsList = getIdList(imgRows.value);
+  return repeatArr(selectedList, rowsList);
+}
 
 // 重置按钮点击
 function resetImgTableHandler() {
@@ -549,6 +579,7 @@ async function getImg() {
 
   }).then(res => {
     imgTableLoading.value = false;
+    updateImgMorph();
   })
 }
 
@@ -996,6 +1027,15 @@ function start() {
   getImg();
   getEssay();
 }
+
+// 更新全选按钮model
+function updateImgMorph() {
+  imgSelectedBtnMorph.value = imgIsEmpty() ? 'true' : 'false';
+}
+
+watch(() => imgSelected.value, () => {
+  updateImgMorph();
+}, {immediate: true, deep: true})
 
 start();
 </script>

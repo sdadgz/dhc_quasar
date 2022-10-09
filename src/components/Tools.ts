@@ -43,3 +43,27 @@ function getItem(list, field) {
     return list[`${field}`];
   }
 }
+
+// 数组是否有重复值
+export function repeatArr(l1: [number], l2: [number]) {
+  for (let a of l1) {
+    for (let b of l2) {
+      if (a === b) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+// 数组删除去重
+export function subArr(baseArr: any, targetArr: any) {
+  return baseArr.filter(item => {
+    for (let a of targetArr) {
+      if (a.id === item.id) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
