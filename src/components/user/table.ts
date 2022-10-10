@@ -11,4 +11,5 @@ export const IMG_COLUMNS = [
   {"field": "isDelete", "label": "是否删除", "align": "center", "name": "status"},
   {"field": "createTime", "label": "上传时间", "align": "center"},
   {"field": "reduceUrl", "label": "浓缩图", "align": "center"},
+  {field: "title", label: "简介", align: 'center'}
 ]

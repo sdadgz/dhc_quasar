@@ -89,7 +89,8 @@
       <q-card class="container col-auto">
 
         <!--    头部按钮    -->
-        <q-card-section>
+        <q-card-section class="q-pa-md q-gutter-md">
+          <q-btn label="刷新" color="blue-14" icon="refresh" @click="refreshEssay" :loading="refreshEssayLoading"/>
           <q-btn label="删除" color="red" icon="delete_forever" @click="deleteSelected"/>
         </q-card-section>
 
@@ -109,7 +110,8 @@
           >
 
             <template v-slot:top-right>
-              <q-input model-value="" v-model="queryField" placeholder="搜索（位置）" @keyup.enter="searchEssay">
+              <q-input model-value="" v-model="queryField" placeholder="搜索（位置）" @blur="searchEssay"
+                       @keyup.enter="searchEssay">
                 <template v-slot:append>
                   <q-icon name="search" class="cursor-pointer" @click="searchEssay"/>
                 </template>
@@ -254,6 +256,20 @@
           <strong>图片上传</strong>
         </q-card-section>
 
+        <!--    图片简介    -->
+        <q-card-section>
+          <q-input v-model="imgUploadTitle" placeholder="图片简介（可选）">
+            <template #append>
+              <q-icon
+                @click="imgUploadTitle = EMPTY_STRING"
+                name="close"
+                v-if="imgUploadTitle && imgUploadTitle.length > 0"
+                class="cursor-pointer"
+              />
+            </template>
+          </q-input>
+        </q-card-section>
+
         <!--    上传器    -->
         <q-card-section>
           <q-uploader
@@ -282,6 +298,7 @@
 
         <!--   按钮     -->
         <q-card-section class="q-pa-md q-gutter-md">
+          <q-btn label="刷新" icon="refresh" color="blue-14" @click="refreshImg" :loading="refreshImgBtnLoading"/>
           <q-btn label="恢复" icon="restore" color="green-13" @click="recoverImgTable" :loading="recoverBtnLoading"/>
           <q-btn label="删除" icon="delete_forever" color="red" @click="deleteImg"/>
           <q-btn label="重置" icon="autorenew" color="cyan" @click="resetImgTableHandler" :loading="resetBtnLoading"/>
@@ -308,9 +325,9 @@
           >
 
             <template v-slot:top-right>
-              <q-input model-value="" v-model="queryField" placeholder="搜索（位置）" @keyup.enter="searchEssay">
+              <q-input model-value="" v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg" @blur="getImg">
                 <template v-slot:append>
-                  <q-icon name="search" class="cursor-pointer" @click="searchEssay"/>
+                  <q-icon name="search" class="cursor-pointer" @click="getImg"/>
                 </template>
               </q-input>
             </template>
@@ -330,7 +347,9 @@
                       <div class="absolute-bottom text-center"
                            :style="{backgroundColor: props.row.isDelete ? 'rgba(255,0,0,.5)' : ''}">
                         <span>{{
-                            setTime(props.row.createTime) + (props.row.isDelete ? " 已删除" : "")
+                            (props.row.title === null ? '' : props.row.title) + SPLIT +
+                            setTime(props.row.createTime) +
+                            (props.row.isDelete ? " 已删除" : "")
                           }}</span>
                       </div>
                     </q-img>
@@ -443,10 +462,13 @@ import {
 import {api} from "boot/axios";
 import {ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
 import {useQuasar} from "quasar";
-import {getRows, repeatArr, subArr} from "components/Tools";
+import {getRows, repeatArr, sleep, subArr} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
+
+const imgQuery = ref(EMPTY_STRING); // 图片查询
+const imgUploadTitle = ref(EMPTY_STRING); // 图片上传简介
 
 // 选中当前页全部图片
 function imgSelectedAll() {
@@ -470,10 +492,22 @@ function imgIsEmpty() {
   return repeatArr(selectedList, rowsList);
 }
 
+const refreshImgBtnLoading = ref(false);
+
+// 图片表刷新
+async function refreshImg() {
+  refreshImgBtnLoading.value = true;
+  await resetImgSelected();
+  await getImg();
+  await sleep(DEFAULT_DELAY);
+  refreshImgBtnLoading.value = false;
+}
+
 // 重置按钮点击
 function resetImgTableHandler() {
   resetBtnLoading.value = true;
   resetImgTable();
+  getImg();
   setTimeout(() => {
     resetBtnLoading.value = false;
   }, DEFAULT_DELAY);
@@ -495,7 +529,11 @@ const recoverBtnLoading = ref(false);
 // 图片表恢复按钮
 function recoverImgTable() {
   recoverBtnLoading.value = true;
-  recoverImg(imgSelected.value);
+  if (imgSelected.value.length > 0) {
+    recoverImg(imgSelected.value);
+  } else {
+    CommWarn("未选择图片");
+  }
 
   setTimeout(() => {
     recoverBtnLoading.value = false;
@@ -504,6 +542,13 @@ function recoverImgTable() {
 
 // 图片表重置
 function resetImgTable() {
+  // 输入框重置
+  imgQuery.value = EMPTY_STRING;
+  resetImgSelected();
+}
+
+// 图片表重置选中
+function resetImgSelected() {
   imgSelected.value = [];
 }
 
@@ -515,6 +560,10 @@ function deleteImg() {
 // 删除图片
 function deleteImgHandler() {
   const idList = getIdList(imgSelected.value);
+  if (idList.length < 1) {
+    CommWarn("至少选一个啊");
+    return;
+  }
   api.delete('/img', {
     data: {
       idList: idList,
@@ -565,12 +614,12 @@ const imgPagination = ref({rowsPerPage: imgPageSize.value})
 // 获取图片
 async function getImg() {
   imgTableLoading.value = true;
-  imgRows.value = [];
 
   await api.get('/img/page', {
     params: {
       "currentPage": imgCurrentPage.value,
-      "pageSize": imgPageSize.value
+      "pageSize": imgPageSize.value,
+      title: imgQuery.value === EMPTY_STRING ? null : imgQuery.value
     }
   }).then(res => {
     const lists = res.data.lists;
@@ -618,6 +667,10 @@ function imgUploadFn() {
         {
           'name': "reduceY",
           "value": CAROUSEL_HEIGHT * 2
+        },
+        {
+          name: 'title',
+          value: imgUploadTitle.value
         }
       ],
       "fieldName": "file",
@@ -822,7 +875,6 @@ function pageHandler() {
 // 获取essay
 async function getEssay() {
   tableLoading.value = true;
-  rows.value = [];
 
   await api.get('/field', {
     params: {
@@ -870,6 +922,22 @@ const uploadField = ref(EMPTY_STRING);
 // 重置提交领域
 function resetField() {
   uploadField.value = EMPTY_STRING;
+}
+
+const refreshEssayLoading = ref(false);
+
+// 文章重置选择
+function resetEssaySelected() {
+  selected.value = [];
+}
+
+// 刷新按钮
+async function refreshEssay() {
+  refreshEssayLoading.value = true;
+  await resetEssaySelected();
+  await getEssay();
+  await sleep(DEFAULT_DELAY);
+  refreshEssayLoading.value = false;
 }
 
 // 文章提交
