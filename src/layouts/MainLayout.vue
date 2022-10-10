@@ -204,7 +204,7 @@ function goHome() {
 
 // 去登录页
 function gotoLogin() {
-  $router.push("/user/login");
+  $router.push("/user");
 }
 
 // 去石家庄学院官网

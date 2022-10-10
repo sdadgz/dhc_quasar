@@ -1,5 +1,5 @@
 // 遇到问题睡大觉
-import {ESSAY_COLUMNS} from "./user/table";
+import {ESSAY_COLUMNS, table} from "./user/table";
 import {DOT} from "./MagicValue";
 
 export async function sleep(ms: number) {
@@ -17,7 +17,7 @@ export function max(num: number, max: number) {
 }
 
 // 生成表格行
-export function getRows(lists: any, columns: any) {
+export function getRows(lists: any, columns: table[]) {
   const rows = [];
   for (let i = 0; i < lists.length; i++) {
     let obj = {};

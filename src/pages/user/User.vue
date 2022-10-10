@@ -79,8 +79,8 @@
 
         <!--    重置和提交    -->
         <q-card-section class="row justify-between">
-          <q-btn label="重置" color="orange-7" class="col-auto min-w-100" @click="essayReset"/>
-          <q-btn label="提交" color="blue-14" class="col-auto min-w-100" @click="essayCommit"/>
+          <q-btn label="重置" color="orange-7" class="col-auto min-w-100" @click="essayReset" icon="clear_all"/>
+          <q-btn label="提交" color="blue-14" class="col-auto min-w-100" @click="essayCommit" icon="upload"/>
         </q-card-section>
 
       </q-card>
@@ -261,7 +261,7 @@
           <q-input v-model="imgUploadTitle" placeholder="图片简介（可选）">
             <template #append>
               <q-icon
-                @click="imgUploadTitle = EMPTY_STRING"
+                @click="resetImgUploadTitle"
                 name="close"
                 v-if="imgUploadTitle && imgUploadTitle.length > 0"
                 class="cursor-pointer"
@@ -287,14 +287,14 @@
 
         <!--    提交重置按钮    -->
         <q-card-section class="row justify-between">
-          <q-btn label="重置" color="amber" @click="resetImgUploader"/>
-          <q-btn label="上传" color="orange" @click="imgUploadHandler"/>
+          <q-btn label="重置" color="amber" @click="resetImgUploader" icon="clear_all"/>
+          <q-btn label="上传" color="orange" @click="imgUploadHandler" icon="upload"/>
         </q-card-section>
 
       </q-card>
 
       <!--   图片表   -->
-      <q-card class="container col-auto" style="width: 90vw">
+      <q-card class="container col-auto" style="width: 96vw">
 
         <!--   按钮     -->
         <q-card-section class="q-pa-md q-gutter-md">
@@ -417,10 +417,100 @@
           <strong>轮播图上传</strong>
         </q-card-section>
 
+        <!--    简介    -->
+        <q-card-section>
+          <span>我偷懒了，上面文章选一个，下面图片选一个，然后点上传</span>
+        </q-card-section>
+
+        <!--    按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" icon="clear_all" color="secondary" @click="resetCarouselUpload"/>
+          <q-btn label="上传" icon="upload" color="primary" @click="carouseUploadHandler"/>
+        </q-card-section>
       </q-card>
 
       <!--   轮播图表   -->
       <q-card class="container col-auto">
+
+        <!--    标题    -->
+        <q-card-section><strong>轮播图</strong></q-card-section>
+
+        <!--    按钮    -->
+        <q-card-section>
+          <q-btn label="删除" color="red" icon="delete_forever"/>
+        </q-card-section>
+
+        <q-card-section style="width: 90vw">
+          <q-table title="轮播图" :columns="CAROUSEL_COLUMNS" :rows="carouselRows" row-key="id" hide-pagination
+                   selection="multiple" v-model:selected="carouselSelected" :selected-rows-label="getSelectedString"
+                   grid :pagination="carouselPagination" :loading="carouselTableLoading">
+
+            <!--      右上      -->
+            <template v-slot:top-right>
+              <q-input v-model="carouselQuery" placeholder="搜索（文章标题）" @keyup.enter="getCarousel"
+                       @blur="getCarousel">
+                <template v-slot:append>
+                  <q-icon name="search" class="cursor-pointer" @click="getCarousel"/>
+                </template>
+              </q-input>
+            </template>
+
+            <!--      卡片      -->
+            <template v-slot:item="props">
+              <div class="q-pa-md col-md-3 col-xs-12">
+                <q-card
+                  class="animated cursor-pointer"
+                  :class="props.selected ? 'selected' : ''"
+                  @click="props.selected = !props.selected"
+                >
+                  <q-card-section>
+                    <q-img
+                      :src="props.row['img.reduceUrl'] === null ? props.row['img.url'] : props.row['img.reduceUrl']"
+                      :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
+                    >
+                      <div class="absolute-bottom text-center"
+                           :style="{backgroundColor: props.row['img.isDelete'] ? 'rgba(255,0,0,.5)' : ''}">
+                        <span>{{ props.row['essay.title'] }}</span>
+                      </div>
+                    </q-img>
+                  </q-card-section>
+
+                  <!--        弹出代理          -->
+                  <q-popup-proxy context-menu>
+                    <q-slide-transition appear>
+                      <q-list separator>
+                        <!--          查看原图            -->
+                        <q-item clickable v-ripple @click="goto(props.row['img.url'])">
+                          <q-item-section>
+                            查看原图
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-slide-transition>
+                  </q-popup-proxy>
+                </q-card>
+              </div>
+            </template>
+
+          </q-table>
+
+          <!--     分页     -->
+          <div class="q-pa-lg flex flex-center" v-if="carouselPageTotal > 0">
+            <q-pagination
+              :max="carouselPageTotal"
+              direction-links
+              boundary-numbers
+              :max-pages="pageMax"
+              v-model="carouselCurrentPage"
+              @click="getCarousel"
+            />
+          </div>
+
+          <!--     加载     -->
+          <q-inner-loading :showing="carouselTableLoading">
+            <q-spinner-gears size="50px" color="primary"/>
+          </q-inner-loading>
+        </q-card-section>
 
       </q-card>
 
@@ -430,7 +520,7 @@
         <q-card-section>我进不去后台哇，先能用，怎么排版到时候在改</q-card-section>
         <q-card-section>杂七杂八的按钮先仍这里吧</q-card-section>
         <q-card-section>
-          <q-btn @click="goHome" color="positive" label="回到主页"/>
+          <q-btn @click="goHome" color="positive" icon="home" label="回到主页"/>
         </q-card-section>
       </q-card>
     </div>
@@ -460,12 +550,78 @@ import {
   ZERO
 } from "components/MagicValue";
 import {api} from "boot/axios";
-import {ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
+import {CAROUSEL_COLUMNS, ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
 import {useQuasar} from "quasar";
 import {getRows, repeatArr, sleep, subArr} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
+
+// 获取轮播图
+async function getCarousel() {
+  carouselTableLoading.value = true;
+  await api.get('/carousel/page', {
+    params: {
+      currentPage: carouselCurrentPage.value,
+      pageSize: carouselPageSize.value,
+      title: (carouselQuery.value === EMPTY_STRING ? null : carouselQuery.value)
+    }
+  }).then(res => {
+    const lists = res.data.lists;
+    const total = res.data.total;
+
+    carouselRows.value = getRows(lists, CAROUSEL_COLUMNS);
+    carouselPageTotal.value = Math.ceil(total / carouselPageSize.value);
+  })
+  carouselTableLoading.value = false;
+}
+
+const carouselCurrentPage = ref(START_PAGE);
+const carouselPageTotal = ref(3);
+const carouselPageSize = ref(PAGE_SIZE);
+const carouselQuery = ref(EMPTY_STRING);
+const carouselRows = ref([]);
+const carouselSelected = ref([]);
+const carouselPagination = ref({rowsPerPage: carouselPageSize.value});
+const carouselTableLoading = ref(true);
+
+// 上传轮播图重置
+function resetCarouselUpload() {
+  resetEssaySelected();
+  resetImgSelected();
+}
+
+// 上传轮播图按钮
+function carouseUploadHandler() {
+  if (selected.value.length !== 1) {
+    CommWarn("请选择一个文章");
+    return;
+  }
+  if (imgSelected.value.length !== 1) {
+    CommWarn("请选择一个图片");
+    return;
+  }
+
+  const essayId = selected.value[0].essayId;
+  const imgId = imgSelected.value[0].id;
+
+  api.post('/carousel/upload', {
+    essayId: essayId,
+    imgId: imgId
+  }).then(res => {
+    CommSeccess("上传成功");
+  }).catch(res => {
+    CommFail("上传失败");
+  }).then(res => {
+    resetCarouselUpload();
+    getCarousel();
+  })
+}
+
+// 重置图片上传title
+function resetImgUploadTitle() {
+  imgUploadTitle.value = EMPTY_STRING;
+}
 
 const imgQuery = ref(EMPTY_STRING); // 图片查询
 const imgUploadTitle = ref(EMPTY_STRING); // 图片上传简介
@@ -642,6 +798,7 @@ function imgPageHandler() {
 
 // 重置图片上传器
 function resetImgUploader() {
+  resetImgUploadTitle();
   if (imgUploader) {
     imgUploader.value.reset();
   }
@@ -911,6 +1068,7 @@ const essayUploader = ref(null); // 文章上传器
 
 // 文章重置
 function essayReset() {
+  resetInputEssayTitle();
   essayReset_1(); // 重置一级标题
   essayReset_2(); // 重置二级标题
   essayUploaderReset(); // 重置上传器
@@ -1086,6 +1244,7 @@ function setTime(time) {
 }
 
 function start() {
+  getCarousel();
   getImg();
   getEssay();
 }
