@@ -111,9 +111,11 @@
 
             <template v-slot:top-right>
               <q-input model-value="" v-model="queryField" placeholder="搜索（位置）" @blur="searchEssay"
-                       @keyup.enter="searchEssay">
+                       @keyup.enter="searchEssay" style="width: 233px">
                 <template v-slot:append>
                   <q-icon name="search" class="cursor-pointer" @click="searchEssay"/>
+                  <q-icon v-if="queryField && queryField.length > 0" name="close" class="cursor-pointer"
+                          @click="queryField = EMPTY_STRING"/>
                 </template>
               </q-input>
             </template>
@@ -325,9 +327,12 @@
           >
 
             <template v-slot:top-right>
-              <q-input model-value="" v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg" @blur="getImg">
+              <q-input model-value="" v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg" @blur="getImg"
+                       style="width: 233px;">
                 <template v-slot:append>
                   <q-icon name="search" class="cursor-pointer" @click="getImg"/>
+                  <q-icon v-if="imgQuery && imgQuery.length > 0" name="close" class="cursor-pointer"
+                          @click="imgQuery = EMPTY_STRING"/>
                 </template>
               </q-input>
             </template>
@@ -430,17 +435,26 @@
       </q-card>
 
       <!--   轮播图表   -->
-      <q-card class="container col-auto">
+      <q-card class="container col-auto" style="width: 96vw">
 
         <!--    标题    -->
         <q-card-section><strong>轮播图</strong></q-card-section>
 
         <!--    按钮    -->
-        <q-card-section>
-          <q-btn label="删除" color="red" icon="delete_forever"/>
+        <q-card-section class="q-pa-md q-gutter-md">
+          <q-btn label="刷新" color="blue-14" icon="refresh" :loading="carouselRefreshBtnLoading"
+                 @click="carouselRefreshBtnHandler"/>
+          <q-btn label="删除" color="red" icon="delete_forever" @click="carouselDeleteHandler"/>
+          <q-btn label="重置" icon="autorenew" color="cyan" @click="carouselResetBtnHandler"
+                 :loading="carouselResetBtnLoading"/>
+          <q-btn label="全选" icon="checklist_rtl" color="blue" class="absolute"
+                 v-morph:true:carousel:233.tween="carouselMorph" @click="carouselSelectRows"/>
+          <q-btn label="取消选中" icon="rule" color="indigo-13" class="absolute"
+                 v-morph:false:carousel:233.tween="carouselMorph" @click="carouselUnSelectRows"/>
         </q-card-section>
 
-        <q-card-section style="width: 90vw">
+        <!--    表格    -->
+        <q-card-section>
           <q-table title="轮播图" :columns="CAROUSEL_COLUMNS" :rows="carouselRows" row-key="id" hide-pagination
                    selection="multiple" v-model:selected="carouselSelected" :selected-rows-label="getSelectedString"
                    grid :pagination="carouselPagination" :loading="carouselTableLoading">
@@ -448,9 +462,11 @@
             <!--      右上      -->
             <template v-slot:top-right>
               <q-input v-model="carouselQuery" placeholder="搜索（文章标题）" @keyup.enter="getCarousel"
-                       @blur="getCarousel">
+                       @blur="getCarousel" style="width: 233px;">
                 <template v-slot:append>
                   <q-icon name="search" class="cursor-pointer" @click="getCarousel"/>
+                  <q-icon name="close" class="cursor-pointer" @click="carouselQuery = EMPTY_STRING"
+                          v-if="carouselQuery && carouselQuery.length > 0"/>
                 </template>
               </q-input>
             </template>
@@ -484,6 +500,11 @@
                           <q-item-section>
                             查看原图
                           </q-item-section>
+                        </q-item>
+
+                        <!--           删除             -->
+                        <q-item clickable v-ripple @click="deleteCarousel([props.row.id])">
+                          <q-item-section>删除</q-item-section>
                         </q-item>
                       </q-list>
                     </q-slide-transition>
@@ -523,6 +544,7 @@
           <q-btn @click="goHome" color="positive" icon="home" label="回到主页"/>
         </q-card-section>
       </q-card>
+
     </div>
   </q-page-container>
 </template>
@@ -557,9 +579,73 @@ import {getRows, repeatArr, sleep, subArr} from "components/Tools";
 const $q = useQuasar();
 const $router = useRouter();
 
+// 轮播图删除按钮
+function carouselDeleteHandler() {
+  DeleteConform(() => {
+    deleteCarousel(getIdList(carouselSelected.value));
+  })
+}
+
+// 删除轮播图
+function deleteCarousel(idList) {
+  if (idList.length < 1) {
+    CommWarn("请至少选择一个");
+    return;
+  }
+  api.delete('/carousel', {
+    data: {
+      idList: idList
+    }
+  }).then(res => {
+    CommSeccess("删除成功");
+  }).catch(res => {
+    CommFail("删除失败");
+  }).then(res => {
+    getCarousel();
+  })
+}
+
+const carouselMorph = ref('true'); // 轮播图全选按钮变形
+
+// 轮播图全选当前页
+function carouselSelectRows() {
+  carouselSelected.value.push(...carouselRows.value);
+}
+
+// 轮播图取消当前页选中
+function carouselUnSelectRows() {
+  carouselSelected.value = subArr(carouselSelected.value, carouselRows.value);
+}
+
+const carouselResetBtnLoading = ref(false); // 轮播图重置按钮动画
+
+// 轮播图重置按钮按下
+async function carouselResetBtnHandler() {
+  carouselResetBtnLoading.value = true;
+  await carouselResetAllSelected();
+  await sleep(DEFAULT_DELAY);
+  carouselResetBtnLoading.value = false;
+}
+
+// 轮播图重置所有选中
+function carouselResetAllSelected() {
+  carouselSelected.value = [];
+}
+
+const carouselRefreshBtnLoading = ref(false); // 轮播图刷新按钮动画
+
+// 刷新按钮按下
+async function carouselRefreshBtnHandler() {
+  carouselRefreshBtnLoading.value = true;
+  await getCarousel();
+  await sleep(DEFAULT_DELAY);
+  carouselRefreshBtnLoading.value = false;
+}
+
 // 获取轮播图
 async function getCarousel() {
   carouselTableLoading.value = true;
+
   await api.get('/carousel/page', {
     params: {
       currentPage: carouselCurrentPage.value,
@@ -572,7 +658,9 @@ async function getCarousel() {
 
     carouselRows.value = getRows(lists, CAROUSEL_COLUMNS);
     carouselPageTotal.value = Math.ceil(total / carouselPageSize.value);
+
   })
+
   carouselTableLoading.value = false;
 }
 
@@ -646,6 +734,16 @@ function imgIsEmpty() {
   const selectedList = getIdList(imgSelected.value);
   const rowsList = getIdList(imgRows.value);
   return repeatArr(selectedList, rowsList);
+}
+
+// 当前页是否选中轮播图
+function carouselIsEmpty() {
+  if (!carouselSelected || !carouselRows) {
+    return true;
+  }
+  const s = getIdList(carouselSelected.value);
+  const r = getIdList(carouselRows.value);
+  return repeatArr(s, r);
 }
 
 const refreshImgBtnLoading = ref(false);
@@ -1254,9 +1352,18 @@ function updateImgMorph() {
   imgSelectedBtnMorph.value = imgIsEmpty() ? 'true' : 'false';
 }
 
+// 更新轮播图全选按钮
+function updateCarouselMorph() {
+  carouselMorph.value = carouselIsEmpty() ? 'true' : 'false';
+}
+
+watch(() => carouselSelected.value, () => {
+  updateCarouselMorph();
+}, {deep: true})
+
 watch(() => imgSelected.value, () => {
   updateImgMorph();
-}, {immediate: true, deep: true})
+}, {deep: true})
 
 start();
 </script>
