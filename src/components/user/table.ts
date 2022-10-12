@@ -18,9 +18,11 @@ export const CAROUSEL_COLUMNS: table[] = [
   {field: 'essay.title', label: '标题', align: "center"},
   {field: 'img.url', label: '原图地址', align: "center"},
   {field: 'img.reduceUrl', label: '浓缩图地址', align: "center"},
-  {field: 'img.isDelete', label: '图片是否存在', align: "center"}
+  {field: 'img.isDelete', label: '图片是否存在', align: "center"},
+  {field: 'essayId', label: '文章唯一标识', align: "center"}
 ]
 
+// 接口
 export interface table {
   field: string,
   label: string,

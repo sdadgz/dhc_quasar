@@ -34,7 +34,8 @@
 
               <!--       分页列表       -->
               <q-list>
-                <q-item v-for="item in lists" @click="pageItemHandler(item)" clickable v-ripple class="super-link">
+                <q-item v-for="item in lists" @click="pageItemHandler(item)" clickable v-ripple
+                        class="super-link">
                   <q-item-section style="max-width: 10px;color: #999999">●</q-item-section>
                   <q-item-section>
                     {{ item.title }}
@@ -77,11 +78,14 @@
 
 import Header from "components/main/Header.vue";
 import {ref, watch} from "vue";
-import {START_PAGE, EMPTY_STRING, PAGE_SIZE, SPLIT, UNDEFINED, PAGE_MAX, ESSAY_UNIQUE_ID} from "components/MagicValue";
+import {
+  START_PAGE, EMPTY_STRING, PAGE_SIZE, SPLIT, UNDEFINED, PAGE_MAX, ESSAY_UNIQUE_ID
+} from "components/MagicValue";
 import {api} from "boot/axios";
 import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 import {max, sleep, sub} from "components/Tools";
+import {HEAD_ITEMS} from "components/head-item";
 
 const $route = useRoute();
 const $router = useRouter();
@@ -200,11 +204,43 @@ async function getEssay() {
   loading.value = false;
 }
 
+// 获取轮播图
+async function getCarousel() {
+  loading.value = true;
+  // 更新领域
+  await setField();
+
+  await api.get('/carousel/page', {
+    params: {
+      currentPage: currentPage.value,
+      pageSize: pageSize.value
+    }
+  }).then(res => {
+    const dataLists = res.data.lists;
+    const dataTotal = res.data.total;
+    // 显示分页
+    const arr = [];
+    dataLists.forEach(list => {
+      const obj = {};
+      Object.assign(obj, list.essay);
+      Object.assign(obj, {id: list.essayId});
+      arr.push(obj);
+    })
+    lists.value = arr;
+    pageTotal.value = Math.ceil(dataTotal / pageSize.value);
+    showEssay.value = false;
+  })
+
+  loading.value = false;
+}
+
 async function start() {
   loading.value = true;
   const id = $route.query[`${ESSAY_UNIQUE_ID}`];
   if (id) {
     await getEssayDetail(id);
+  } else if (second.value === HEAD_ITEMS[0].children[0].label) {
+    await getCarousel();
   } else {
     await getEssay();
   }

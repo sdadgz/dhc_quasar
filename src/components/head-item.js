@@ -5,6 +5,7 @@ export const HEAD_ITEMS = [
   {
     label: "首页",
     children: [
+      {label: '中心形象宣传'},
       {label: '中心新闻'},
       {label: '重点成果'},
       {label: '行业动态'},

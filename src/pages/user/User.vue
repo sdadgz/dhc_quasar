@@ -574,7 +574,7 @@ import {
 import {api} from "boot/axios";
 import {CAROUSEL_COLUMNS, ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
 import {useQuasar} from "quasar";
-import {getRows, repeatArr, sleep, subArr} from "components/Tools";
+import {getRows, goto, repeatArr, sleep, subArr} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
@@ -847,11 +847,6 @@ function recoverImg(idList) {
   }).then(res => {
     resetImgTable();
   })
-}
-
-// 跳转
-function goto(url) {
-  window.open(url);
 }
 
 const imgColumns = ref(IMG_COLUMNS);

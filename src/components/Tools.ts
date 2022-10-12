@@ -67,3 +67,8 @@ export function subArr(baseArr: any, targetArr: any) {
     return true;
   });
 }
+
+// 打开新窗口
+export function goto(url: string) {
+  window.open(url);
+}
