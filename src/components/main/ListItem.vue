@@ -25,7 +25,7 @@
 
 <script setup>
 
-import {HEAD_ITEMS} from "components/head-item";
+import {HEAD_ITEMS} from "components/main/head-item";
 import {ref} from "vue";
 import {api} from "boot/axios";
 import {ESSAY_UNIQUE_ID, HOME_LIST_MAX_SIZE, LEVER, SPLIT} from "components/MagicValue";
@@ -102,10 +102,6 @@ start();
   width: 100%;
   margin: 0;
   padding: 30px 25px 25px;
-}
-
-.lis {
-  line-height: 2rem;
 }
 
 .super-link {

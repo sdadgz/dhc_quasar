@@ -83,6 +83,10 @@
           <q-btn label="提交" color="blue-14" class="col-auto min-w-100" @click="essayCommit" icon="upload"/>
         </q-card-section>
 
+        <q-card-section>
+          关于：轮播图和友情连接不在这里上传
+        </q-card-section>
+
       </q-card>
 
       <!--   文章表   -->
@@ -372,7 +376,8 @@
                         </q-item>
 
                         <!--            删除            -->
-                        <q-item v-if="!props.row.isDelete" clickable v-ripple @click="deleteImgHandler([props.row])">
+                        <q-item v-if="!props.row.isDelete" clickable v-ripple
+                                @click="deleteImgHandler([props.row])">
                           <q-item-section>
                             删除
                           </q-item-section>
@@ -555,7 +560,7 @@ import {SERVER_NAME} from "components/Models";
 import {ref, watch} from "vue";
 import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {useRouter} from "vue-router";
-import {HEAD_ITEMS} from "components/head-item";
+import {HEAD_ITEMS} from "components/main/head-item";
 import {
   CAROUSEL_HEIGHT,
   CAROUSEL_WIDTH,
@@ -1053,7 +1058,8 @@ function initTableField() {
 
 // 同步更新inputField
 function setInputField() {
-  inputField.value = firstField.value + (secondField.value === UNDEFINED ? EMPTY_STRING : SPLIT + secondField.value);
+  inputField.value = firstField.value +
+    (secondField.value === UNDEFINED ? EMPTY_STRING : SPLIT + secondField.value);
 }
 
 // 位置重置

@@ -1,7 +1,7 @@
 export const SELECT_COLOR = '#007eff';
 export const UNSELECT_COLOR = '#125ca8';
 
-export const HEAD_ITEMS = [
+export const HEAD_ITEMS: head[] = [
   {
     label: "首页",
     children: [
@@ -9,7 +9,8 @@ export const HEAD_ITEMS = [
       {label: '中心新闻'},
       {label: '重点成果'},
       {label: '行业动态'},
-      {label: '技术前沿'}
+      {label: '技术前沿'},
+      {label: '友情连接'}
     ]
   },
   {
@@ -86,3 +87,8 @@ export const HEAD_ITEMS = [
     children: []
   }
 ]
+
+interface head{
+  label: string,
+  children?: head[]
+}

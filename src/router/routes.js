@@ -1,5 +1,5 @@
 import * as path from "path";
-import {HEAD_ITEMS} from "components/head-item";
+import {HEAD_ITEMS} from "components/main/head-item";
 import {createRouter, createWebHistory} from "vue-router";
 
 const routes = [

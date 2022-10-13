@@ -1,7 +1,7 @@
 <template>
   <div class="flex row justify-center">
     <div class="width-1200 col-auto">
-      <div class="container row overflow-hidden" :style="{height: CAROUSEL_HEIGHT+'px'}">
+      <div class="cont row overflow-hidden" :style="{height: CAROUSEL_HEIGHT+'px'}">
         <!--    轮播图    -->
         <q-carousel animated
                     v-model="slide"
@@ -37,16 +37,22 @@
 
         <!--    落单的    -->
         <div class="col">
-          <ListItem :index="1"/>
+          <ListItem style="margin: 0" :index="1"/>
         </div>
 
-        <!--    其余    -->
-        <div class="container row">
-          <ListItem :index="2"/>
-          <ListItem :index="3"/>
-          <ListItem :index="4"/>
+      </div>
+      <!--    其余    -->
+      <div class="row">
+        <div class="col l"
+             :style="{marginLeft: i === 1 ? 0 : '',
+             marginRight: i === HEAD_ITEMS[0].children.length - 2 ? 0 : ''}"
+             v-for="i in HEAD_ITEMS[0].children.length - 3">
+          <ListItem :index="i + 1"/>
         </div>
       </div>
+
+      <!--   友情连接   -->
+      <CardItem style="margin-top: 10px"/>
     </div>
   </div>
 </template>
@@ -55,11 +61,12 @@
 
 import {ref} from "vue";
 import {api} from "boot/axios";
-import {CAROUSEL_HEIGHT, CAROUSEL_WIDTH, EQ, ESSAY_UNIQUE_ID, LEVER, QUESTION_MARK} from "components/MagicValue";
+import {CAROUSEL_HEIGHT, CAROUSEL_WIDTH, EQ, ESSAY_UNIQUE_ID, LEVER} from "components/MagicValue";
 import {goto} from "components/Tools";
-import {HEAD_ITEMS} from "components/head-item";
+import {HEAD_ITEMS} from "components/main/head-item";
 import {useRoute, useRouter} from "vue-router";
 import ListItem from "components/main/ListItem.vue";
+import CardItem from "components/main/CardItem.vue";
 
 const $route = useRoute();
 const $router = useRouter();
@@ -99,6 +106,10 @@ start();
 
 <style scoped>
 
+.l {
+  margin: 0 6px;
+}
+
 .pagination-box {
   cursor: pointer;
   display: inline-block;
@@ -128,9 +139,9 @@ start();
   width: 1200px;
 }
 
-.container {
+.cont {
   background-color: white;
-  margin: 20px 0;
+  margin: 20px 0 0;
 }
 
 </style>

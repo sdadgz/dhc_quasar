@@ -26,7 +26,7 @@
         </q-img>
       </div>
       <!--    面包屑    -->
-      <div class="head-background row justify-center">
+      <div class="head-background row justify-center" style="min-width: 1200px">
         <div class="width-1200 col-auto row justify-center">
           <div
             class="head-item col cursor-pointer text-white"
@@ -78,7 +78,7 @@
 import {ref, watch} from "vue";
 import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
-import {HEAD_ITEMS, SELECT_COLOR, UNSELECT_COLOR} from "components/head-item";
+import {HEAD_ITEMS, SELECT_COLOR, UNSELECT_COLOR} from "components/main/head-item";
 import {HOME} from "components/MagicValue";
 
 const $router = useRouter();

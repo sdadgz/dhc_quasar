@@ -25,6 +25,18 @@
               <div v-html="text" style="padding: 30px 20px"></div>
             </div>
 
+            <!--      展示友情连接      -->
+            <div v-else-if="showFriendLink">
+              <!--       标题       -->
+              <h6 class="text-center text-h6" style="margin: 20px;font-size: 30px;font-weight: bold;
+                color: #125ca8">
+                友情链接
+              </h6>
+
+              <!--       链接       -->
+
+            </div>
+
             <!--    展示分页    -->
             <div class="q-pa-md q-gutter-sm" v-else>
               <!--       标题       -->
@@ -85,7 +97,7 @@ import {api} from "boot/axios";
 import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 import {max, sleep, sub} from "components/Tools";
-import {HEAD_ITEMS} from "components/head-item";
+import {HEAD_ITEMS} from "components/main/head-item";
 
 const $route = useRoute();
 const $router = useRouter();
@@ -234,13 +246,19 @@ async function getCarousel() {
   loading.value = false;
 }
 
+const showFriendLink = ref(false);
+
 async function start() {
   loading.value = true;
   const id = $route.query[`${ESSAY_UNIQUE_ID}`];
   if (id) {
     await getEssayDetail(id);
   } else if (second.value === HEAD_ITEMS[0].children[0].label) {
+    // 轮播图
     await getCarousel();
+  } else if (second.value === HEAD_ITEMS[0].children[HEAD_ITEMS[0].children.length - 1].label) {
+    // 友情连接
+    showFriendLink.value = true;
   } else {
     await getEssay();
   }
