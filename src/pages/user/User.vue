@@ -577,7 +577,9 @@
 
         <!--    按钮    -->
         <q-card-section class="q-pa-md q-gutter-md">
-
+          <q-btn label="刷新" color="blue-14" icon="refresh" @click="friendLinkBtnHandler"
+                 :loading="friendLinkBtnLoading"/>
+          <q-btn label="删除" color="red" icon="delete_forever" @click="deleteFriendLinkHandler"/>
         </q-card-section>
 
         <!--    表    -->
@@ -735,6 +737,39 @@ import {getRows, goto, notNull, repeatArr, sleep, subArr} from "components/Tools
 const $q = useQuasar();
 const $router = useRouter();
 
+const friendLinkBtnLoading = ref(false);
+
+// 删除友情连接
+function deleteFriendLinkHandler() {
+  DeleteConform(() => {
+    const idList = getIdList(friendLinkSelected.value);
+    if (idList.length < 1) {
+      CommWarn("请至少选择一个");
+      return;
+    }
+    api.delete('/friendLink', {
+      data: {
+        idList: idList
+      }
+    }).then(res => {
+      CommSeccess("删除成功");
+    }).catch(res => {
+      CommFail("删除失败");
+    }).then(res => {
+      getFriendLink();
+      resetFriendLink();
+    })
+  })
+}
+
+// 刷新按钮
+async function friendLinkBtnHandler() {
+  friendLinkBtnLoading.value = true;
+  await getFriendLink();
+  await sleep(DEFAULT_DELAY);
+  friendLinkBtnLoading.value = false;
+}
+
 const friendLinkRows = ref([]); // 友情连接行数据
 const friendLinkSelected = ref([]); // 友情连接选中
 const friendLinkLoading = ref(true);
@@ -815,6 +850,7 @@ function commitFriendLink() {
     CommFail("上传失败");
   }).then(res => {
     getFriendLink();
+    resetFriendLink();
   })
 }
 
@@ -833,6 +869,11 @@ function resetFriendLink() {
   resetFriendLinkLabel();
   resetFriendLinkUrl();
   resetImgSelected();
+  resetFriendLinkSelected();
+}
+
+function resetFriendLinkSelected(){
+  friendLinkSelected.value = [];
 }
 
 // 轮播图删除按钮
@@ -857,7 +898,7 @@ function deleteCarousel(idList) {
   }).catch(res => {
     CommFail("删除失败");
   }).then(res => {
-    resetFriendLink();
+    carouselResetAllSelected();
     getCarousel();
   })
 }
@@ -1085,7 +1126,6 @@ function deleteImgHandler() {
     CommFail("删除失败");
   }).then(res => {
     getImg();
-  }).then(res => {
     resetImgTable();
   })
 }
@@ -1242,6 +1282,7 @@ function deleteEssayHandler() {
   }).catch(res => {
     CommFail("删除失败");
   }).then(res => {
+    resetEssaySelected();
     getEssay();
   })
 }
