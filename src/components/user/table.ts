@@ -22,6 +22,12 @@ export const CAROUSEL_COLUMNS: table[] = [
   {field: 'essayId', label: '文章唯一标识', align: "center"}
 ]
 
+export const FRIEND_LINK_COLUMNS: table[] = [
+  {field: 'label', label: '标题', align: "center", name: 'title'},
+  {field: 'url', label: '地址', align: "center", name: 'url'},
+  {field: 'img.reduceUrl', label: '浓缩图', align: "center", name: 'img'},
+]
+
 // 接口
 export interface table {
   field: string,

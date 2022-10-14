@@ -144,9 +144,11 @@
 
                       <!--           提交重置按钮           -->
                       <div class="row justify-between">
-                        <q-btn class="col-auto" @click="beforeShowHandler(props.row[`essay.title`],props.row.essayId)"
+                        <q-btn class="col-auto"
+                               @click="beforeShowHandler(props.row[`essay.title`],props.row.essayId)"
                                color="secondary" label="重置"/>
-                        <q-btn class="col-auto" @click="tableTitleSave" color="primary" label="提交"/>
+                        <q-btn class="col-auto" @click="tableTitleSave" color="primary" label="提交"
+                               v-close-popup/>
                       </div>
                     </div>
                   </transition>
@@ -223,7 +225,8 @@
                       <div class="row justify-between">
                         <q-btn class="col-auto" @click="beforeShowHandler(props.row.field,props.row.id)"
                                color="secondary" label="重置"/>
-                        <q-btn class="col-auto" @click="tableFieldSave" color="primary" label="提交"/>
+                        <q-btn class="col-auto" @click="tableFieldSave" color="primary" label="提交"
+                               v-close-popup/>
                       </div>
                     </div>
                   </transition>
@@ -572,9 +575,118 @@
       <!--   友情连接表   -->
       <q-card class="container col-auto">
 
-        <!--    标题    -->
+        <!--    按钮    -->
         <q-card-section class="q-pa-md q-gutter-md">
 
+        </q-card-section>
+
+        <!--    表    -->
+        <q-card-section>
+          <q-card-section>
+            <q-table
+              title="友情连接"
+              :columns="FRIEND_LINK_COLUMNS"
+              :rows="friendLinkRows"
+              row-key="id"
+              hide-pagination
+              selection="multiple"
+              v-model:selected="friendLinkSelected"
+              :selected-rows-label="getSelectedString"
+              :loading="friendLinkLoading"
+              :pagination="friendLinkPagination"
+            >
+
+              <!--      标题        -->
+              <template #body-cell-title="props">
+                <q-td :props="props" class="cursor-pointer" title="点击编辑">
+                  {{ props.value }}
+                  <q-popup-edit
+                    v-model="props.row.label"
+                    v-slot="scope"
+                    title="修改标题"
+                    @before-show="friendLinkBeforeShowTitle(props.row.label)"
+                  >
+                    <transition
+                      appear
+                      enter-active-class="animated zoomIn"
+                      leave-active-class="animated zoomOut"
+                    >
+                      <div class="q-pa-md q-gutter-md">
+                        <q-input v-model="friendLinkPopEdit" dense autofocus/>
+
+                        <!--           提交重置按钮           -->
+                        <div class="row justify-between">
+                          <q-btn class="col-auto" @click="friendLinkBeforeShowTitle(props.row.label)"
+                                 color="secondary" label="重置"/>
+                          <q-btn class="col-auto" color="primary" label="提交"
+                                 @click="updateFriendLink(friendLinkPopEdit,null,props.row.id)"
+                                 v-close-popup/>
+                        </div>
+                      </div>
+                    </transition>
+                  </q-popup-edit>
+                </q-td>
+              </template>
+
+              <!--      地址        -->
+              <template #body-cell-url="props">
+                <q-td :props="props" class="cursor-pointer" title="点击编辑">
+                  {{ props.value }}
+                  <q-popup-edit
+                    v-model="props.row.url"
+                    v-slot="scope"
+                    title="修改标题"
+                    @before-show="friendLinkBeforeShowTitle(props.row.url)"
+                  >
+                    <transition
+                      appear
+                      enter-active-class="animated zoomIn"
+                      leave-active-class="animated zoomOut"
+                    >
+                      <div class="q-pa-md q-gutter-md">
+                        <q-input v-model="friendLinkPopEdit" dense autofocus/>
+
+                        <!--           提交重置按钮           -->
+                        <div class="row justify-between">
+                          <q-btn class="col-auto" @click="friendLinkBeforeShowTitle(props.row.url)"
+                                 color="secondary" label="重置"/>
+                          <q-btn class="col-auto" color="primary" label="提交"
+                                 @click="updateFriendLink(null,friendLinkPopEdit,props.row.id)"
+                                 v-close-popup/>
+                        </div>
+                      </div>
+                    </transition>
+                  </q-popup-edit>
+                </q-td>
+              </template>
+
+              <!--      图片      -->
+              <template v-slot:body-cell-img="props">
+                <q-td :props="props" class="cursor-pointer" title="查看原图">
+                  <q-img :src="props.value" width="250px" @click="goto(props.value)"/>
+                </q-td>
+              </template>
+
+            </q-table>
+
+            <!--     分页     -->
+            <div class="q-pa-lg flex flex-center" v-if="friendLinkPageTotal > 0">
+              <q-pagination
+                :max="friendLinkPageTotal"
+                direction-links
+                boundary-numbers
+                :max-pages="pageMax"
+                v-model="friendLinkCurrentPage"
+                @click="pageHandler"
+              />
+            </div>
+
+            <!--     加载     -->
+            <q-inner-loading :showing="friendLinkLoading">
+              <q-spinner-gears size="50px" color="primary"/>
+            </q-inner-loading>
+
+          </q-card-section>
         </q-card-section>
 
       </q-card>
@@ -605,7 +717,7 @@ import {
   CAROUSEL_WIDTH,
   CODE_200,
   DEFAULT_DELAY,
-  EMPTY_STRING,
+  EMPTY_STRING, FRIEND_LINK_PAGE_SIZE,
   HOME,
   IMG_PAGE_SIZE,
   PAGE_MAX,
@@ -616,16 +728,60 @@ import {
   ZERO
 } from "components/MagicValue";
 import {api} from "boot/axios";
-import {CAROUSEL_COLUMNS, ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
+import {CAROUSEL_COLUMNS, ESSAY_COLUMNS, FRIEND_LINK_COLUMNS, IMG_COLUMNS} from "components/user/table";
 import {useQuasar} from "quasar";
 import {getRows, goto, notNull, repeatArr, sleep, subArr} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
 
+const friendLinkRows = ref([]); // 友情连接行数据
+const friendLinkSelected = ref([]); // 友情连接选中
+const friendLinkLoading = ref(true);
+const friendLinkPageSize = ref(FRIEND_LINK_PAGE_SIZE);
+const friendLinkPagination = ref({rowsPerPage: friendLinkPageSize.value});
+const friendLinkPageTotal = ref(3);
+const friendLinkCurrentPage = ref(START_PAGE);
+const friendLinkPopEdit = ref(EMPTY_STRING); // 友情连接弹出输入框
+
+// 提交
+function updateFriendLink(title, url, id) {
+  api.put('/friendLink/update', {
+    id: id,
+    label: title,
+    url: url
+  }).then(res => {
+    CommSeccess("修改成功");
+  }).catch(res => {
+    CommFail("修改失败");
+  }).then(res => {
+    getFriendLink();
+  })
+}
+
+// 友情连接弹出前
+function friendLinkBeforeShowTitle(val) {
+  friendLinkPopEdit.value = val;
+}
+
 // 获取友情连接
-function getFriendLink() {
-  console.log("获取友情连接");
+async function getFriendLink() {
+  friendLinkLoading.value = true;
+
+  await api.get('/friendLink/page', {
+    params: {
+      currentPage: friendLinkCurrentPage.value,
+      pageSize: friendLinkPageSize.value
+    }
+  }).then(res => {
+    const lists = res.data.lists;
+    const total = res.data.total;
+
+    friendLinkRows.value = getRows(lists, FRIEND_LINK_COLUMNS);
+    friendLinkPageTotal.value = Math.ceil(total / friendLinkPageSize.value);
+  })
+
+  friendLinkLoading.value = false;
 }
 
 const friendLinkLabel = ref(EMPTY_STRING); // 上传友情连接的label
@@ -1442,6 +1598,7 @@ function start() {
   getCarousel();
   getImg();
   getEssay();
+  getFriendLink();
 }
 
 // 更新全选按钮model
