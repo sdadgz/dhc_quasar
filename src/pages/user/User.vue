@@ -367,7 +367,7 @@
                   <!--        弹出代理          -->
                   <q-popup-proxy context-menu>
                     <q-slide-transition appear>
-                      <q-list separator>
+                      <q-list separator style="background-color: hotpink">
                         <!--          查看原图            -->
                         <q-item clickable v-ripple @click="goto(props.row.url)">
                           <q-item-section>
@@ -540,6 +540,45 @@
 
       </q-card>
 
+      <!--   友情连接上传   -->
+      <q-card class="container col-auto">
+
+        <!--    标题    -->
+        <q-card-section><strong>友情连接</strong></q-card-section>
+
+        <!--    悬浮title    -->
+        <q-card-section>
+          <q-input :rules="notNull" v-model="friendLinkLabel" placeholder="友情连接标题"/>
+        </q-card-section>
+
+        <!--    地址    -->
+        <q-card-section>
+          <q-input :rules="notNull" v-model="friendLinkUrl" placeholder="友情连接地址"/>
+        </q-card-section>
+
+        <!--    按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" icon="clear_all" color="secondary" @click="resetFriendLink"/>
+          <q-btn label="上传" icon="upload" color="primary" @click="commitFriendLink"/>
+        </q-card-section>
+
+        <!--   tips    -->
+        <q-card-section>
+          关于：上面图片表选中一个图片作为友情连接图片
+        </q-card-section>
+
+      </q-card>
+
+      <!--   友情连接表   -->
+      <q-card class="container col-auto">
+
+        <!--    标题    -->
+        <q-card-section class="q-pa-md q-gutter-md">
+
+        </q-card-section>
+
+      </q-card>
+
       <!--   关于   -->
       <q-card class="container col-auto">
         <q-card-section><strong>关于</strong></q-card-section>
@@ -579,10 +618,66 @@ import {
 import {api} from "boot/axios";
 import {CAROUSEL_COLUMNS, ESSAY_COLUMNS, IMG_COLUMNS} from "components/user/table";
 import {useQuasar} from "quasar";
-import {getRows, goto, repeatArr, sleep, subArr} from "components/Tools";
+import {getRows, goto, notNull, repeatArr, sleep, subArr} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
+
+// 获取友情连接
+function getFriendLink() {
+  console.log("获取友情连接");
+}
+
+const friendLinkLabel = ref(EMPTY_STRING); // 上传友情连接的label
+const friendLinkUrl = ref(EMPTY_STRING); // 友情连接地址
+const friendLinkImgId = ref(ZERO); // 友情连接图片
+
+// 提交友情连接
+function commitFriendLink() {
+  // 未填写input
+  if (friendLinkLabel.value.length <= 0 && friendLinkUrl.value.length <= 0) {
+    CommWarn("请完善表单");
+    return;
+  }
+  // 未选择图片
+  if (imgSelected.value.length !== 1) {
+    CommWarn("请选择一张图片");
+    return;
+  }
+
+  // 设置imgId
+  friendLinkImgId.value = imgSelected.value[0].id;
+
+  // 上传
+  api.post('/friendLink/upload', {
+    label: friendLinkLabel.value,
+    url: friendLinkUrl.value,
+    imgId: friendLinkImgId.value
+  }).then(res => {
+    CommSeccess("上传成功");
+  }).catch(res => {
+    CommFail("上传失败");
+  }).then(res => {
+    getFriendLink();
+  })
+}
+
+// 重置友情连接标题
+function resetFriendLinkLabel() {
+  friendLinkLabel.value = EMPTY_STRING;
+}
+
+// 重置友情连接地址
+function resetFriendLinkUrl() {
+  friendLinkUrl.value = EMPTY_STRING;
+}
+
+// 重置友情连接
+function resetFriendLink() {
+  resetFriendLinkLabel();
+  resetFriendLinkUrl();
+  resetImgSelected();
+}
 
 // 轮播图删除按钮
 function carouselDeleteHandler() {
@@ -606,6 +701,7 @@ function deleteCarousel(idList) {
   }).catch(res => {
     CommFail("删除失败");
   }).then(res => {
+    resetFriendLink();
     getCarousel();
   })
 }

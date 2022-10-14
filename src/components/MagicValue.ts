@@ -21,6 +21,8 @@ export const CAROUSEL_WIDTH = 700;
 export const CAROUSEL_HEIGHT = 394;
 // 动画时长
 export const DEFAULT_DELAY = 666;
+// 友情连接
+export const FRIEND_LINK_PAGE_SIZE = 8;
 
 // 返回code
 export const CODE_200 = '200';

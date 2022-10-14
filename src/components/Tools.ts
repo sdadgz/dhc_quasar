@@ -1,6 +1,9 @@
 // 遇到问题睡大觉
 import {ESSAY_COLUMNS, table} from "./user/table";
 import {DOT} from "./MagicValue";
+import {ref} from "vue";
+
+export const notNull = ref([(val) => (val && val.length > 0) || '输入值为空']);
 
 export async function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -71,4 +74,11 @@ export function subArr(baseArr: any, targetArr: any) {
 // 打开新窗口
 export function goto(url: string) {
   window.open(url);
+}
+
+// 设置时间
+export function setTime(time) {
+  const firstLever = time.indexOf('-') + 1;
+  const mid = time.indexOf('T');
+  return time.substring(firstLever, mid);
 }
