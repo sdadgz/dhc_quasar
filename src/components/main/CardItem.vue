@@ -3,18 +3,15 @@
     <!-- 标题 -->
     <div class="full-width col row justify-between" style="margin-bottom: 10px">
       <span class="title">友情连接</span>
-      <span class="sub-title" @click="goto">更多>></span>
+      <span class="sub-title" @click="gotoMore">更多>></span>
     </div>
 
     <!-- 列表 -->
-    <div class="full-width">
-      <q-list>
-        <q-item v-for="item in lists" @click="goto(item.url)">
-          <q-item-section>
-            <q-img :src="item.src" :title="item.label"/>
-          </q-item-section>
-        </q-item>
-      </q-list>
+    <div class="full-width row">
+      <div class="col-3 friend-link-card" v-for="item in lists">
+        <img class="friend-link-item cursor-pointer" :src="item.img.url" :alt="item.label"
+             @click="goto(item.url)"/>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +26,13 @@ import {api} from "boot/axios";
 import {ref} from "vue";
 
 const $router = useRouter();
+
+// 去更多
+function gotoMore() {
+  const first = HEAD_ITEMS[0].label;
+  const second = HEAD_ITEMS[0].children[HEAD_ITEMS[0].children.length - 1].label;
+  $router.push('/' + first + LEVER + second);
+}
 
 const currentPage = ref(START_PAGE);
 const pageSize = ref(FRIEND_LINK_PAGE_SIZE);
@@ -59,6 +63,17 @@ start();
 </script>
 
 <style scoped>
+
+.friend-link-card {
+  padding: 5px 15px;
+}
+
+.friend-link-item {
+  width: 260px;
+  height: 60px;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+}
 
 .sub-title {
   font-weight: bold;

@@ -372,22 +372,23 @@
                     <q-slide-transition appear>
                       <q-list separator style="background-color: hotpink">
                         <!--          查看原图            -->
-                        <q-item clickable v-ripple @click="goto(props.row.url)">
+                        <q-item clickable v-ripple @click="goto(props.row.url)" v-close-popup>
                           <q-item-section>
                             查看原图
                           </q-item-section>
                         </q-item>
 
                         <!--            删除            -->
-                        <q-item v-if="!props.row.isDelete" clickable v-ripple
-                                @click="deleteImgHandler([props.row])">
+                        <q-item v-if="!props.row.isDelete" clickable v-ripple v-close-popup
+                                @click="deleteImgHandler([props.row.id])">
                           <q-item-section>
                             删除
                           </q-item-section>
                         </q-item>
 
                         <!--           恢复             -->
-                        <q-item v-else clickable v-ripple @click="">
+                        <q-item v-else clickable v-ripple @click="recoverImg([props.row])"
+                                v-close-popup>
                           <q-item-section>
                             恢复
                           </q-item-section>
@@ -494,7 +495,11 @@
                     >
                       <div class="absolute-bottom text-center"
                            :style="{backgroundColor: props.row['img.isDelete'] ? 'rgba(255,0,0,.5)' : ''}">
-                        <span>{{ props.row['essay.title'] }}</span>
+                        <span>
+                          {{
+                            props.row['img.isDelete'] ? '这张图片已被删除，但轮播图未被删除！！！' : props.row['essay.title']
+                          }}
+                        </span>
                       </div>
                     </q-img>
                   </q-card-section>
@@ -587,88 +592,99 @@
           <q-card-section>
             <q-table
               title="友情连接"
-              :columns="FRIEND_LINK_COLUMNS"
+              :columns="FRIEND_LINK_USE_COLUMNS"
               :rows="friendLinkRows"
               row-key="id"
-              hide-pagination
               selection="multiple"
+              hide-pagination
               v-model:selected="friendLinkSelected"
               :selected-rows-label="getSelectedString"
               :loading="friendLinkLoading"
               :pagination="friendLinkPagination"
             >
 
-              <!--      标题        -->
-              <template #body-cell-title="props">
-                <q-td :props="props" class="cursor-pointer" title="点击编辑">
-                  {{ props.value }}
-                  <q-popup-edit
-                    v-model="props.row.label"
-                    v-slot="scope"
-                    title="修改标题"
-                    @before-show="friendLinkBeforeShowTitle(props.row.label)"
-                  >
-                    <transition
-                      appear
-                      enter-active-class="animated zoomIn"
-                      leave-active-class="animated zoomOut"
+              <template #body="props">
+                <q-tr :props="props"
+                      :style="{backgroundColor:props.selected ? '#e8e8e8' : '',transform: 'scale(1)'}">
+
+                  <q-td class="cursor-pointer">
+                    <q-checkbox v-model="props.selected"/>
+                  </q-td>
+
+                  <!--        标题          -->
+                  <q-td key="title" :props="props" class="cursor-pointer" title="点击编辑">
+                    {{ props.row.label }}
+                    <q-popup-edit
+                      v-model="props.row.label"
+                      v-slot="scope"
+                      title="修改标题"
+                      @before-show="friendLinkBeforeShowTitle(props.row.label)"
                     >
-                      <div class="q-pa-md q-gutter-md">
-                        <q-input v-model="friendLinkPopEdit" dense autofocus/>
+                      <transition
+                        appear
+                        enter-active-class="animated zoomIn"
+                        leave-active-class="animated zoomOut"
+                      >
+                        <div class="q-pa-md q-gutter-md">
+                          <q-input v-model="friendLinkPopEdit" dense autofocus/>
 
-                        <!--           提交重置按钮           -->
-                        <div class="row justify-between">
-                          <q-btn class="col-auto" @click="friendLinkBeforeShowTitle(props.row.label)"
-                                 color="secondary" label="重置"/>
-                          <q-btn class="col-auto" color="primary" label="提交"
-                                 @click="updateFriendLink(friendLinkPopEdit,null,props.row.id)"
-                                 v-close-popup/>
+                          <!--           提交重置按钮           -->
+                          <div class="row justify-between">
+                            <q-btn class="col-auto" @click="friendLinkBeforeShowTitle(props.row.label)"
+                                   color="secondary" label="重置"/>
+                            <q-btn class="col-auto" color="primary" label="提交"
+                                   @click="updateFriendLink(friendLinkPopEdit,null,props.row.id)"
+                                   v-close-popup/>
+                          </div>
                         </div>
-                      </div>
-                    </transition>
-                  </q-popup-edit>
-                </q-td>
-              </template>
+                      </transition>
+                    </q-popup-edit>
+                  </q-td>
 
-              <!--      地址        -->
-              <template #body-cell-url="props">
-                <q-td :props="props" class="cursor-pointer" title="点击编辑">
-                  {{ props.value }}
-                  <q-popup-edit
-                    v-model="props.row.url"
-                    v-slot="scope"
-                    title="修改标题"
-                    @before-show="friendLinkBeforeShowTitle(props.row.url)"
-                  >
-                    <transition
-                      appear
-                      enter-active-class="animated zoomIn"
-                      leave-active-class="animated zoomOut"
+                  <!--         地址         -->
+                  <q-td key="url" :props="props" class="cursor-pointer" title="点击编辑">
+                    {{ props.row.url }}
+                    <q-popup-edit
+                      v-model="props.row.url"
+                      v-slot="scope"
+                      title="修改标题"
+                      @before-show="friendLinkBeforeShowTitle(props.row.url)"
                     >
-                      <div class="q-pa-md q-gutter-md">
-                        <q-input v-model="friendLinkPopEdit" dense autofocus/>
+                      <transition
+                        appear
+                        enter-active-class="animated zoomIn"
+                        leave-active-class="animated zoomOut"
+                      >
+                        <div class="q-pa-md q-gutter-md">
+                          <q-input v-model="friendLinkPopEdit" dense autofocus/>
 
-                        <!--           提交重置按钮           -->
-                        <div class="row justify-between">
-                          <q-btn class="col-auto" @click="friendLinkBeforeShowTitle(props.row.url)"
-                                 color="secondary" label="重置"/>
-                          <q-btn class="col-auto" color="primary" label="提交"
-                                 @click="updateFriendLink(null,friendLinkPopEdit,props.row.id)"
-                                 v-close-popup/>
+                          <!--           提交重置按钮           -->
+                          <div class="row justify-between">
+                            <q-btn class="col-auto" @click="friendLinkBeforeShowTitle(props.row.url)"
+                                   color="secondary" label="重置"/>
+                            <q-btn class="col-auto" color="primary" label="提交"
+                                   @click="updateFriendLink(null,friendLinkPopEdit,props.row.id)"
+                                   v-close-popup/>
+                          </div>
                         </div>
+                      </transition>
+                    </q-popup-edit>
+                  </q-td>
+
+                  <!--         图片         -->
+                  <q-td key="img" :props="props" class="cursor-pointer" title="查看原图">
+                    <q-img
+                      :src="props.row[`img.reduceUrl`] !== null ?
+                       props.row[`img.reduceUrl`] : props.row[`img.url`]"
+                      width="300px" @click="goto(props.row[`img.url`])">
+                      <div v-if="props.row[`img.isDelete`]" class="absolute-bottom text-center"
+                           style="background-color: rgba(255,0,0,0.51)">
+                        这张图片已被删除，但友情连接未被删除！！！
                       </div>
-                    </transition>
-                  </q-popup-edit>
-                </q-td>
+                    </q-img>
+                  </q-td>
+                </q-tr>
               </template>
-
-              <!--      图片      -->
-              <template v-slot:body-cell-img="props">
-                <q-td :props="props" class="cursor-pointer" title="查看原图">
-                  <q-img :src="props.value" width="250px" @click="goto(props.value)"/>
-                </q-td>
-              </template>
-
             </q-table>
 
             <!--     分页     -->
@@ -679,7 +695,7 @@
                 boundary-numbers
                 :max-pages="pageMax"
                 v-model="friendLinkCurrentPage"
-                @click="pageHandler"
+                @click="getFriendLink"
               />
             </div>
 
@@ -691,6 +707,36 @@
           </q-card-section>
         </q-card-section>
 
+      </q-card>
+
+      <!--   注册海克斯科技用户   -->
+      <q-card class="container col-auto" style="width: 460px;">
+
+        <!--    标题    -->
+        <q-card-section>
+          <strong>注册新用户</strong>
+        </q-card-section>
+
+        <!--    用户名    -->
+        <q-card-section>
+          <q-input v-model="registerUsername" label="用户名" :rules="notNull"/>
+        </q-card-section>
+
+        <!--    密码    -->
+        <q-card-section>
+          <q-input v-model="registerPassword" label="密码" :rules="notNull" type="password"/>
+        </q-card-section>
+
+        <!--    确认密码    -->
+        <q-card-section>
+          <q-input v-model="registerPasswordP" label="确认密码" :rules="sameRule" type="password"/>
+        </q-card-section>
+
+        <!--    按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" icon="clear_all" color="secondary" @click="resetRegister"/>
+          <q-btn label="提交" icon="upload" color="primary"/>
+        </q-card-section>
       </q-card>
 
       <!--   关于   -->
@@ -730,12 +776,53 @@ import {
   ZERO
 } from "components/MagicValue";
 import {api} from "boot/axios";
-import {CAROUSEL_COLUMNS, ESSAY_COLUMNS, FRIEND_LINK_COLUMNS, IMG_COLUMNS} from "components/user/table";
+import {
+  CAROUSEL_COLUMNS,
+  ESSAY_COLUMNS,
+  FRIEND_LINK_COLUMNS,
+  FRIEND_LINK_USE_COLUMNS,
+  IMG_COLUMNS
+} from "components/user/table";
 import {useQuasar} from "quasar";
 import {getRows, goto, notNull, repeatArr, sleep, subArr} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
+
+// 提交注册
+function commitRegister() {
+  if (registerUsername.value.length < 1 || registerPassword.value.length < 1 ||
+    registerPasswordP.value !== registerPassword.value) {
+    CommWarn("请完善表单");
+    return;
+  }
+
+  api.post('/user/register', {
+    name: registerUsername.value,
+    password: registerPassword.value
+  }).then(res => {
+    CommSeccess("注册成功");
+  }).catch(res => {
+    CommFail("注册失败");
+  }).then(res => {
+    resetRegister();
+  })
+}
+
+// 重置注册
+function resetRegister() {
+  registerUsername.value = EMPTY_STRING;
+  registerPassword.value = EMPTY_STRING;
+  registerPasswordP.value = EMPTY_STRING;
+}
+
+const registerUsername = ref(EMPTY_STRING);
+const registerPassword = ref(EMPTY_STRING);
+const registerPasswordP = ref(EMPTY_STRING);
+
+// 确认密码验证
+const sameRule = ref([(val) => (val && val === registerPassword.value && val.length > 0)
+  || '两次输入的密码不同'])
 
 const friendLinkBtnLoading = ref(false);
 
@@ -872,7 +959,7 @@ function resetFriendLink() {
   resetFriendLinkSelected();
 }
 
-function resetFriendLinkSelected(){
+function resetFriendLinkSelected() {
   friendLinkSelected.value = [];
 }
 
@@ -1106,12 +1193,12 @@ function resetImgSelected() {
 
 // 删除图片被点击
 function deleteImg() {
-  DeleteConform(deleteImgHandler);
+  DeleteConform(() => deleteImgHandler(getIdList(imgSelected.value)));
 }
 
 // 删除图片
-function deleteImgHandler() {
-  const idList = getIdList(imgSelected.value);
+function deleteImgHandler(idList) {
+  console.log(idList);
   if (idList.length < 1) {
     CommWarn("至少选一个啊");
     return;

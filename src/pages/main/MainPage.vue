@@ -34,10 +34,24 @@
               </h6>
 
               <!--       链接       -->
+              <q-infinite-scroll @load="friendLinkOnLoad" :offset="250" :disable="friendLinkDisable">
+                <div class="row">
+                  <div class="col-3 friend-link-card" v-for="item in friendLinkLists">
+                    <img class="friend-link-item cursor-pointer" @click="goto(item.url)"
+                         :src="item.img.reduceUrl ? item.img.reduceUrl : item.img.url" :alt="item.label">
+                  </div>
+                </div>
+
+                <template v-slot:loading>
+                  <div class="row justify-center q-my-md">
+                    <q-spinner-dots color="primary" size="40px"/>
+                  </div>
+                </template>
+              </q-infinite-scroll>
 
             </div>
 
-            <!--    展示分页    -->
+            <!--    展示文章分页    -->
             <div class="q-pa-md q-gutter-sm" v-else>
               <!--       标题       -->
               <div class="row" style="border-bottom: 1px solid #ddd;padding-bottom: 26px">
@@ -91,16 +105,49 @@
 import Header from "components/main/Header.vue";
 import {ref, watch} from "vue";
 import {
-  START_PAGE, EMPTY_STRING, PAGE_SIZE, SPLIT, UNDEFINED, PAGE_MAX, ESSAY_UNIQUE_ID
+  START_PAGE, EMPTY_STRING, PAGE_SIZE, SPLIT, UNDEFINED, PAGE_MAX, ESSAY_UNIQUE_ID, FRIEND_LINK_PAGE_SIZE
 } from "components/MagicValue";
 import {api} from "boot/axios";
 import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
-import {max, sleep, sub} from "components/Tools";
+import {goto, max, sleep, sub} from "components/Tools";
 import {HEAD_ITEMS} from "components/main/head-item";
 
 const $route = useRoute();
 const $router = useRouter();
+
+const friendLinkDisable = ref(false); // 友情连接无限滚动禁用
+const friendLinkCurrentPage = ref(START_PAGE);
+const friendLinkPageTotal = ref(3);
+const friendLinkPageSize = ref(FRIEND_LINK_PAGE_SIZE);
+const friendLinkLists = ref([]); // 友情连接数据
+
+// 友情连接无限加载
+async function friendLinkOnLoad(index, done) {
+  if (index > friendLinkPageTotal.value) {
+    friendLinkDisable.value = true;
+    return;
+  }
+  friendLinkCurrentPage.value = index;
+  await getFriendLink();
+  done();
+}
+
+// 获取友情连接
+async function getFriendLink() {
+  await api.get('/friendLink/page', {
+    params: {
+      currentPage: friendLinkCurrentPage.value,
+      pageSize: friendLinkPageSize.value
+    }
+  }).then(res => {
+    const dataLists = res.data.lists;
+    const dataTotal = res.data.total;
+
+    friendLinkLists.value.push(...dataLists);
+    friendLinkPageTotal.value = Math.ceil(dataTotal / friendLinkPageSize.value);
+  })
+}
 
 // 全局
 const loading = ref(false);
@@ -275,6 +322,17 @@ start();
 
 
 <style scoped>
+
+.friend-link-card {
+  padding: 5px 15px;
+}
+
+.friend-link-item {
+  width: 260px;
+  height: 60px;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+}
 
 .super-link {
   transition: all .3s ease-in-out;

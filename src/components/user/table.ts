@@ -26,6 +26,14 @@ export const FRIEND_LINK_COLUMNS: table[] = [
   {field: 'label', label: '标题', align: "center", name: 'title'},
   {field: 'url', label: '地址', align: "center", name: 'url'},
   {field: 'img.reduceUrl', label: '浓缩图', align: "center", name: 'img'},
+  {field: 'img.url', label: '原图', align: "center", name: 'imgo'},
+  {field: 'img.isDelete', label: '是否删除', align: "center"},
+]
+
+export const FRIEND_LINK_USE_COLUMNS: table[] = [
+  {field: 'label', label: '标题', align: "center", name: 'title'},
+  {field: 'url', label: '地址', align: "center", name: 'url'},
+  {field: 'img.reduceUrl', label: '浓缩图', align: "center", name: 'img'},
 ]
 
 // 接口

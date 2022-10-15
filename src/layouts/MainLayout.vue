@@ -64,12 +64,31 @@
     <!--  内容  -->
     <q-page-container>
       <router-view/>
+      <div class="footer-container full-width row justify-center">
+        <div class="footer-item">
+          <!--     左侧图标     -->
+          <div class="float-left">
+            <img class="cursor-pointer" :src="footer_icon" alt="footer_icon" @click="goHome"/>
+          </div>
+
+          <!--    内容      -->
+          <div class="col column">
+            <!--      上      -->
+            <div class="col-auto footer-span-div">
+              <span class="footer-span">承办单位：石家庄市数字医疗康复技术创新中心</span>
+              <span class="footer-span">主办单位：石家庄学院</span>
+            </div>
+
+            <!--      下      -->
+            <div class="col-auto footer-span-div">
+              <span class="footer-span">电话：0311-66617215</span>
+              <span class="footer-span">地址：石家庄市高新技术开发区珠峰大街288号</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </q-page-container>
 
-    <!--  页脚  -->
-    <footer>
-
-    </footer>
   </q-layout>
 </template>
 
@@ -88,6 +107,7 @@ const $route = useRoute();
 const banner = ref(SERVER_NAME + "/static/banner.png");
 const banner_text = ref(SERVER_NAME + "/static/banner_text.png");
 const school = ref("https://www.sjzc.edu.cn/");
+const footer_icon = ref(SERVER_NAME + '/static/footer_icon.png');
 
 // 头部-下拉菜单
 const hoverItem = ref({label: ''});
@@ -222,6 +242,31 @@ start();
 </script>
 
 <style scoped>
+
+.footer-span-div{
+  margin-top: 10px;
+}
+
+.footer-span{
+  margin-left: 50px;
+}
+
+.footer-item {
+  width: 1200px;
+  margin: auto;
+  padding: 30px 0 20px;
+  color: #fff;
+  font-size: 16px;
+  text-align: center;
+  line-height: 1.6;
+  position: relative;
+}
+
+.footer-container {
+  margin-top: 20px;
+  min-width: 1200px;
+  background-color: #125ca8;
+}
 
 .head-item {
   text-align: center;

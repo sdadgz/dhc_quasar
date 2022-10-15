@@ -45,7 +45,7 @@
       <div class="row">
         <div class="col l"
              :style="{marginLeft: i === 1 ? 0 : '',
-             marginRight: i === HEAD_ITEMS[0].children.length - 2 ? 0 : ''}"
+             marginRight: i === HEAD_ITEMS[0].children.length - 3 ? 0 : ''}"
              v-for="i in HEAD_ITEMS[0].children.length - 3">
           <ListItem :index="i + 1"/>
         </div>
