@@ -709,6 +709,74 @@
 
       </q-card>
 
+      <!--   上传视频   -->
+      <q-card class="container col-auto">
+        <!--    标题    -->
+        <q-card-section><strong>上传视频</strong></q-card-section>
+
+        <!--    用户输入标题    -->
+        <q-card-section>
+          <q-input v-model="videoInputTitle" placeholder="视频标题（默认文件名做为标题）">
+            <template #append>
+              <q-icon v-if="videoInputTitle && videoInputTitle.length >0" name="close"
+                      @click="resetVideoTitle" class="cursor-pointer"/>
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <!--    上传领域    -->
+        <q-card-section class="row justify-between">
+
+          <!--     一级     -->
+          <div class="column col-auto">
+            <span class="col-auto">一级标题</span>
+            <q-btn-dropdown class="col-auto" color="secondary" :label="videoFirst">
+              <q-list>
+                <q-item v-for="item in HEAD_ITEMS" clickable v-close-popup
+                        @click="videoFirst = item.label;resetVideoSecond()">
+                  <q-item-section>
+                    {{ item.label }}
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
+
+          <!--    二级      -->
+          <div class="column col-auto">
+            <span class="col-auto">二级标题</span>
+            <q-btn-dropdown class="col-auto" color="info" :label="videoSecond">
+              <q-list v-for="father in HEAD_ITEMS">
+                <div v-if="father.label === videoFirst">
+                  <q-item v-for="item in father.children" v-close-popup clickable
+                          @click="videoSecond = item.label">
+                    <q-item-section>
+                      {{ item.label }}
+                    </q-item-section>
+                  </q-item>
+                </div>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
+        </q-card-section>
+
+        <!--    上传器    -->
+        <q-card-section>
+          <q-uploader label="上传视频" accept="video/*" ref="videoUploader" multiple hide-upload-btn
+                      @uploaded="uploadFinish" @finish="getFile();getEssay()" :factory="videoUploadFn"/>
+        </q-card-section>
+
+        <!--    按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" icon="clear_all" color="secondary" @click="resetVideo"/>
+          <q-btn label="提交" icon="upload" color="blue-14" @click="commitVideoHandler"/>
+        </q-card-section>
+
+        <!--    tips    -->
+        <q-card-section>关于：轮播图和友情链接不在这里上传</q-card-section>
+
+      </q-card>
+
       <!--   注册海克斯科技用户   -->
       <q-card class="container col-auto" style="width: 460px;">
 
@@ -735,7 +803,7 @@
         <!--    按钮    -->
         <q-card-section class="row justify-between">
           <q-btn label="重置" icon="clear_all" color="secondary" @click="resetRegister"/>
-          <q-btn label="提交" icon="upload" color="primary"/>
+          <q-btn label="提交" icon="upload" color="primary" @click="commitRegister"/>
         </q-card-section>
       </q-card>
 
@@ -784,10 +852,83 @@ import {
   IMG_COLUMNS
 } from "components/user/table";
 import {useQuasar} from "quasar";
-import {getRows, goto, notNull, repeatArr, sleep, subArr} from "components/Tools";
+import {getRows, goto, notNull, repeatArr, sleep, subArr, uploadFinish} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
+
+// 获取文件
+function getFile() {
+  console.log("获取文件");
+}
+
+const videoFirst = ref(UNDEFINED);
+const videoSecond = ref(UNDEFINED);
+
+// 提交视频
+function commitVideoHandler() {
+  if (videoFirst.value === UNDEFINED){
+    CommWarn("未选择一级标题");
+    return;
+  }
+
+  if (videoUploader) {
+    videoUploader.value.upload();
+  }
+  resetVideoTitle();
+}
+
+// 重置视频
+function resetVideo() {
+  resetVideoFirst();
+  resetVideoSecond();
+  resetVideoTitle();
+  if (videoUploader) {
+    videoUploader.value.reset();
+  }
+}
+
+// 重置视频一级标题
+function resetVideoFirst() {
+  videoFirst.value = UNDEFINED;
+}
+
+// 重置视频二级标题
+function resetVideoSecond() {
+  videoSecond.value = UNDEFINED;
+}
+
+// 重置视频标题
+function resetVideoTitle() {
+  videoInputTitle.value = EMPTY_STRING;
+}
+
+const videoInputTitle = ref(EMPTY_STRING); // 用户上传输入标题
+const videoUploader = ref(); // 视频上传器
+
+// 视频上传工厂
+function videoUploadFn() {
+  return new Promise(resolve => {
+    resolve({
+      "url": SERVER_NAME + '/essay/video',
+      "formFields": [
+        {
+          name: 'title',
+          value: videoInputTitle.value
+        },
+        {
+          name: 'field',
+          value: videoFirst.value + (videoSecond.value === UNDEFINED ? '' : SPLIT + videoSecond.value)
+        }
+      ],
+      "fieldName": "file",
+      "headers": [{
+        "name": "token",
+        "value": localStorage.getItem("token")
+      }]
+    })
+  })
+}
 
 // 提交注册
 function commitRegister() {
@@ -1286,6 +1427,7 @@ function imgUploadHandler() {
   if (imgUploader) {
     imgUploader.value.upload();
   }
+  resetImgUploadTitle();
 }
 
 // 图片上传工厂
@@ -1587,9 +1729,6 @@ function essayCommit() {
       // 俩都没有
       CommWarn("还没有选择文章放在哪里");
       return;
-    } else {
-      // 用一级标题替代
-      // uploadField = essayLabel.value;
     }
   }
 
@@ -1617,6 +1756,7 @@ function essayCommit() {
   if (essayUploader) {
     essayUploader.value.upload();
   }
+  resetInputEssayTitle();
 }
 
 // 根据二级匹配唯一的一级

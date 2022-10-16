@@ -1,6 +1,6 @@
 import {boot} from 'quasar/wrappers'
 import axios, {AxiosInstance} from 'axios'
-import {SERVER_NAME} from "components/Models";
+import {SERVER_NAME, SERVER_PREFIX} from "components/Models";
 import {CommFail} from "components/notifyTools";
 
 // Be careful when using SSR for cross-request state pollution
@@ -54,7 +54,7 @@ export default boot(({app}) => {
     res => {
       if (res.data.code === '499') {
         CommFail('请重新登录');
-        window.location.href = "/#/user/login";
+        window.location.href = SERVER_PREFIX + "/user/login";
       } else if (res.data.code !== '200') {
         CommFail(res.data.msg);
       } else {

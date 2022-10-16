@@ -2,6 +2,8 @@
 import {ESSAY_COLUMNS, table} from "./user/table";
 import {DOT} from "./MagicValue";
 import {ref} from "vue";
+import {CommFail, CommSeccess} from "./notifyTools";
+import {SERVER_PREFIX} from "./Models";
 
 export const notNull = ref([(val) => (val && val.length > 0) || '输入值为空']);
 
@@ -81,4 +83,20 @@ export function setTime(time) {
   const firstLever = time.indexOf('-') + 1;
   const mid = time.indexOf('T');
   return time.substring(firstLever, mid);
+}
+
+// 图片上传之后
+export function uploadFinish(info) {
+  const res = JSON.parse(info.xhr.response);
+  if (res.code === '499') {
+    // 未登录
+    CommFail("未登录");
+    window.location.href = SERVER_PREFIX + '/user/login';
+  } else if (res.code !== '200') {
+    // 出现异常
+    CommFail(res.msg);
+  } else {
+    // 正常处理
+    CommSeccess("上传成功");
+  }
 }

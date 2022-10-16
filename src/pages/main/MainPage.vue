@@ -51,6 +51,21 @@
 
             </div>
 
+            <!--     展示视频       -->
+            <div v-else-if="showVideo">
+              <!--     标题     -->
+              <h3 class="title">{{ title }}</h3>
+              <!--     副标题     -->
+              <div class="sub-container">
+                <span class="sub-title">信息来源：</span>
+                <span class="sub-title">{{ author }}</span>
+                <span class="sub-title">发布时间：</span>
+                <span class="sub-title">{{ createTime }}</span>
+              </div>
+              <!--       视频       -->
+              <q-video :src="text" style="width: 700px;margin: 50px auto" :ratio="19/6"/>
+            </div>
+
             <!--    展示文章分页    -->
             <div class="q-pa-md q-gutter-sm" v-else>
               <!--       标题       -->
@@ -115,6 +130,8 @@ import {HEAD_ITEMS} from "components/main/head-item";
 
 const $route = useRoute();
 const $router = useRouter();
+
+const showVideo = ref(false);
 
 const friendLinkDisable = ref(false); // 友情连接无限滚动禁用
 const friendLinkCurrentPage = ref(START_PAGE);
@@ -193,6 +210,12 @@ async function getEssayDetail(id) {
     title.value = dataEssay.title;
     createTime.value = setEssayTime(dataEssay.createTime);
     author.value = dataEssay.user.name;
+
+    // 如果是视频
+    if (text.value.startsWith("http")) {
+      showEssay.value = false;
+      showVideo.value = true;
+    }
   })
 }
 
