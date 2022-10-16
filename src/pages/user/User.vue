@@ -777,6 +777,59 @@
 
       </q-card>
 
+      <!--   上传文件   -->
+      <q-card class="container col-auto">
+        <!--    标题    -->
+        <q-card-section><strong>上传文件</strong></q-card-section>
+
+        <!--    标题    -->
+        <q-card-section>
+          <q-input v-model="fileTitle" placeholder="文件标题（默认文件名作为标题）">
+            <template #append v-if="fileTitle && fileTitle.length > 0">
+              <q-icon name="close" class="cursor-pointer" @click="resetFileTitle"/>
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <!--    上传器    -->
+        <q-card-section>
+          <q-uploader label="上传文件" ref="fileUploader" multiple hide-upload-btn @uploaded="uploadFinish"
+                      @finish="getFile" :factory="fileUploadFn"/>
+        </q-card-section>
+
+        <!--    按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" icon="clear_all" color="secondary" @click="resetFile"/>
+          <q-btn label="提交" icon="upload" color="blue-14" @click="commitFile"/>
+        </q-card-section>
+      </q-card>
+
+      <!--   文件表   -->
+      <q-card class="container col-auto">
+        <!--    按钮    -->
+        <q-card-section class="q-pa-md q-gutter-md">
+          <q-btn label="刷新" icon="refresh" color="blue-14"/>
+          <q-btn label="删除" icon="delete_forever" color="red"/>
+        </q-card-section>
+
+        <!--    文件表    -->
+        <q-card-section>
+          <q-table
+            title="文件"
+            :columns="columns"
+            :rows="rows"
+            row-key="id"
+            hide-pagination
+            selection="multiple"
+            v-model:selected="selected"
+            :selected-rows-label="getSelectedString"
+            :loading="tableLoading"
+            :pagination="pagination">
+
+          </q-table>
+        </q-card-section>
+      </q-card>
+
       <!--   注册海克斯科技用户   -->
       <q-card class="container col-auto" style="width: 460px;">
 
@@ -862,12 +915,35 @@ function getFile() {
   console.log("获取文件");
 }
 
+const fileUploader = ref(); // 文件上传器
+const fileTitle = ref(EMPTY_STRING); // 文件标题
+
+// 上传文件
+function commitFile() {
+  if (fileUploader) {
+    fileUploader.value.upload();
+  }
+}
+
+// 重置文件
+function resetFile() {
+  resetFileTitle();
+  if (fileUploader) {
+    fileUploader.value.reset();
+  }
+}
+
+// 重置文件标题
+function resetFileTitle() {
+  fileTitle.value = EMPTY_STRING;
+}
+
 const videoFirst = ref(UNDEFINED);
 const videoSecond = ref(UNDEFINED);
 
 // 提交视频
 function commitVideoHandler() {
-  if (videoFirst.value === UNDEFINED){
+  if (videoFirst.value === UNDEFINED) {
     CommWarn("未选择一级标题");
     return;
   }
@@ -875,7 +951,6 @@ function commitVideoHandler() {
   if (videoUploader) {
     videoUploader.value.upload();
   }
-  resetVideoTitle();
 }
 
 // 重置视频
@@ -905,6 +980,26 @@ function resetVideoTitle() {
 
 const videoInputTitle = ref(EMPTY_STRING); // 用户上传输入标题
 const videoUploader = ref(); // 视频上传器
+
+// 文件上传工厂
+function fileUploadFn() {
+  return new Promise(resolve => {
+    resolve({
+      "url": SERVER_NAME + '/file/upload',
+      "formFields": [
+        {
+          name: 'title',
+          value: fileTitle.value
+        }
+      ],
+      "fieldName": "file",
+      "headers": [{
+        "name": "token",
+        "value": localStorage.getItem("token")
+      }]
+    })
+  })
+}
 
 // 视频上传工厂
 function videoUploadFn() {
@@ -1427,7 +1522,6 @@ function imgUploadHandler() {
   if (imgUploader) {
     imgUploader.value.upload();
   }
-  resetImgUploadTitle();
 }
 
 // 图片上传工厂
@@ -1756,7 +1850,6 @@ function essayCommit() {
   if (essayUploader) {
     essayUploader.value.upload();
   }
-  resetInputEssayTitle();
 }
 
 // 根据二级匹配唯一的一级
