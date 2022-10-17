@@ -43,7 +43,10 @@ export const FRIEND_LINK_USE_COLUMNS: table[] = [
 
 // 文件
 export const FILE_COLUMNS: table[] = [
-
+  {field: 'originalFilename', label: '文件名', align: "center", name: 'title'},
+  {field: 'url', label: '地址', align: "center", name: 'url'},
+  {field: 'isDelete', label: '是否删除', align: "center", name: 'isDelete'},
+  {field: 'createTime', label: '上传时间', align: "center"},
 ]
 
 // 接口

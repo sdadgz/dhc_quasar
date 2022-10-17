@@ -2,8 +2,9 @@
 import {ESSAY_COLUMNS, table} from "./user/table";
 import {DOT} from "./MagicValue";
 import {ref} from "vue";
-import {CommFail, CommSeccess} from "./notifyTools";
+import {CommFail, CommSeccess, CommWarn} from "./notifyTools";
 import {SERVER_PREFIX} from "./Models";
+import {api} from "../boot/axios";
 
 export const notNull = ref([(val) => (val && val.length > 0) || '输入值为空']);
 
@@ -79,11 +80,24 @@ export function goto(url: string) {
 }
 
 // 设置时间
-export function setTime(time) {
-  const firstLever = time.indexOf('-') + 1;
-  const mid = time.indexOf('T');
-  return time.substring(firstLever, mid);
+export function setTime(time: string, type?: string): string {
+  if (type === undefined) {
+    type = '011000';
+  }
+  const times = time.split('T');
+  const timeArr = [];
+  timeArr.push(...times[0].split('-'));
+  timeArr.push(...times[1].split(':'));
+  let resArr = '';
+  for (let i = 0; i < timeArr.length; i++) {
+    if (type.charAt(i) === '1') {
+      resArr += timeArr[i] + dataStr[i];
+    }
+  }
+  return resArr;
 }
+
+const dataStr: string[] = ['年', '月', '日 ', '点', '分', ''];
 
 // 图片上传之后
 export function uploadFinish(info) {
@@ -99,4 +113,47 @@ export function uploadFinish(info) {
     // 正常处理
     CommSeccess("上传成功");
   }
+}
+
+// 复制
+export function copy(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    CommSeccess("复制成功");
+  })
+}
+
+// 删除
+export function deleteHandler(idList: number[], url: string, callback: () => void) {
+  if (idList.length < 1) {
+    CommWarn("请至少选择一个");
+    return;
+  }
+  api.delete(url, {
+    data: {
+      idList: idList
+    }
+  }).then(res => {
+    CommSeccess("删除成功");
+  }).catch(res => {
+    CommFail("删除失败");
+  }).then(res => {
+    callback();
+  })
+}
+
+// 恢复
+export function recoverHandler(idList: number[], url: string, callback?: () => void) {
+  if (idList.length < 1) {
+    CommWarn("请至少选择一个");
+    return;
+  }
+  api.put(url, {
+    idList: idList
+  }).then(res => {
+    CommSeccess("恢复成功");
+  }).catch(res => {
+    CommFail("恢复失败");
+  }).then(res => {
+    callback();
+  })
 }

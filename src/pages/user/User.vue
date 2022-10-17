@@ -334,8 +334,8 @@
           >
 
             <template v-slot:top-right>
-              <q-input model-value="" v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg" @blur="getImg"
-                       style="width: 233px;">
+              <q-input model-value="" v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg"
+                       @blur="getImg" style="width: 233px;">
                 <template v-slot:append>
                   <q-icon name="search" class="cursor-pointer" @click="getImg"/>
                   <q-icon v-if="imgQuery && imgQuery.length > 0" name="close" class="cursor-pointer"
@@ -360,7 +360,7 @@
                            :style="{backgroundColor: props.row.isDelete ? 'rgba(255,0,0,.5)' : ''}">
                         <span>{{
                             (props.row.title === null ? '' : props.row.title) + SPLIT +
-                            setTime(props.row.createTime) +
+                            mySetTime(props.row.createTime) +
                             (props.row.isDelete ? " 已删除" : "")
                           }}</span>
                       </div>
@@ -604,9 +604,10 @@
             >
 
               <template #body="props">
-                <q-tr :props="props"
+                <q-tr :props="props" class="animated"
                       :style="{backgroundColor:props.selected ? '#e8e8e8' : '',transform: 'scale(1)'}">
 
+                  <!--         复选框         -->
                   <q-td class="cursor-pointer">
                     <q-checkbox v-model="props.selected"/>
                   </q-td>
@@ -808,23 +809,63 @@
       <q-card class="container col-auto">
         <!--    按钮    -->
         <q-card-section class="q-pa-md q-gutter-md">
-          <q-btn label="刷新" icon="refresh" color="blue-14"/>
-          <q-btn label="删除" icon="delete_forever" color="red"/>
+          <q-btn label="刷新" icon="refresh" color="blue-14" @click="fileRefreshHandler"
+                 :loading="fileRefreshBtnLoading"/>
+          <q-btn label="恢复" icon="restore" color="green"
+                 @click="fileRecoverHandler(getIdList(fileSelected))"/>
+          <q-btn label="删除" icon="delete_forever" color="red"
+                 @click="fileDeleteHandler(getIdList(fileSelected))"/>
         </q-card-section>
 
         <!--    文件表    -->
         <q-card-section>
           <q-table
             title="文件"
-            :columns="columns"
-            :rows="rows"
+            :columns="FILE_COLUMNS"
+            :rows="fileRows"
             row-key="id"
             hide-pagination
             selection="multiple"
-            v-model:selected="selected"
+            v-model:selected="fileSelected"
             :selected-rows-label="getSelectedString"
-            :loading="tableLoading"
+            :loading="fileLoading"
             :pagination="pagination">
+
+            <template #body="props">
+              <q-tr :props="props" class="animated"
+                    :style="{backgroundColor:props.selected ? '#e8e8e8' : '',transform: 'scale(1)'}">
+
+                <!--        复选框        -->
+                <q-td class="cursor-pointer">
+                  <q-checkbox v-model="props.selected"/>
+                </q-td>
+
+                <!--        标题        -->
+                <q-td key="title" :props="props">
+                  {{ props.row.originalFilename }}
+                </q-td>
+
+                <!--        地址        -->
+                <q-td key="url" :props="props">
+                  <q-btn label="点我复制链接" icon="content_copy" @click="copy(props.row.url)"
+                         color="blue-12"/>
+                </q-td>
+
+                <!--       切换状态         -->
+                <q-td key="isDelete" :props="props">
+                  <q-btn v-if="!props.row.isDelete" label="点我删除" icon="delete_forever" color="red"
+                         @click="fileDeleteHandler([props.row.id])"/>
+                  <q-btn v-else label="点我恢复" icon="restore" color="green"
+                         @click="fileRecoverHandler([props.row.id])"/>
+                </q-td>
+
+                <!--       上传时间         -->
+                <q-td>
+                  {{ setTime(props.row.createTime, '011110') }}
+                </q-td>
+
+              </q-tr>
+            </template>
 
           </q-table>
         </q-card-section>
@@ -899,21 +940,86 @@ import {
 import {api} from "boot/axios";
 import {
   CAROUSEL_COLUMNS,
-  ESSAY_COLUMNS,
+  ESSAY_COLUMNS, FILE_COLUMNS,
   FRIEND_LINK_COLUMNS,
   FRIEND_LINK_USE_COLUMNS,
   IMG_COLUMNS
 } from "components/user/table";
 import {useQuasar} from "quasar";
-import {getRows, goto, notNull, repeatArr, sleep, subArr, uploadFinish} from "components/Tools";
+import {
+  copy,
+  deleteHandler,
+  getRows,
+  goto,
+  notNull, recoverHandler,
+  repeatArr,
+  setTime,
+  sleep,
+  subArr,
+  uploadFinish
+} from "components/Tools";
 
 const $q = useQuasar();
 const $router = useRouter();
 
-// 获取文件
-function getFile() {
-  console.log("获取文件");
+// 点击删除
+function fileDeleteHandler(idList) {
+  DeleteConform(() => {
+    deleteHandler(idList, '/file', () => {
+      getFile();
+      resetFileSelected();
+    })
+  })
 }
+
+// 点击恢复
+function fileRecoverHandler(idList) {
+  recoverHandler(idList, '/file', () => {
+    getFile();
+    resetFileSelected();
+  })
+}
+
+// 重置文件选中
+function resetFileSelected() {
+  fileSelected.value = [];
+}
+
+const fileRefreshBtnLoading = ref(false);
+
+// 点击刷新
+async function fileRefreshHandler() {
+  fileRefreshBtnLoading.value = true;
+  await getFile();
+  await sleep(DEFAULT_DELAY);
+  fileRefreshBtnLoading.value = false;
+}
+
+// 获取文件
+async function getFile() {
+  fileLoading.value = true;
+  await api.get('/file/page', {
+    params: {
+      currentPage: fileCurrentPage.value,
+      pageSize: pageSize.value,
+      title: filePageTitle.value
+    }
+  }).then(res => {
+    const lists = res.data.lists;
+    const total = res.data.total;
+
+    fileRows.value = getRows(lists, FILE_COLUMNS);
+    filePageTotal.value = Math.ceil(total / pageSize.value);
+  })
+  fileLoading.value = false;
+}
+
+const filePageTitle = ref(EMPTY_STRING);
+const fileLoading = ref(true);
+const fileSelected = ref([]);
+const fileRows = ref([]);
+const fileCurrentPage = ref(START_PAGE);
+const filePageTotal = ref(3);
 
 const fileUploader = ref(); // 文件上传器
 const fileTitle = ref(EMPTY_STRING); // 文件标题
@@ -1066,19 +1172,7 @@ const friendLinkBtnLoading = ref(false);
 function deleteFriendLinkHandler() {
   DeleteConform(() => {
     const idList = getIdList(friendLinkSelected.value);
-    if (idList.length < 1) {
-      CommWarn("请至少选择一个");
-      return;
-    }
-    api.delete('/friendLink', {
-      data: {
-        idList: idList
-      }
-    }).then(res => {
-      CommSeccess("删除成功");
-    }).catch(res => {
-      CommFail("删除失败");
-    }).then(res => {
+    deleteHandler(idList, '/friendLink', () => {
       getFriendLink();
       resetFriendLink();
     })
@@ -1949,7 +2043,7 @@ function essayUploadFinish(info) {
 }
 
 // 设置时间
-function setTime(time) {
+function mySetTime(time) {
   const firstLever = time.indexOf('-') + 1;
   const mid = time.indexOf('T');
   return time.substring(firstLever, mid);
@@ -1960,6 +2054,7 @@ function start() {
   getImg();
   getEssay();
   getFriendLink();
+  getFile();
 }
 
 // 更新全选按钮model
