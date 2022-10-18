@@ -619,7 +619,7 @@ function start(){
 
 // 加载
 async function init(){
-  "获取头"
+  console.log("获取头");
   start();
 }
 
