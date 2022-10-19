@@ -819,7 +819,7 @@
         <q-card-section class="q-pa-md q-gutter-md">
           <q-btn label="刷新" icon="refresh" color="blue-14" @click="fileRefreshHandler"
                  :loading="fileRefreshBtnLoading"/>
-          <q-btn label="恢复" icon="restore" color="green"
+          <q-btn label="恢复" icon="restore" color="green-13"
                  @click="fileRecoverHandler(getIdList(fileSelected))"/>
           <q-btn label="删除" icon="delete_forever" color="red"
                  @click="fileDeleteHandler(getIdList(fileSelected))"/>

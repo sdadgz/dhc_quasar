@@ -2,7 +2,7 @@
   <div class="row q-pa-md q-gutter-md">
 
     <!--   文章上传   -->
-    <q-card>
+    <q-card class="q-pa-md q-gutter-md">
       <!--    标题    -->
       <q-card-section><strong>文章上传</strong></q-card-section>
 
@@ -21,9 +21,9 @@
       </q-card-section>
 
       <!--    选择    -->
-      <q-card-section class="row">
+      <q-card-section class="row justify-between">
         <!--     一级     -->
-        <div class="column col margin-1" style="margin-left: 0;">
+        <div class="column col-auto margin-1" style="margin-left: 0;">
           <span class="col-auto">一级标题</span>
           <q-btn-dropdown class="col-auto" color="secondary" :label="essayLabel">
             <q-list>
@@ -37,7 +37,7 @@
         </div>
 
         <!--    二级      -->
-        <div class="column col margin-1" style="margin-right: 0;">
+        <div class="column col-auto margin-1" style="margin-right: 0;">
           <span class="col-auto">二级标题</span>
           <q-btn-dropdown class="col-auto" color="info" :label="essayField">
             <q-list v-if="essayLabel !== UNDEFINED">
@@ -91,7 +91,7 @@
     </q-card>
 
     <!--   文章表   -->
-    <q-card>
+    <q-card class="q-pa-md">
 
       <!--    头部按钮    -->
       <q-card-section class="q-pa-md q-gutter-md">
@@ -180,7 +180,7 @@
                     <div class="row justify-between">
 
                       <!--     一级     -->
-                      <div class="column col margin-1" style="margin-left: 0;">
+                      <div class="column col-auto margin-1" style="margin-left: 0;margin-right: 10px">
                         <span class="col-auto">一级标题</span>
                         <q-btn-dropdown class="col-auto" color="secondary" :label="firstField">
                           <q-list>
@@ -195,7 +195,7 @@
                       </div>
 
                       <!--    二级      -->
-                      <div class="column col margin-1" style="margin-right: 0;">
+                      <div class="column col-auto margin-1" style="margin-right: 0;">
                         <span class="col-auto">二级标题</span>
                         <q-btn-dropdown class="col-auto" color="info" :label="secondField">
                           <q-list v-if="firstField !== UNDEFINED">
@@ -298,6 +298,53 @@ const inputField = ref(UNDEFINED);
 const essayId = ref(ZERO);
 const firstField = ref(UNDEFINED);
 const secondField = ref(UNDEFINED);
+
+// 表格内位置修改
+function tableFieldSave() {
+  api.put('/essay/update', null, {
+    params: {
+      'id': essayId.value,
+      'field': inputField.value
+    }
+  }).then(res => {
+    const status = res.data.status;
+    if (status) {
+      CommSeccess("修改成功");
+      return res;
+    } else {
+      CommFail("修改失败");
+    }
+  }).catch(e => {
+    CommFail("修改失败");
+  }).then(res => {
+    getEssay();
+  })
+}
+
+// 二级标题选中
+function tableSecondFieldHandler(item) {
+  secondField.value = item.label;
+  // 同步
+  setInputField();
+}
+
+// 获取二级标题列表
+function getHeadSon() {
+  const first = firstField.value;
+  let arr = [];
+  arr.push({label: UNDEFINED});
+  for (let i = 0; i < HEAD_ITEMS.length; i++) {
+    if (first === HEAD_ITEMS[i].label) {
+      arr = arr.concat(HEAD_ITEMS[i].children);
+    }
+  }
+  return arr;
+}
+
+// 二级标题点击
+function essayHandler_2(item) {
+  essayField.value = item.label;
+}
 
 // essay置顶
 async function essayTopHandler(id, status) {
@@ -613,13 +660,18 @@ function essayReset_2() {
 }
 
 // 初始化
-function start(){
+function start() {
+  getEssay();
+}
 
+// 获取一二级标题
+async function getHeadItem() {
+  console.log("从数据库获取一二级标题");
 }
 
 // 加载
-async function init(){
-  console.log("获取头");
+async function init() {
+  await getHeadItem();
   start();
 }
 

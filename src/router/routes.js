@@ -28,7 +28,43 @@ const routes = [
     children: [
       {
         path: '',
+        redirect: '/u/essay'
+      },
+      {
+        path: 'firstTitle',
+        component: () => import('pages/user/FirstTitle.vue')
+      },
+      {
+        path: 'secondTitle',
+        component: () => import('pages/user/SecondTitle.vue')
+      },
+      {
+        path: 'essay',
         component: () => import('pages/user/Essay.vue')
+      },
+      {
+        path: 'img',
+        component: () => import('pages/user/Img.vue')
+      },
+      {
+        path: 'carousel',
+        component: () => import('pages/user/Carousel.vue')
+      },
+      {
+        path: 'friendLink',
+        component: () => import('pages/user/FriendLink.vue')
+      },
+      {
+        path: 'video',
+        component: () => import('pages/user/Video.vue')
+      },
+      {
+        path: 'file',
+        component: () => import('pages/user/File.vue')
+      },
+      {
+        path: 'register',
+        component: () => import('pages/user/Register.vue')
       }
     ]
   },
