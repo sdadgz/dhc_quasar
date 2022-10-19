@@ -14,4 +14,5 @@ export const DRAWER_LIST: DrawerList[] = [
   {label: '友情链接', url: 'friendLink', selected: false, icon: 'link'},
   {label: '视频', url: 'video', selected: false, icon: 'smart_display'},
   {label: '文件', url: 'file', selected: false, icon: 'description'},
+  {label: '用户', url: 'register', selected: false, icon: 'person'},
 ]
