@@ -967,7 +967,6 @@ import {
   uploadFinish
 } from "components/Tools";
 
-const $q = useQuasar();
 const $router = useRouter();
 
 // 点击删除

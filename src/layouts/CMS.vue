@@ -7,7 +7,7 @@
                 style="padding: 16px 0"/>
 
         <!--    面包屑    -->
-        <q-breadcrumbs>
+        <q-breadcrumbs style="font-size: 18px">
           <q-breadcrumbs-el style="color: white;margin-left: 20px" label="后台管理系统"
                             @click="to('')" class="cursor-pointer"/>
           <q-breadcrumbs-el :label="subTitle"/>
@@ -80,7 +80,6 @@ function setSelected() {
     }
     item.selected = b;
   })
-  console.log(drawerList.value);
 }
 
 watch(() => $route.fullPath, () => {
