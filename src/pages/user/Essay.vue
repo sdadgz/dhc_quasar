@@ -284,15 +284,13 @@ import {
 import {HEAD_ITEMS} from "components/main/head-item";
 import {SERVER_NAME} from "components/Models";
 import {api} from "boot/axios";
-import {getRows, sleep} from "components/Tools";
+import {getRows, init, sleep} from "components/Tools";
 import {ESSAY_COLUMNS} from "components/user/table";
 import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {useRoute, useRouter} from "vue-router";
 import {useQuasar} from "quasar";
 
 const $router = useRouter();
-const $route = useRoute();
-const $q = useQuasar();
 
 const inputField = ref(UNDEFINED);
 const essayId = ref(ZERO);
@@ -664,18 +662,8 @@ function start() {
   getEssay();
 }
 
-// 获取一二级标题
-async function getHeadItem() {
-  console.log("从数据库获取一二级标题");
-}
 
-// 加载
-async function init() {
-  await getHeadItem();
-  start();
-}
-
-init();
+init(start);
 </script>
 
 <style scoped>

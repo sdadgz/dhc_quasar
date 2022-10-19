@@ -27,7 +27,7 @@
                 :style="{backgroundColor: item.selected ? '#fafafa' : '',borderRight: item.selected ?
                 '3px solid #007bff' : ''}">
           <q-item-section avatar>
-            <q-icon :name="item.icon"/>
+            <q-icon :name="item.icon" :color="item.selected ? 'blue' : ''"/>
           </q-item-section>
 
           <q-item-section>

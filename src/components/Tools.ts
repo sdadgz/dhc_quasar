@@ -157,3 +157,19 @@ export function recoverHandler(idList: number[], url: string, callback?: () => v
     callback();
   })
 }
+
+// 选中几项
+export function getSelectedString(e) {
+  return `已选择${e}项`;
+}
+
+// 初始化获取一二级标题
+export async function init(fun: () => void) {
+  await getHeadItem();
+  fun();
+}
+
+// 获取一二级标题
+async function getHeadItem() {
+  console.log("获取一二级标题没写");
+}
