@@ -114,12 +114,12 @@
           >
 
             <template v-slot:top-right>
-              <q-input model-value="" v-model="queryField" placeholder="搜索（位置）" @blur="searchEssay"
-                       @keyup.enter="searchEssay" style="width: 233px">
+              <q-input model-value="" v-model="queryField" placeholder="搜索（位置）"
+                       @blur="searchEssay" @keyup.enter="searchEssay" style="width: 233px">
                 <template v-slot:append>
                   <q-icon name="search" class="cursor-pointer" @click="searchEssay"/>
-                  <q-icon v-if="queryField && queryField.length > 0" name="close" class="cursor-pointer"
-                          @click="queryField = EMPTY_STRING"/>
+                  <q-icon v-if="queryField && queryField.length > 0" name="close"
+                          class="cursor-pointer" @click="queryField = EMPTY_STRING"/>
                 </template>
               </q-input>
             </template>
@@ -231,6 +231,14 @@
                     </div>
                   </transition>
                 </q-popup-edit>
+              </q-td>
+            </template>
+
+            <!--      置顶      -->
+            <template v-slot:body-cell-toTop="props">
+              <q-td :props="props">
+                <q-toggle v-model="props.row[`essay.toTop`]"
+                          @click="essayTopHandler(props.row.essayId,props.row[`essay.toTop`])"/>
               </q-td>
             </template>
 
@@ -1861,6 +1869,22 @@ async function getEssay() {
   })
 
   tableLoading.value = false;
+}
+
+// essay置顶
+async function essayTopHandler(id, status) {
+  await api.put('/essay/toTop', null, {
+    params: {
+      id: id,
+      status: status
+    }
+  }).then(res => {
+    CommSeccess("修改成功");
+  }).catch(res => {
+    CommFail("修改失败");
+  }).then(res => {
+    getEssay();
+  })
 }
 
 // 已选几项

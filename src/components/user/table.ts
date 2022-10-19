@@ -5,6 +5,7 @@ export const ESSAY_COLUMNS: table[] = [
   {"field": "essay.createTime", "label": "上传时间", "align": "center"},
   {"field": "essay.user.name", "label": "用户名", "align": "center"},
   {"field": "field", "name": "field", "label": "位置（点击编辑）", "align": "center"},
+  {"field": "essay.toTop", "name": "toTop", "label": "置顶", "align": "center"},
 ];
 
 // 图片

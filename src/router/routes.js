@@ -5,7 +5,7 @@ import {createRouter, createWebHistory} from "vue-router";
 const routes = [
   {
     path: '/',
-    redirect: '/' + HEAD_ITEMS[0].label // 重定向到主页
+    redirect: '/首页' // 重定向到主页
   },
   {
     // 海克斯科技用户页
@@ -23,8 +23,18 @@ const routes = [
     ]
   },
   {
+    path: '/u',
+    component: () => import('layouts/CMS.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('pages/user/Essay.vue')
+      }
+    ]
+  },
+  {
     // 首页及分页页
-    path: '/' + HEAD_ITEMS[0].label,
+    path: '/首页',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
