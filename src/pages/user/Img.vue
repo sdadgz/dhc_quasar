@@ -8,6 +8,7 @@
       <q-card-section class="q-pa-md q-gutter-md">
         <q-btn label="刷新" icon="refresh" color="blue-14" @click="refreshImg"
                :loading="refreshImgBtnLoading"/>
+        <q-btn label="新增" icon="edit" color="secondary" @click="showUpload = true"/>
         <q-btn label="恢复" icon="restore" color="green-13" @click="recoverImgTable"
                :loading="recoverBtnLoading"/>
         <q-btn label="删除" icon="delete_forever" color="red" @click="deleteImg"/>
@@ -126,49 +127,52 @@
     </q-card>
 
     <!--   上传图片   -->
-    <q-card class="q-pa-md">
+    <q-dialog v-model="showUpload">
+      <q-card class="q-pa-md">
 
-      <!--    标题    -->
-      <q-card-section>
-        <strong>图片上传</strong>
-      </q-card-section>
+        <!--    标题    -->
+        <q-card-section class="row justify-between">
+          <strong>图片上传</strong>
+          <q-btn icon="close" v-close-popup flat round dense/>
+        </q-card-section>
 
-      <!--    图片简介    -->
-      <q-card-section>
-        <q-input v-model="imgUploadTitle" placeholder="图片简介（可选）">
-          <template #append>
-            <q-icon
-              @click="resetImgUploadTitle"
-              name="close"
-              v-if="imgUploadTitle && imgUploadTitle.length > 0"
-              class="cursor-pointer"
-            />
-          </template>
-        </q-input>
-      </q-card-section>
+        <!--    图片简介    -->
+        <q-card-section>
+          <q-input v-model="imgUploadTitle" placeholder="图片简介（可选）">
+            <template #append>
+              <q-icon
+                @click="resetImgUploadTitle"
+                name="close"
+                v-if="imgUploadTitle && imgUploadTitle.length > 0"
+                class="cursor-pointer"
+              />
+            </template>
+          </q-input>
+        </q-card-section>
 
-      <!--    上传器    -->
-      <q-card-section>
-        <q-uploader
-          ref="imgUploader"
-          multiple
-          accept="image/*"
-          hide-upload-btn
-          label="图片上传器"
-          color="indigo"
-          :factory="imgUploadFn"
-          @finish="uploadDone = true;getImg()"
-          @uploaded="imgUploadFinish"
-        />
-      </q-card-section>
+        <!--    上传器    -->
+        <q-card-section>
+          <q-uploader
+            ref="imgUploader"
+            multiple
+            accept="image/*"
+            hide-upload-btn
+            label="图片上传器"
+            color="indigo"
+            :factory="imgUploadFn"
+            @finish="uploadDone = true;getImg()"
+            @uploaded="imgUploadFinish"
+          />
+        </q-card-section>
 
-      <!--    提交重置按钮    -->
-      <q-card-section class="row justify-between">
-        <q-btn label="重置" color="amber" @click="resetImgUploader" icon="clear_all"/>
-        <q-btn label="上传" color="orange" @click="imgUploadHandler" icon="upload"/>
-      </q-card-section>
+        <!--    提交重置按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" color="amber" @click="resetImgUploader" icon="clear_all"/>
+          <q-btn label="上传" color="orange" @click="imgUploadHandler" icon="upload"/>
+        </q-card-section>
 
-    </q-card>
+      </q-card>
+    </q-dialog>
   </div>
 
 </template>
@@ -192,6 +196,9 @@ import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 
 const $router = useRouter();
+
+// 展示弹窗
+const showUpload = ref(false);
 
 // 取消当前页选中
 function imgUnSelectedAll() {
@@ -438,7 +445,7 @@ function imgUploadFinish(info) {
 }
 
 // 初始化
-function start(){
+function start() {
   getImg();
 }
 

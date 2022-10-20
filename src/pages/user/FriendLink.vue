@@ -9,6 +9,7 @@
         <q-btn label="刷新" color="blue-14" icon="refresh" @click="friendLinkBtnHandler"
                :loading="friendLinkBtnLoading"/>
         <q-btn label="删除" color="red" icon="delete_forever" @click="deleteFriendLinkHandler"/>
+        <q-btn label="新增" icon="edit" color="secondary" @click="showUpload = true"/>
       </q-card-section>
 
       <!--    表    -->
@@ -134,145 +135,145 @@
 
     </q-card>
 
+    <q-dialog v-model="showUpload">
 
-    <!--   图片表   -->
-    <q-card style="width: 96%" class="q-pa-md">
+      <!--   图片表   -->
+      <q-card style="width: 96vw" class="q-pa-md">
 
-      <!--   图片表     -->
-      <q-card-section>
-        <q-table
-          title="图片"
-          :columns="imgColumns"
-          :rows="imgRows"
-          row-key="id"
-          hide-pagination
-          selection="multiple"
-          v-model:selected="imgSelected"
-          :selected-rows-label="getSelectedString"
-          :loading="imgTableLoading"
-          :pagination="imgPagination"
-          grid
-        >
+        <!--    标题    -->
+        <q-card-section class="row justify-between">
+          <strong>友情连接</strong>
+          <q-btn icon="close" dense round flat v-close-popup/>
+        </q-card-section>
 
-          <template v-slot:top-right>
-            <q-input model-value="" v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg"
-                     @blur="getImg" style="width: 233px;">
-              <template v-slot:append>
-                <q-icon name="search" class="cursor-pointer" @click="getImg"/>
-                <q-icon v-if="imgQuery && imgQuery.length > 0" name="close" class="cursor-pointer"
-                        @click="imgQuery = EMPTY_STRING"/>
-              </template>
-            </q-input>
-          </template>
+        <!--   图片表     -->
+        <q-card-section>
+          <q-table
+            title="图片"
+            :columns="imgColumns"
+            :rows="imgRows"
+            row-key="id"
+            hide-pagination
+            selection="multiple"
+            v-model:selected="imgSelected"
+            :selected-rows-label="getSelectedString"
+            :loading="imgTableLoading"
+            :pagination="imgPagination"
+            grid
+          >
 
-          <template v-slot:item="props">
-            <div class="q-pa-md col-md-3 col-xs-12">
-              <q-card
-                class="animated cursor-pointer"
-                :class="props.selected ? 'selected' : ''"
-                @click="props.selected = !props.selected"
-              >
-                <q-card-section>
-                  <q-img
-                    :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
-                    :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
-                  >
-                    <div class="absolute-bottom text-center"
-                         :style="{backgroundColor: props.row.isDelete ? 'rgba(255,0,0,.5)' : ''}">
+            <template v-slot:top-right>
+              <q-input model-value="" v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg"
+                       @blur="getImg" style="width: 233px;">
+                <template v-slot:append>
+                  <q-icon name="search" class="cursor-pointer" @click="getImg"/>
+                  <q-icon v-if="imgQuery && imgQuery.length > 0" name="close" class="cursor-pointer"
+                          @click="imgQuery = EMPTY_STRING"/>
+                </template>
+              </q-input>
+            </template>
+
+            <template v-slot:item="props">
+              <div class="q-pa-md col-md-3 col-xs-12">
+                <q-card
+                  class="animated cursor-pointer"
+                  :class="props.selected ? 'selected' : ''"
+                  @click="props.selected = !props.selected"
+                >
+                  <q-card-section>
+                    <q-img
+                      :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
+                      :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
+                    >
+                      <div class="absolute-bottom text-center"
+                           :style="{backgroundColor: props.row.isDelete ? 'rgba(255,0,0,.5)' : ''}">
                         <span>{{
                             (props.row.title === null ? '' : props.row.title) + SPLIT +
                             mySetTime(props.row.createTime) +
                             (props.row.isDelete ? " 已删除" : "")
                           }}</span>
-                    </div>
-                  </q-img>
-                </q-card-section>
+                      </div>
+                    </q-img>
+                  </q-card-section>
 
-                <!--        弹出代理          -->
-                <q-popup-proxy context-menu>
-                  <q-slide-transition appear>
-                    <q-list separator style="background-color: hotpink">
-                      <!--          查看原图            -->
-                      <q-item clickable v-ripple @click="goto(props.row.url)" v-close-popup>
-                        <q-item-section>
-                          查看原图
-                        </q-item-section>
-                      </q-item>
+                  <!--        弹出代理          -->
+                  <q-popup-proxy context-menu>
+                    <q-slide-transition appear>
+                      <q-list separator style="background-color: hotpink">
+                        <!--          查看原图            -->
+                        <q-item clickable v-ripple @click="goto(props.row.url)" v-close-popup>
+                          <q-item-section>
+                            查看原图
+                          </q-item-section>
+                        </q-item>
 
-                      <!--            删除            -->
-                      <q-item v-if="!props.row.isDelete" clickable v-ripple v-close-popup
-                              @click="deleteImgHandler([props.row.id])">
-                        <q-item-section>
-                          删除
-                        </q-item-section>
-                      </q-item>
+                        <!--            删除            -->
+                        <q-item v-if="!props.row.isDelete" clickable v-ripple v-close-popup
+                                @click="deleteImgHandler([props.row.id])">
+                          <q-item-section>
+                            删除
+                          </q-item-section>
+                        </q-item>
 
-                      <!--           恢复             -->
-                      <q-item v-else clickable v-ripple @click="recoverImg([props.row])"
-                              v-close-popup>
-                        <q-item-section>
-                          恢复
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-slide-transition>
-                </q-popup-proxy>
-              </q-card>
-            </div>
-          </template>
+                        <!--           恢复             -->
+                        <q-item v-else clickable v-ripple @click="recoverImg([props.row])"
+                                v-close-popup>
+                          <q-item-section>
+                            恢复
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-slide-transition>
+                  </q-popup-proxy>
+                </q-card>
+              </div>
+            </template>
 
-        </q-table>
+          </q-table>
 
-        <!--     分页     -->
-        <div class="q-pa-lg flex flex-center" v-if="imgPageTotal > 0">
-          <q-pagination
-            :max="imgPageTotal"
-            direction-links
-            boundary-numbers
-            :max-pages="pageMax"
-            v-model="imgCurrentPage"
-            @click="imgPageHandler"
-          />
-        </div>
+          <!--     分页     -->
+          <div class="q-pa-lg flex flex-center" v-if="imgPageTotal > 0">
+            <q-pagination
+              :max="imgPageTotal"
+              direction-links
+              boundary-numbers
+              :max-pages="pageMax"
+              v-model="imgCurrentPage"
+              @click="imgPageHandler"
+            />
+          </div>
 
-        <!--     加载     -->
-        <q-inner-loading :showing="imgTableLoading">
-          <q-spinner-gears size="50px" color="primary"/>
-        </q-inner-loading>
+          <!--     加载     -->
+          <q-inner-loading :showing="imgTableLoading">
+            <q-spinner-gears size="50px" color="primary"/>
+          </q-inner-loading>
 
-      </q-card-section>
+        </q-card-section>
 
-    </q-card>
+        <!--    悬浮title    -->
+        <q-card-section>
+          <q-input :rules="notNull" v-model="friendLinkLabel" placeholder="友情连接标题"/>
+        </q-card-section>
 
-    <!--   友情连接上传   -->
-    <q-card class="q-pa-md">
+        <!--    地址    -->
+        <q-card-section>
+          <q-input :rules="notNull" v-model="friendLinkUrl" placeholder="友情连接地址"/>
+        </q-card-section>
 
-      <!--    标题    -->
-      <q-card-section><strong>友情连接</strong></q-card-section>
+        <!--    按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" icon="clear_all" color="secondary" @click="resetFriendLink"/>
+          <q-btn label="上传" icon="upload" color="primary" @click="commitFriendLink"/>
+        </q-card-section>
 
-      <!--    悬浮title    -->
-      <q-card-section>
-        <q-input :rules="notNull" v-model="friendLinkLabel" placeholder="友情连接标题"/>
-      </q-card-section>
+        <!--   tips    -->
+        <q-card-section>
+          关于：上面图片表选中一个图片作为友情连接图片
+        </q-card-section>
 
-      <!--    地址    -->
-      <q-card-section>
-        <q-input :rules="notNull" v-model="friendLinkUrl" placeholder="友情连接地址"/>
-      </q-card-section>
+      </q-card>
 
-      <!--    按钮    -->
-      <q-card-section class="row justify-between">
-        <q-btn label="重置" icon="clear_all" color="secondary" @click="resetFriendLink"/>
-        <q-btn label="上传" icon="upload" color="primary" @click="commitFriendLink"/>
-      </q-card-section>
-
-      <!--   tips    -->
-      <q-card-section>
-        关于：上面图片表选中一个图片作为友情连接图片
-      </q-card-section>
-
-    </q-card>
-
+    </q-dialog>
   </div>
 
 </template>
@@ -280,7 +281,7 @@
 <script setup>
 
 import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
-import {deleteHandler, getRows, init, recoverHandler, repeatArr, sleep, subArr} from "components/Tools";
+import {deleteHandler, getRows, goto, init, notNull, recoverHandler, repeatArr, sleep, subArr} from "components/Tools";
 import {ref, watch} from "vue";
 import {
   CAROUSEL_HEIGHT,
@@ -303,6 +304,9 @@ import {
   IMG_COLUMNS
 } from "components/user/table";
 import {HEAD_ITEMS} from "components/main/head-item";
+
+// 上传弹窗
+const showUpload = ref(false);
 
 const imgPageSize = ref(IMG_PAGE_SIZE);
 

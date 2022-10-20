@@ -7,6 +7,7 @@
       <q-card-section class="q-pa-md q-gutter-md">
         <q-btn label="刷新" icon="refresh" color="blue-14" @click="fileRefreshHandler"
                :loading="fileRefreshBtnLoading"/>
+        <q-btn label="新增" icon="edit" color="secondary" @click="showUpload = true"/>
         <q-btn label="恢复" icon="restore" color="green-13"
                @click="fileRecoverHandler(getIdList(fileSelected))"/>
         <q-btn label="删除" icon="delete_forever" color="red"
@@ -67,33 +68,39 @@
       </q-card-section>
     </q-card>
 
-    <!--   上传文件   -->
-    <q-card class="q-pa-md">
-      <!--    标题    -->
-      <q-card-section><strong>上传文件</strong></q-card-section>
+    <q-dialog v-model="showUpload">
 
-      <!--    标题    -->
-      <q-card-section>
-        <q-input v-model="fileTitle" placeholder="文件标题（默认文件名作为标题）">
-          <template #append v-if="fileTitle && fileTitle.length > 0">
-            <q-icon name="close" class="cursor-pointer" @click="resetFileTitle"/>
-          </template>
-        </q-input>
-      </q-card-section>
+      <!--   上传文件   -->
+      <q-card class="q-pa-md">
+        <!--    标题    -->
+        <q-card-section class="row justify-between">
+          <strong>上传文件</strong>
+          <q-btn icon="close" dense round flat v-close-popup/>
+        </q-card-section>
 
-      <!--    上传器    -->
-      <q-card-section>
-        <q-uploader label="上传文件" ref="fileUploader" multiple hide-upload-btn @uploaded="uploadFinish"
-                    @finish="getFile" :factory="fileUploadFn"/>
-      </q-card-section>
+        <!--    标题    -->
+        <q-card-section>
+          <q-input v-model="fileTitle" placeholder="文件标题（默认文件名作为标题）">
+            <template #append v-if="fileTitle && fileTitle.length > 0">
+              <q-icon name="close" class="cursor-pointer" @click="resetFileTitle"/>
+            </template>
+          </q-input>
+        </q-card-section>
 
-      <!--    按钮    -->
-      <q-card-section class="row justify-between">
-        <q-btn label="重置" icon="clear_all" color="secondary" @click="resetFile"/>
-        <q-btn label="提交" icon="upload" color="blue-14" @click="commitFile"/>
-      </q-card-section>
-    </q-card>
+        <!--    上传器    -->
+        <q-card-section>
+          <q-uploader label="上传文件" ref="fileUploader" multiple hide-upload-btn @uploaded="uploadFinish"
+                      @finish="getFile" :factory="fileUploadFn"/>
+        </q-card-section>
 
+        <!--    按钮    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" icon="clear_all" color="secondary" @click="resetFile"/>
+          <q-btn label="提交" icon="upload" color="blue-14" @click="commitFile"/>
+        </q-card-section>
+      </q-card>
+
+    </q-dialog>
   </div>
 </template>
 
@@ -140,6 +147,9 @@ import {
   subArr,
   uploadFinish
 } from "components/Tools";
+
+// 展示弹窗上传
+const showUpload = ref(false);
 
 // 点击删除
 function fileDeleteHandler(idList) {

@@ -1,102 +1,15 @@
 <template>
   <div class="row q-pa-md q-gutter-md">
 
-    <!--   文章上传   -->
-    <q-card class="q-pa-md q-gutter-md">
-      <!--    标题    -->
-      <q-card-section><strong>文章上传</strong></q-card-section>
-
-      <!--    用户输入标题    -->
-      <q-card-section>
-        <q-input v-model="inputEssayTitle" placeholder="输入文章标题（默认使用文件名作为标题）">
-          <template v-slot:append>
-            <q-icon
-              v-if="inputEssayTitle && inputEssayTitle.length > 0"
-              name="close"
-              class="cursor-pointer"
-              @click="resetInputEssayTitle"
-            />
-          </template>
-        </q-input>
-      </q-card-section>
-
-      <!--    选择    -->
-      <q-card-section class="row justify-between">
-        <!--     一级     -->
-        <div class="column col-auto margin-1" style="margin-left: 0;">
-          <span class="col-auto">一级标题</span>
-          <q-btn-dropdown class="col-auto" color="secondary" :label="essayLabel">
-            <q-list>
-              <q-item v-for="item in HEAD_ITEMS" clickable v-close-popup @click="essayHandler_1(item)">
-                <q-item-section>
-                  {{ item.label }}
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </div>
-
-        <!--    二级      -->
-        <div class="column col-auto margin-1" style="margin-right: 0;">
-          <span class="col-auto">二级标题</span>
-          <q-btn-dropdown class="col-auto" color="info" :label="essayField">
-            <q-list v-if="essayLabel !== UNDEFINED">
-              <q-item v-for="item in selected_1" v-close-popup clickable @click="essayHandler_2(item)">
-                <q-item-section>
-                  {{ item.label }}
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <!--       缺省，显示全部       -->
-            <q-list v-else>
-              <template v-for="list in HEAD_ITEMS">
-                <q-item v-for="item in list.children" clickable v-close-popup @click="essayHandler_2(item)">
-                  <q-item-section>
-                    {{ item.label }}
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-list>
-          </q-btn-dropdown>
-        </div>
-
-      </q-card-section>
-
-      <!--    上传器    -->
-      <q-card-section>
-        <q-uploader
-          ref="essayUploader"
-          label="目前只支持docx格式"
-          :factory="essayUploadFn"
-          @finish="uploadDone = true;getEssay()"
-          @uploaded="essayUploadFinish"
-          accept=".docx"
-          hide-upload-btn
-          multiple
-        />
-      </q-card-section>
-
-      <!--    重置和提交    -->
-      <q-card-section class="row justify-between">
-        <q-btn label="重置" color="orange-7" class="col-auto min-w-100" @click="essayReset"
-               icon="clear_all"/>
-        <q-btn label="提交" color="blue-14" class="col-auto min-w-100" @click="essayCommit"
-               icon="upload"/>
-      </q-card-section>
-
-      <q-card-section>
-        关于：轮播图和友情连接不在这里上传
-      </q-card-section>
-
-    </q-card>
-
     <!--   文章表   -->
     <q-card class="q-pa-md">
 
       <!--    头部按钮    -->
       <q-card-section class="q-pa-md q-gutter-md">
-        <q-btn label="刷新" color="blue-14" icon="refresh" @click="refreshEssay" :loading="refreshEssayLoading"/>
+        <q-btn label="刷新" color="blue-14" icon="refresh" @click="refreshEssay"
+               :loading="refreshEssayLoading"/>
         <q-btn label="删除" color="red" icon="delete_forever" @click="deleteSelected"/>
+        <q-btn label="新增" icon="edit" color="secondary" @click="showUpload = true"/>
       </q-card-section>
 
       <!--    表格    -->
@@ -265,6 +178,100 @@
       </q-card-section>
 
     </q-card>
+
+    <!--  文章上传弹出  -->
+    <q-dialog v-model="showUpload">
+      <q-card class="q-pa-md q-gutter-md">
+        <!--    标题    -->
+        <q-card-section class="row justify-between">
+          <strong>文章上传</strong>
+          <q-btn icon="close" flat round v-close-popup dense/>
+        </q-card-section>
+
+        <!--    用户输入标题    -->
+        <q-card-section>
+          <q-input v-model="inputEssayTitle" placeholder="输入文章标题（默认使用文件名作为标题）">
+            <template v-slot:append>
+              <q-icon
+                v-if="inputEssayTitle && inputEssayTitle.length > 0"
+                name="close"
+                class="cursor-pointer"
+                @click="resetInputEssayTitle"
+              />
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <!--    选择    -->
+        <q-card-section class="row justify-between">
+          <!--     一级     -->
+          <div class="column col-auto margin-1" style="margin-left: 0;">
+            <span class="col-auto">一级标题</span>
+            <q-btn-dropdown class="col-auto" color="secondary" :label="essayLabel">
+              <q-list>
+                <q-item v-for="item in HEAD_ITEMS" clickable v-close-popup @click="essayHandler_1(item)">
+                  <q-item-section>
+                    {{ item.label }}
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
+
+          <!--    二级      -->
+          <div class="column col-auto margin-1" style="margin-right: 0;">
+            <span class="col-auto">二级标题</span>
+            <q-btn-dropdown class="col-auto" color="info" :label="essayField">
+              <q-list v-if="essayLabel !== UNDEFINED">
+                <q-item v-for="item in selected_1" v-close-popup clickable @click="essayHandler_2(item)">
+                  <q-item-section>
+                    {{ item.label }}
+                  </q-item-section>
+                </q-item>
+              </q-list>
+              <!--       缺省，显示全部       -->
+              <q-list v-else>
+                <template v-for="list in HEAD_ITEMS">
+                  <q-item v-for="item in list.children" clickable v-close-popup @click="essayHandler_2(item)">
+                    <q-item-section>
+                      {{ item.label }}
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-list>
+            </q-btn-dropdown>
+          </div>
+
+        </q-card-section>
+
+        <!--    上传器    -->
+        <q-card-section>
+          <q-uploader
+            ref="essayUploader"
+            label="目前只支持docx格式"
+            :factory="essayUploadFn"
+            @finish="uploadDone = true;getEssay()"
+            @uploaded="essayUploadFinish"
+            accept=".docx"
+            hide-upload-btn
+            multiple
+          />
+        </q-card-section>
+
+        <!--    重置和提交    -->
+        <q-card-section class="row justify-between">
+          <q-btn label="重置" color="orange-7" class="col-auto min-w-100" @click="essayReset"
+                 icon="clear_all"/>
+          <q-btn label="提交" color="blue-14" class="col-auto min-w-100" @click="essayCommit"
+                 icon="upload"/>
+        </q-card-section>
+
+        <q-card-section>
+          关于：轮播图和友情连接不在这里上传
+        </q-card-section>
+
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -287,11 +294,16 @@ import {api} from "boot/axios";
 import {getRows, init, sleep} from "components/Tools";
 import {ESSAY_COLUMNS} from "components/user/table";
 import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
-import {useRoute, useRouter} from "vue-router";
-import {useQuasar} from "quasar";
+import {useRouter} from "vue-router";
 
 const $router = useRouter();
 
+// 分页被点击
+function pageHandler() {
+  getEssay();
+}
+
+const showUpload = ref(false);
 const inputField = ref(UNDEFINED);
 const essayId = ref(ZERO);
 const firstField = ref(UNDEFINED);
