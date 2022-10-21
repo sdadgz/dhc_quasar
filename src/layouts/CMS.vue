@@ -55,7 +55,7 @@ import {DRAWER_LIST} from "components/user/DrawerList";
 const $route = useRoute();
 const $router = useRouter();
 
-const baseUrl = ref('/u'); // 需要修改
+const baseUrl = ref('/user'); // 需要修改
 
 const drawerList = ref(DRAWER_LIST);
 const drawer = ref(false);

@@ -50,6 +50,12 @@ export const FILE_COLUMNS: table[] = [
   {field: 'createTime', label: '上传时间', align: "center"},
 ]
 
+// 用户表
+export const USER_COLUMNS: table[] = [
+  {label: '用户id', field: 'id', align: "center"},
+  {label: '用户名', field: 'name', align: "center"},
+]
+
 // 接口
 export interface table {
   field: string,

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md row">
+  <div class="q-pa-md row q-gutter-md">
 
     <!--   注册海克斯科技用户   -->
     <q-card class="q-pa-md" style="width: 460px;">
@@ -31,22 +31,40 @@
       </q-card-section>
     </q-card>
 
+    <!--  用户表  -->
+    <q-card class="q-pa-md">
+      <q-table title="用户" :columns="userColumns" :rows="userRows" row-key="id" hide-pagination
+               selection="multiple" v-model:selected="userSelected" :loading="userLoading"
+               :selected-rows-label="getSelectedString" :pagination="userPagination">
+
+      </q-table>
+    </q-card>
   </div>
 </template>
 
 <script setup>
 
 import {ref} from "vue";
-import {EMPTY_STRING} from "components/MagicValue";
-import {notNull} from "components/Tools";
+import {EMPTY_STRING, PAGE_SIZE, START_PAGE} from "components/MagicValue";
+import {getRows, getSelectedString, init, notNull} from "components/Tools";
 import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {api} from "boot/axios";
+import {USER_COLUMNS} from "components/user/table";
 
+const pageSize = ref(PAGE_SIZE);
+const userPagination = ref({rowsPerPage: pageSize.value});
+const userLoading = ref(true);
+const userColumns = ref(USER_COLUMNS);
+const userRows = ref([]);
+const userSelected = ref([]);
 const registerUsername = ref(EMPTY_STRING);
 const registerPassword = ref(EMPTY_STRING);
 const registerPasswordP = ref(EMPTY_STRING);
 const sameRule = ref([(val) => (val && val === registerPassword.value && val.length > 0)
-  || '两次输入的密码不同'])
+  || '两次输入的密码不同']);
+const currentPage = ref(START_PAGE);
+const pageTotal = ref(4);
+const name = ref(EMPTY_STRING);
 
 // 重置注册
 function resetRegister() {
@@ -72,10 +90,34 @@ function commitRegister() {
     CommFail("注册失败");
   }).then(res => {
     resetRegister();
+    getUser();
   })
 }
 
+// 获取user
+async function getUser() {
+  userLoading.value = true;
+  await api.get('/user/page', {
+    params: {
+      currentPage: currentPage.value,
+      pageSize: pageSize.value,
+      name: name.value === EMPTY_STRING ? null : name.value
+    }
+  }).then(res => {
+    const dataLists = res.data.lists;
+    const dataTotal = res.data.total;
 
+    userRows.value = getRows(dataLists, USER_COLUMNS);
+    pageTotal.value = Math.ceil(dataTotal / pageSize.value);
+  })
+  userLoading.value = false;
+}
+
+function start(){
+  getUser();
+}
+
+init(start);
 </script>
 
 <style scoped>

@@ -8,27 +8,12 @@ const routes = [
     redirect: '/首页' // 重定向到主页
   },
   {
-    // 海克斯科技用户页
     path: '/user',
-    component: () => import('layouts/EmptyLayout.vue'),
-    children: [
-      {
-        path: '',
-        component: () => import('pages/user/User.vue')
-      },
-      {
-        path: 'login',
-        component: () => import('pages/user/Login.vue')
-      }
-    ]
-  },
-  {
-    path: '/u',
     component: () => import('layouts/CMS.vue'),
     children: [
       {
         path: '',
-        redirect: '/u/essay'
+        redirect: '/user/essay'
       },
       {
         path: 'firstTitle',
@@ -65,6 +50,17 @@ const routes = [
       {
         path: 'register',
         component: () => import('pages/user/Register.vue')
+      }
+    ]
+  },
+  {
+    // 海克斯科技用户页
+    path: '/user',
+    component: () => import('layouts/EmptyLayout.vue'),
+    children: [
+      {
+        path: 'login',
+        component: () => import('pages/user/Login.vue')
       }
     ]
   },
