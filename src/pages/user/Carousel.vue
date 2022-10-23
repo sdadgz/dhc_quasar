@@ -110,9 +110,8 @@
 
     </q-card>
 
-    <q-dialog v-model="showUpload">
-
-      <!--   图片表   -->
+    <!--   弹出新增   -->
+    <q-dialog v-model="showUpload" full-width>
       <q-card style="width: 96vw" class="q-pa-md">
 
         <!--    标题    -->
@@ -400,10 +399,8 @@
           <q-btn label="上传" icon="upload" color="primary" @click="carouseUploadHandler"/>
         </q-card-section>
       </q-card>
-
     </q-dialog>
   </div>
-
 </template>
 
 <script setup>
@@ -959,5 +956,14 @@ start();
 </script>
 
 <style scoped>
+
+.animated {
+  transition: all .35s ease-in-out;
+}
+
+.selected {
+  background-color: #999999;
+  transform: scale(0.9);
+}
 
 </style>

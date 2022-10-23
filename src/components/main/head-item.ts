@@ -1,7 +1,7 @@
 export const SELECT_COLOR = '#007eff';
 export const UNSELECT_COLOR = '#125ca8';
 
-export const HEAD_ITEMS: head[] = [
+export let HEAD_ITEMS: head[] = [
   {
     label: "首页",
     children: [

@@ -37,7 +37,45 @@
                selection="multiple" v-model:selected="userSelected" :loading="userLoading"
                :selected-rows-label="getSelectedString" :pagination="userPagination">
 
+        <template #body-cell-name="props">
+          <q-td :props="props" class="cursor-pointer" title="点击编辑">
+            {{ props.row.name }}
+            <q-popup-edit
+              v-model="props.row.name"
+              v-slot="scope"
+              title="修改标题"
+              @before-show="beforeShowUsernameHandler(props.row.name, props.row.id)"
+            >
+              <transition
+                appear
+                enter-active-class="animated zoomIn"
+                leave-active-class="animated zoomOut"
+              >
+                <div class="q-pa-md q-gutter-md">
+                  <q-input v-model="nameInput" dense autofocus @keyup.enter="updateUsernameHandler"
+                           v-close-popup/>
+
+                  <!--           提交重置按钮           -->
+                  <div class="row justify-between">
+                    <q-btn class="col-auto"
+                           @click="beforeShowUsernameHandler(props.row.name, props.row.id)"
+                           color="secondary" label="重置"/>
+                    <q-btn class="col-auto" @click="updateUsernameHandler" color="primary"
+                           label="提交" v-close-popup/>
+                  </div>
+                </div>
+              </transition>
+            </q-popup-edit>
+          </q-td>
+        </template>
+
       </q-table>
+
+
+      <!--     加载     -->
+      <q-inner-loading :showing="userLoading">
+        <q-spinner-gears size="50px" color="primary"/>
+      </q-inner-loading>
     </q-card>
   </div>
 </template>
@@ -50,6 +88,29 @@ import {getRows, getSelectedString, init, notNull} from "components/Tools";
 import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {api} from "boot/axios";
 import {USER_COLUMNS} from "components/user/table";
+
+const nameInput = ref(EMPTY_STRING);
+const userId = ref(EMPTY_STRING);
+
+// 点击用户表名字预处理
+function beforeShowUsernameHandler(name, id) {
+  nameInput.value = name;
+  userId.value = id;
+}
+
+// 修改用户表名字
+function updateUsernameHandler() {
+  api.put('/user/update', {
+    name: nameInput.value,
+    id: userId.value
+  }).then(res => {
+    CommSeccess("修改成功");
+  }).catch(res => {
+    CommFail("修改失败");
+  }).then(res => {
+    getUser();
+  })
+}
 
 const pageSize = ref(PAGE_SIZE);
 const userPagination = ref({rowsPerPage: pageSize.value});
@@ -113,7 +174,7 @@ async function getUser() {
   userLoading.value = false;
 }
 
-function start(){
+function start() {
   getUser();
 }
 

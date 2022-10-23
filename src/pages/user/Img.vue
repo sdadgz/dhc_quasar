@@ -37,8 +37,8 @@
         >
 
           <template v-slot:top-right>
-            <q-input model-value="" v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg"
-                     @blur="getImg" style="width: 233px;">
+            <q-input v-model="imgQuery" placeholder="搜索（简介）" @keyup.enter="getImg" @blur="getImg"
+                     style="width: 233px;">
               <template v-slot:append>
                 <q-icon name="search" class="cursor-pointer" @click="getImg"/>
                 <q-icon v-if="imgQuery && imgQuery.length > 0" name="close" class="cursor-pointer"
@@ -189,7 +189,7 @@ import {
   START_PAGE
 } from "components/MagicValue";
 import {api} from "boot/axios";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {IMG_COLUMNS} from "components/user/table";
 import {getRows, getSelectedString, goto, init, repeatArr, sleep, subArr} from "components/Tools";
 import {SERVER_NAME} from "components/Models";
@@ -449,9 +449,22 @@ function start() {
   getImg();
 }
 
+watch(() => imgSelected.value, () => {
+  updateImgMorph();
+}, {deep: true})
+
 init(start);
 </script>
 
 <style scoped>
+
+.animated {
+  transition: all .35s ease-in-out;
+}
+
+.selected {
+  background-color: #999999;
+  transform: scale(0.9);
+}
 
 </style>

@@ -53,7 +53,7 @@ export const FILE_COLUMNS: table[] = [
 // 用户表
 export const USER_COLUMNS: table[] = [
   {label: '用户id', field: 'id', align: "center"},
-  {label: '用户名', field: 'name', align: "center"},
+  {label: '用户名（点击编辑）', field: 'name', align: "center", name: 'name'},
 ]
 
 // 接口
