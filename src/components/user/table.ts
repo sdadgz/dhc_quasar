@@ -56,6 +56,21 @@ export const USER_COLUMNS: table[] = [
   {label: '用户名（点击编辑）', field: 'name', align: "center", name: 'name'},
 ]
 
+// 一级标题
+export const FIRST_TITLE_COLUMNS: table[] = [
+  {label: 'id', field: 'id', align: "center"},
+  {label: '一级标题', field: 'title', align: "center"},
+  {label: '优先级', field: 'order', align: "center"},
+]
+
+// 二级标题
+export const SECOND_TITLE_COLUMNS: table[] = [
+  {label: 'id', field: 'id', align: "center"},
+  {label: '一级标题', field: 'firstTitle.title', align: "center"},
+  {label: '二级标题', field: 'title', align: "center"},
+  {label: '优先级', field: 'order', align: "center"},
+]
+
 // 接口
 export interface table {
   field: string,

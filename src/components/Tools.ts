@@ -159,7 +159,7 @@ export function recoverHandler(idList: number[], url: string, callback?: () => v
 }
 
 // 选中几项
-export function getSelectedString(e) {
+export function getSelectedString(e: any) {
   return `已选择${e}项`;
 }
 

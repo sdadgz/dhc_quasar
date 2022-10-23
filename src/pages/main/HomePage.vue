@@ -41,11 +41,11 @@
         </div>
 
       </div>
+
       <!--    其余    -->
       <div class="row">
-        <div class="col l"
-             :style="{marginLeft: i === 1 ? 0 : '',
-             marginRight: i === HEAD_ITEMS[0].children.length - 3 ? 0 : ''}"
+        <div class="col-4"
+             :style="{paddingLeft: i % 3 === 1 ? '' : '12px'}"
              v-for="i in HEAD_ITEMS[0].children.length - 3">
           <ListItem :index="i + 1"/>
         </div>
@@ -105,10 +105,6 @@ start();
 </script>
 
 <style scoped>
-
-.l {
-  margin: 0 6px;
-}
 
 .pagination-box {
   cursor: pointer;
