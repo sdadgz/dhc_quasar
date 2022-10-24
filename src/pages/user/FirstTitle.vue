@@ -24,7 +24,7 @@
                 v-model="props.row.title"
                 v-slot="scope"
                 title="修改标题"
-                @before-show="beforeShowFirstTitle(props.row.title,props.row.id)"
+                @before-show="beforeShowFirstTitle(props.row.title, props.row.id, props.row.order)"
               >
                 <transition
                   appear
@@ -38,7 +38,39 @@
                     <!--           提交重置按钮           -->
                     <div class="row justify-between">
                       <q-btn class="col-auto"
-                             @click="beforeShowFirstTitle(props.row.title,props.row.id)"
+                             @click="beforeShowFirstTitle(props.row.title, props.row.id, props.row.order)"
+                             color="secondary" label="重置"/>
+                      <q-btn class="col-auto" @click="updateFirstTitleHandler" color="primary"
+                             label="提交" v-close-popup/>
+                    </div>
+                  </div>
+                </transition>
+              </q-popup-edit>
+            </q-td>
+          </template>
+
+          <!--     排序     -->
+          <template #body-cell-order="props">
+            <q-td :props="props" class="cursor-pointer" title="点击编辑">
+              {{ props.row.order }}
+              <q-popup-edit
+                v-model="props.row.order"
+                v-slot="scope"
+                title="修改标题"
+                @before-show="beforeShowFirstTitle(props.row.title, props.row.id, props.row.order)"
+              >
+                <transition
+                  appear
+                  enter-active-class="animated zoomIn"
+                  leave-active-class="animated zoomOut"
+                >
+                  <div class="q-pa-md q-gutter-md">
+                    <q-input v-model="firstTitleOrder" dense autofocus type="number"/>
+
+                    <!--           提交重置按钮           -->
+                    <div class="row justify-between">
+                      <q-btn class="col-auto"
+                             @click="beforeShowFirstTitle(props.row.title, props.row.id, props.row.order)"
                              color="secondary" label="重置"/>
                       <q-btn class="col-auto" @click="updateFirstTitleHandler" color="primary"
                              label="提交" v-close-popup/>
@@ -88,7 +120,8 @@ function updateFirstTitleHandler() {
 }
 
 // 预处理
-function beforeShowFirstTitle(title, id) {
+function beforeShowFirstTitle(title, id, order) {
+  firstTitleOrder.value = order;
   firstTitleTitle.value = title;
   firstTitleId.value = id;
 }
