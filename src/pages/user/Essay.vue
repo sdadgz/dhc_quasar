@@ -54,7 +54,8 @@
                   leave-active-class="animated zoomOut"
                 >
                   <div class="q-pa-md q-gutter-md">
-                    <q-input v-model="inputField" dense autofocus/>
+                    <q-input v-model="inputField" dense autofocus v-close-popup
+                             @keyup.enter="tableTitleSave"/>
 
                     <!--           提交重置按钮           -->
                     <div class="row justify-between">

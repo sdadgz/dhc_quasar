@@ -16,6 +16,38 @@
                  :loading="firstTitleLoading" :pagination="firstTitlePagination"
                  :selected-rows-label="getSelectedString">
 
+          <!--     标题     -->
+          <template #body-cell-title="props">
+            <q-td :props="props" title="点击编辑" class="cursor-pointer">
+              {{ props.row.title }}
+              <q-popup-edit
+                v-model="props.row.title"
+                v-slot="scope"
+                title="修改标题"
+                @before-show="beforeShowFirstTitle(props.row.title,props.row.id)"
+              >
+                <transition
+                  appear
+                  enter-active-class="animated zoomIn"
+                  leave-active-class="animated zoomOut"
+                >
+                  <div class="q-pa-md q-gutter-md">
+                    <q-input v-model="firstTitleTitle" dense autofocus v-close-popup
+                             @keyup.enter="updateFirstTitleHandler"/>
+
+                    <!--           提交重置按钮           -->
+                    <div class="row justify-between">
+                      <q-btn class="col-auto"
+                             @click="beforeShowFirstTitle(props.row.title,props.row.id)"
+                             color="secondary" label="重置"/>
+                      <q-btn class="col-auto" @click="updateFirstTitleHandler" color="primary"
+                             label="提交" v-close-popup/>
+                    </div>
+                  </div>
+                </transition>
+              </q-popup-edit>
+            </q-td>
+          </template>
         </q-table>
 
         <!--     加载     -->
@@ -31,9 +63,35 @@
 
 import {ref} from "vue";
 import {FIRST_TITLE_COLUMNS} from "components/user/table";
-import {getRows, getSelectedString, init} from "components/Tools";
-import {PAGE_SIZE, START_PAGE} from "components/MagicValue";
+import {emptyToNull, getRows, getSelectedString, init} from "components/Tools";
+import {EMPTY_STRING, PAGE_SIZE, START_PAGE} from "components/MagicValue";
 import {api} from "boot/axios";
+import {CommFail, CommSeccess} from "components/notifyTools";
+
+const firstTitleTitle = ref(EMPTY_STRING);
+const firstTitleId = ref(EMPTY_STRING);
+const firstTitleOrder = ref(EMPTY_STRING);
+
+// 修改一级标题
+function updateFirstTitleHandler() {
+  api.put('firstTitle', {
+    id: emptyToNull(firstTitleId.value),
+    title: emptyToNull(firstTitleTitle.value),
+    order: emptyToNull(firstTitleOrder.value)
+  }).then(res => {
+    CommSeccess("修改成功");
+  }).catch(res => {
+    CommFail("修改失败");
+  }).then(res => {
+    getFirstTitle();
+  })
+}
+
+// 预处理
+function beforeShowFirstTitle(title, id) {
+  firstTitleTitle.value = title;
+  firstTitleId.value = id;
+}
 
 const firstTitlePageSize = ref(PAGE_SIZE);
 const firstTitleRows = ref([]);

@@ -59,8 +59,8 @@ export const USER_COLUMNS: table[] = [
 // 一级标题
 export const FIRST_TITLE_COLUMNS: table[] = [
   {label: 'id', field: 'id', align: "center"},
-  {label: '一级标题', field: 'title', align: "center"},
-  {label: '优先级', field: 'order', align: "center"},
+  {label: '一级标题', field: 'title', align: "center", name: 'title'},
+  {label: '优先级', field: 'order', align: "center", name: "order"},
 ]
 
 // 二级标题

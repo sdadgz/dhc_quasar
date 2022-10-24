@@ -115,8 +115,9 @@
       <q-card style="width: 96vw" class="q-pa-md">
 
         <!--    标题    -->
-        <q-card-section>
+        <q-card-section class="row justify-between">
           <strong>轮播图上传</strong>
+          <q-btn icon="close" dense round v-close-popup flat/>
         </q-card-section>
 
         <!--    表格    -->

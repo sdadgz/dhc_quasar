@@ -1,6 +1,6 @@
 // 遇到问题睡大觉
 import {ESSAY_COLUMNS, table} from "./user/table";
-import {DOT} from "./MagicValue";
+import {DOT, EMPTY_STRING} from "./MagicValue";
 import {ref} from "vue";
 import {CommFail, CommSeccess, CommWarn} from "./notifyTools";
 import {SERVER_PREFIX} from "./Models";
@@ -172,4 +172,10 @@ export async function init(fun: () => void) {
 // 获取一二级标题
 async function getHeadItem() {
   console.log("获取一二级标题没写");
+}
+
+
+// 将空字符串转化为null
+export function emptyToNull(str: string){
+  return str === EMPTY_STRING ? null : str;
 }
