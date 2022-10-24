@@ -4,7 +4,8 @@
 
       <!--   一堆按钮   -->
       <q-card-section class="q-pa-md q-gutter-md">
-        <q-btn label="刷新" icon="refresh" color="blue-14"/>
+        <q-btn label="刷新" icon="refresh" color="blue-14" :loading="secondTitleRefreshBtnLoading"
+               @click="refreshBtnHandler"/>
       </q-card-section>
 
       <!--   表   -->
@@ -24,7 +25,7 @@
                 v-model="props.row.title"
                 v-slot="scope"
                 title="修改标题"
-                @before-show="beforeShowFirstTitle(props.row.title, props.row.id, props.row.order)"
+                @before-show="beforeShowSecondTitle(props.row.title, props.row.id, props.row.order)"
               >
                 <transition
                   appear
@@ -38,7 +39,7 @@
                     <!--           提交重置按钮           -->
                     <div class="row justify-between">
                       <q-btn class="col-auto"
-                             @click="beforeShowFirstTitle(props.row.title, props.row.id, props.row.order)"
+                             @click="beforeShowSecondTitle(props.row.title, props.row.id, props.row.order)"
                              color="secondary" label="重置"/>
                       <q-btn class="col-auto" @click="updateSecondTitleHandler" color="primary"
                              label="提交" v-close-popup/>
@@ -57,7 +58,7 @@
                 v-model="props.row.order"
                 v-slot="scope"
                 title="修改标题"
-                @before-show="beforeShowFirstTitle(props.row.title, props.row.id, props.row.order)"
+                @before-show="beforeShowSecondTitle(props.row.title, props.row.id, props.row.order)"
               >
                 <transition
                   appear
@@ -70,7 +71,7 @@
                     <!--           提交重置按钮           -->
                     <div class="row justify-between">
                       <q-btn class="col-auto"
-                             @click="beforeShowFirstTitle(props.row.title, props.row.id, props.row.order)"
+                             @click="beforeShowSecondTitle(props.row.title, props.row.id, props.row.order)"
                              color="secondary" label="重置"/>
                       <q-btn class="col-auto" @click="updateSecondTitleHandler" color="primary"
                              label="提交" v-close-popup/>
@@ -95,10 +96,22 @@
 
 import {FIRST_TITLE_COLUMNS, SECOND_TITLE_COLUMNS} from "components/user/table";
 import {ref} from "vue";
-import {EMPTY_STRING, PAGE_SIZE, START_PAGE} from "components/MagicValue";
+import {DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE} from "components/MagicValue";
 import {api} from "boot/axios";
-import {emptyToNull, getRows, getSelectedString, init} from "components/Tools";
+import {emptyToNull, getRows, getSelectedString, init, sleep} from "components/Tools";
 import {CommFail, CommSeccess} from "components/notifyTools";
+
+const secondTitleRefreshBtnLoading = ref(false);
+
+// 点击刷新按钮
+async function refreshBtnHandler() {
+  secondTitleRefreshBtnLoading.value = true;
+
+  await getSecondTitle();
+  await sleep(DEFAULT_DELAY);
+
+  secondTitleRefreshBtnLoading.value = false;
+}
 
 const secondTitleTitle = ref(EMPTY_STRING);
 const secondTitleId = ref(EMPTY_STRING);
@@ -123,19 +136,19 @@ function updateSecondTitleHandler() {
   }).catch(res => {
     CommFail("修改失败");
   }).then(res => {
-    getFirstTitle();
+    getSecondTitle();
   })
 }
 
 // 预处理
-function beforeShowFirstTitle(title, id, order) {
+function beforeShowSecondTitle(title, id, order) {
   secondTitleOrder.value = order;
   secondTitleTitle.value = title;
   secondTitleId.value = id;
 }
 
 // 获取二级标题
-async function getFirstTitle() {
+async function getSecondTitle() {
   secondTitleLoading.value = true;
 
   await api.get('/secondTitle', {
@@ -155,7 +168,7 @@ async function getFirstTitle() {
 }
 
 function start() {
-  getFirstTitle();
+  getSecondTitle();
 }
 
 init(start);

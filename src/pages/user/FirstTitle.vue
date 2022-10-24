@@ -4,7 +4,36 @@
 
       <!--   一堆按钮   -->
       <q-card-section class="q-pa-md q-gutter-md">
-        <q-btn label="刷新" icon="refresh" color="blue-14"/>
+        <q-btn label="刷新" icon="refresh" color="blue-14" :loading="firstTitleRefreshBtnLoading"
+               @click="refreshBtnHandler"/>
+        <q-btn label="新增" icon="edit" color="secondary" @click="beforeShow">
+          <q-dialog v-model="insertShow">
+            <q-card class="q-pa-md q-gutter-md">
+              <!--       标题       -->
+              <q-card-section class="row justify-between">
+                <strong>新增一级标题</strong>
+                <q-btn icon="close" dense round flat v-close-popup/>
+              </q-card-section>
+
+              <!--       标题输入       -->
+              <q-card-section>
+                <q-input v-model="firstTitleTitle" label="一级标题名字" style="min-width: 250px"
+                         @keyup.enter="commitFirstTitle"/>
+              </q-card-section>
+
+              <!--       优先级       -->
+              <q-card-section>
+                <q-input v-model="firstTitleOrder" label="优先级" type="number"/>
+              </q-card-section>
+
+              <!--      俩按钮        -->
+              <q-card-section class="row justify-between">
+                <q-btn label="重置" color="secondary" @click="resetFirstTitleForm"/>
+                <q-btn label="提交" color="primary" @click="commitFirstTitle"/>
+              </q-card-section>
+            </q-card>
+          </q-dialog>
+        </q-btn>
       </q-card-section>
 
       <!--   表   -->
@@ -95,21 +124,63 @@
 
 import {ref} from "vue";
 import {FIRST_TITLE_COLUMNS} from "components/user/table";
-import {emptyToNull, getRows, getSelectedString, init} from "components/Tools";
-import {EMPTY_STRING, PAGE_SIZE, START_PAGE} from "components/MagicValue";
+import {emptyToNull, getRows, getSelectedString, init, sleep} from "components/Tools";
+import {DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE, ZERO} from "components/MagicValue";
 import {api} from "boot/axios";
 import {CommFail, CommSeccess} from "components/notifyTools";
 
+const insertShow = ref(false);
+
+// 新增窗口预处理
+function beforeShow() {
+  resetFirstTitleForm();
+  insertShow.value = true;
+}
+
+// 重置表单
+function resetFirstTitleForm() {
+  firstTitleId.value = EMPTY_STRING;
+  firstTitleOrder.value = ZERO;
+  firstTitleTitle.value = EMPTY_STRING;
+}
+
+// 提交表单
+function commitFirstTitle() {
+  api.post('/firstTitle', {
+    title: firstTitleTitle.value,
+    order: firstTitleOrder.value
+  }).then(res => {
+    CommSeccess("上传成功");
+  }).catch(res => {
+    CommFail("上传失败");
+  }).then(res => {
+    resetFirstTitleForm();
+    getFirstTitle();
+  })
+}
+
+const firstTitleRefreshBtnLoading = ref(false);
+
+// 点击刷新按钮
+async function refreshBtnHandler() {
+  firstTitleRefreshBtnLoading.value = true;
+
+  await getFirstTitle();
+  await sleep(DEFAULT_DELAY);
+
+  firstTitleRefreshBtnLoading.value = false;
+}
+
 const firstTitleTitle = ref(EMPTY_STRING);
 const firstTitleId = ref(EMPTY_STRING);
-const firstTitleOrder = ref(EMPTY_STRING);
+const firstTitleOrder = ref(ZERO);
 
 // 修改一级标题
 function updateFirstTitleHandler() {
   api.put('firstTitle', {
     id: emptyToNull(firstTitleId.value),
     title: emptyToNull(firstTitleTitle.value),
-    order: emptyToNull(firstTitleOrder.value)
+    order: emptyToNull(firstTitleOrder.value.toString())
   }).then(res => {
     CommSeccess("修改成功");
   }).catch(res => {
