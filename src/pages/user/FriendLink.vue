@@ -135,10 +135,10 @@
 
     </q-card>
 
-    <q-dialog v-model="showUpload">
+    <q-dialog v-model="showUpload" full-width>
 
       <!--   图片表   -->
-      <q-card style="width: 96vw" class="q-pa-md">
+      <q-card class="q-pa-md">
 
         <!--    标题    -->
         <q-card-section class="row justify-between">
@@ -693,7 +693,9 @@ watch(() => imgSelected.value, () => {
   updateImgMorph();
 }, {deep: true})
 
-init(start)
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 <style scoped>

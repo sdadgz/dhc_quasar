@@ -675,8 +675,9 @@ function start() {
   getEssay();
 }
 
+const headItems = ref([]);
 
-init(start);
+init(start, headItems);
 </script>
 
 <style scoped>

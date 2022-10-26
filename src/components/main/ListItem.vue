@@ -25,30 +25,28 @@
 
 <script setup>
 
-import {HEAD_ITEMS} from "components/main/head-item";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {api} from "boot/axios";
-import {ESSAY_UNIQUE_ID, HOME_LIST_MAX_SIZE, LEVER, SPLIT} from "components/MagicValue";
+import {EMPTY_STRING, ESSAY_UNIQUE_ID, HOME_LIST_MAX_SIZE, LEVER, SPLIT, UNDEFINED} from "components/MagicValue";
 import {useRouter} from "vue-router";
+import {init} from "components/Tools";
 
 const $router = useRouter();
 
 const props = defineProps(['index']);
 const index = props.index;
-const first = HEAD_ITEMS[0].label;
-const second = HEAD_ITEMS[0].children[index].label;
 
 const lists = ref([]); // 获取的内容
 
 // 跳转
 function goto(id) {
-  gotoEssay(id, second);
+  gotoEssay(id, second.value);
 }
 
 // 跳转
 function gotoEssay(id, field) {
   let routeUrl = $router.resolve({
-    path: '/' + HEAD_ITEMS[0].label + LEVER + field,
+    path: '/' + headItems.value[0].label + LEVER + field,
     query: {[`${ESSAY_UNIQUE_ID}`]: id}
   })
   window.open(routeUrl.href, '_blank');
@@ -61,7 +59,7 @@ async function getContext() {
     params: {
       currentPage: 1,
       pageSize: HOME_LIST_MAX_SIZE,
-      field: first + SPLIT + second
+      field: first.value + SPLIT + second.value
     }
   }).then(res => {
     lists.value = res.data.lists;
@@ -79,7 +77,17 @@ function start() {
   getContext();
 }
 
-start();
+let first = ref(EMPTY_STRING);
+let second = ref(EMPTY_STRING);
+
+const headItems = ref([]);
+
+watch(() => headItems.value, () => {
+  first.value = headItems.value[0].label;
+  second.value = headItems.value[0].children[index].label;
+}, {deep: true})
+
+init(start, headItems);
 </script>
 
 <style scoped>

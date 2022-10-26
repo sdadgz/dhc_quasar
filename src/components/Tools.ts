@@ -1,10 +1,11 @@
 // 遇到问题睡大觉
 import {ESSAY_COLUMNS, table} from "./user/table";
-import {DOT, EMPTY_STRING} from "./MagicValue";
-import {ref} from "vue";
+import {DOT, EMPTY_STRING, HEAD_ITEMS_STRING, TIME_OUT_LONG, TIME_STRING} from "./MagicValue";
+import {Ref, ref} from "vue";
 import {CommFail, CommSeccess, CommWarn} from "./notifyTools";
 import {SERVER_PREFIX} from "./Models";
 import {api} from "../boot/axios";
+import {HEAD_ITEMS} from "./main/head-item";
 
 export const notNull = ref([(val) => (val && val.length > 0) || '输入值为空']);
 
@@ -164,18 +165,34 @@ export function getSelectedString(e: any) {
 }
 
 // 初始化获取一二级标题
-export async function init(fun: () => void) {
-  await getHeadItem();
+export async function init(fun: () => void, ref: Ref) {
+  ref.value = await getHeadItem();
   fun();
 }
 
 // 获取一二级标题
 async function getHeadItem() {
-  console.log("获取一二级标题没写");
+  if (timeOut()) {
+    return await api.get('/headItem').then(res => {
+      localStorage.setItem(HEAD_ITEMS_STRING, JSON.stringify(res.data));
+      return res.data;
+    })
+  }
+  return JSON.parse(localStorage.getItem(HEAD_ITEMS_STRING));
 }
 
-
 // 将空字符串转化为null
-export function emptyToNull(str: string){
+export function emptyToNull(str: string | number) {
   return str === EMPTY_STRING ? null : str;
+}
+
+// 超时
+function timeOut() {
+  const now = new Date().valueOf();
+  const time = Number.parseInt(localStorage.getItem(TIME_STRING));
+  if (!isNaN(time) && time + TIME_OUT_LONG > now) {
+    return false;
+  }
+  localStorage.setItem(TIME_STRING, now.toString());
+  return true;
 }

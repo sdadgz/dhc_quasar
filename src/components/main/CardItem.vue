@@ -18,10 +18,9 @@
 
 <script setup>
 
-import {HEAD_ITEMS} from "components/main/head-item";
-import {ESSAY_UNIQUE_ID, FRIEND_LINK_PAGE_SIZE, LEVER, START_PAGE} from "components/MagicValue";
+import {FRIEND_LINK_PAGE_SIZE, LEVER, START_PAGE} from "components/MagicValue";
 import {useRouter} from "vue-router";
-import {goto, setTime} from "components/Tools";
+import {goto, init} from "components/Tools";
 import {api} from "boot/axios";
 import {ref} from "vue";
 
@@ -29,8 +28,8 @@ const $router = useRouter();
 
 // 去更多
 function gotoMore() {
-  const first = HEAD_ITEMS[0].label;
-  const second = HEAD_ITEMS[0].children[HEAD_ITEMS[0].children.length - 1].label;
+  const first = headItems.value[0].label;
+  const second = headItems.value[0].children[headItems[0].value.children.length - 1].label;
   $router.push('/' + first + LEVER + second);
 }
 
@@ -59,7 +58,9 @@ function start() {
   getFriendLink();
 }
 
-start();
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 <style scoped>

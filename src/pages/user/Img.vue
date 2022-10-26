@@ -452,7 +452,9 @@ watch(() => imgSelected.value, () => {
   updateImgMorph();
 }, {deep: true})
 
-init(start);
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 <style scoped>

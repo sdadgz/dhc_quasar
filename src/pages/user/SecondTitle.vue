@@ -6,6 +6,48 @@
       <q-card-section class="q-pa-md q-gutter-md">
         <q-btn label="刷新" icon="refresh" color="blue-14" :loading="secondTitleRefreshBtnLoading"
                @click="refreshBtnHandler"/>
+        <q-btn label="新增" icon="edit" color="secondary" @click="insertBtnHandler">
+          <!--     新增按钮弹出dialog     -->
+          <q-dialog v-model="showInsert">
+            <q-card class="q-pa-md q-gutter-md">
+              <!--       标题       -->
+              <q-card-section class="row justify-between">
+                <strong style="min-width: 233px">新增二级标题</strong>
+                <q-btn icon="close" dense v-close-popup round flat/>
+              </q-card-section>
+
+              <!--       选择一级标题       -->
+              <q-card-section>
+                <q-btn-dropdown :label="firstTitleTitle" color="primary">
+                  <q-list>
+                    <q-item clickable v-for="item in headItems" v-close-popup
+                            @click="selectedFirstTitle(item.label,item.id)">
+                      <q-item-section>
+                        {{ item.label }}
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
+              </q-card-section>
+
+              <!--       输入标题       -->
+              <q-card-section>
+                <q-input v-model="secondTitleTitle" label="二级标题"/>
+              </q-card-section>
+
+              <!--      优先级        -->
+              <q-card-section>
+                <q-input v-model="secondTitleOrder" label="优先级" type="number"/>
+              </q-card-section>
+
+              <!--       提交重置       -->
+              <q-card-section class="row justify-between">
+                <q-btn label="重置" icon="clear_all" color="secondary" @click="insertBtnHandler"/>
+                <q-btn label="提交" icon="upload" color="primary" @click="commitSecondTitle"/>
+              </q-card-section>
+            </q-card>
+          </q-dialog>
+        </q-btn>
       </q-card-section>
 
       <!--   表   -->
@@ -94,12 +136,64 @@
 
 <script setup>
 
-import {FIRST_TITLE_COLUMNS, SECOND_TITLE_COLUMNS} from "components/user/table";
-import {ref} from "vue";
-import {DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE} from "components/MagicValue";
+import {SECOND_TITLE_COLUMNS} from "components/user/table";
+import {ref, watch} from "vue";
+import {DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE, UNDEFINED, ZERO} from "components/MagicValue";
 import {api} from "boot/axios";
 import {emptyToNull, getRows, getSelectedString, init, sleep} from "components/Tools";
-import {CommFail, CommSeccess} from "components/notifyTools";
+import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
+
+// 新增按钮
+const showInsert = ref(false);
+
+// 点击编辑按钮 重置
+function insertBtnHandler() {
+  resetFirstTitle();
+  resetForm();
+  showInsert.value = true;
+}
+
+// 上传二级标题
+function commitSecondTitle() {
+  if (firstTitleId.value === ZERO) {
+    CommWarn("请选择一级标题");
+    return;
+  }
+  api.post('/secondTitle', {
+    firstTitleId: firstTitleId.value,
+    title: secondTitleTitle.value,
+    order: secondTitleOrder.value
+  }).then(res => {
+    CommSeccess("上传成功");
+  }).catch(res => {
+    CommFail("上传失败");
+  }).then(res => {
+    getSecondTitle();
+  })
+}
+
+// 选择一级标题
+const firstTitleTitle = ref(UNDEFINED);
+const firstTitleId = ref(ZERO);
+
+// 一级标题选中
+function selectedFirstTitle(title, id) {
+  firstTitleTitle.value = title;
+  firstTitleId.value = id;
+}
+
+// 重置一级标题
+function resetFirstTitle() {
+  firstTitleTitle.value = UNDEFINED;
+  firstTitleId.value = ZERO;
+}
+
+// 重置表单
+function resetForm() {
+  secondTitleTitle.value = EMPTY_STRING;
+  secondTitleOrder.value = ZERO;
+  secondTitleId.value = EMPTY_STRING;
+}
 
 const secondTitleRefreshBtnLoading = ref(false);
 
@@ -115,7 +209,7 @@ async function refreshBtnHandler() {
 
 const secondTitleTitle = ref(EMPTY_STRING);
 const secondTitleId = ref(EMPTY_STRING);
-const secondTitleOrder = ref(EMPTY_STRING);
+const secondTitleOrder = ref(ZERO);
 
 const secondTitleSelected = ref([]);
 const secondTitlePageSize = ref(PAGE_SIZE);
@@ -171,7 +265,9 @@ function start() {
   getSecondTitle();
 }
 
-init(start);
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 <style scoped>

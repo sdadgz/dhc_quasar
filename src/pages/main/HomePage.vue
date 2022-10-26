@@ -43,10 +43,10 @@
       </div>
 
       <!--    其余    -->
-      <div class="row">
+      <div class="row" v-if="headItems && headItems[0]">
         <div class="col-4"
              :style="{paddingLeft: i % 3 === 1 ? '' : '12px'}"
-             v-for="i in HEAD_ITEMS[0].children.length - 3">
+             v-for="i in headItems[0].children.length - 3">
           <ListItem :index="i + 1"/>
         </div>
       </div>
@@ -62,8 +62,7 @@
 import {ref} from "vue";
 import {api} from "boot/axios";
 import {CAROUSEL_HEIGHT, CAROUSEL_WIDTH, EQ, ESSAY_UNIQUE_ID, LEVER} from "components/MagicValue";
-import {goto} from "components/Tools";
-import {HEAD_ITEMS} from "components/main/head-item";
+import {goto, init} from "components/Tools";
 import {useRoute, useRouter} from "vue-router";
 import ListItem from "components/main/ListItem.vue";
 import CardItem from "components/main/CardItem.vue";
@@ -85,13 +84,13 @@ async function getCarousel() {
 
 // 跳转到指定文章
 function carouselGoto(id) {
-  gotoEssay(id, HEAD_ITEMS[0].children[0].label);
+  gotoEssay(id, headItems.value[0].children[0].label);
 }
 
 // 跳转
 function gotoEssay(id, field) {
   let routeUrl = $router.resolve({
-    path: '/' + HEAD_ITEMS[0].label + LEVER + field,
+    path: '/' + headItems.value[0].label + LEVER + field,
     query: {[`${ESSAY_UNIQUE_ID}`]: id}
   })
   window.open(routeUrl.href, '_blank');
@@ -101,7 +100,9 @@ function start() {
   getCarousel();
 }
 
-start();
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 <style scoped>

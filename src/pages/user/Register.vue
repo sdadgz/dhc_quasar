@@ -178,7 +178,9 @@ function start() {
   getUser();
 }
 
-init(start);
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 <style scoped>

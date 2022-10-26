@@ -30,27 +30,27 @@
         <div class="width-1200 col-auto row justify-center">
           <div
             class="head-item col cursor-pointer text-white"
-            v-for="i in HEAD_ITEMS.length"
-            @mouseover="mouseOverMenu(HEAD_ITEMS[i-1])"
+            v-for="i in headItems.length"
+            @mouseover="mouseOverMenu(headItems[i-1])"
             @mouseout="mouseOutMenu"
             :style="headStyles[i-1]"
           >
             <!--      label      -->
-            <div @click="headHandler(HEAD_ITEMS[i-1])">
-              {{ HEAD_ITEMS[i - 1].label }}
+            <div @click="headHandler(headItems[i-1])">
+              {{ headItems[i - 1].label }}
             </div>
             <!--      下拉菜单      -->
-            <q-slide-transition v-show="HEAD_ITEMS[i-1].label === hoverItem.label"
+            <q-slide-transition v-show="headItems[i-1].label === hoverItem.label"
                                 style="position: relative;top: -1.04%">
               <q-list dense bordered>
                 <q-item clickable
                         style="z-index: 1"
                         class="head-background head-item"
                         dense
-                        v-for="child in HEAD_ITEMS[i-1].children"
-                        @mouseover="mouseOverMenu(HEAD_ITEMS[i-1])"
+                        v-for="child in headItems[i-1].children"
+                        @mouseover="mouseOverMenu(headItems[i-1])"
                         @mouseout="mouseOutMenu"
-                        @click="sonHeadHandler(HEAD_ITEMS[i-1], child)"
+                        @click="sonHeadHandler(headItems[i-1], child)"
                 >
                   <q-item-section style="z-index: 1">{{ child.label }}</q-item-section>
                 </q-item>
@@ -97,8 +97,9 @@
 import {ref, watch} from "vue";
 import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
-import {HEAD_ITEMS, SELECT_COLOR, UNSELECT_COLOR} from "components/main/head-item";
+import {SELECT_COLOR, UNSELECT_COLOR} from "components/main/head-item";
 import {HOME} from "components/MagicValue";
+import {init} from "components/Tools";
 
 const $router = useRouter();
 const $route = useRoute();
@@ -137,14 +138,14 @@ function fixUrl() {
   const second = $route.params.second;
 
   // 错吧首页当成常人
-  if (first === HEAD_ITEMS[0].label && !second) {
-    $router.push("/" + HEAD_ITEMS[0].label);
+  if (first === headItems.value[0].label && !second) {
+    $router.push("/" + headItems.value[0].label);
     console.warn("允许范围内的警告：因地址栏是中文");
     return;
   }
 
   // 不存在的label当作url了\
-  const fb = isExists(HEAD_ITEMS, first);
+  const fb = isExists(headItems.value, first);
   if (fb) {
     // 一级匹配√
     const sb = isExists(fb, second);
@@ -156,7 +157,7 @@ function fixUrl() {
     const path = $route.path;
     const split = path.split('/');
     // 首页特殊
-    if (split[1] !== HEAD_ITEMS[0].label) {
+    if (split[1] !== headItems.value[0].label) {
       // 不是首页，遣返
       goHome();
     }
@@ -180,11 +181,11 @@ function stylesInit() {
   // 天选之人是谁呢
   let selected = $route.params.first;
   if (!selected) {
-    selected = HEAD_ITEMS[0].label;
+    selected = headItems.value[0].label;
   }
   // 初始化
-  for (let i = 0; i < HEAD_ITEMS.length; i++) {
-    if (selected === HEAD_ITEMS[i].label) {
+  for (let i = 0; i < headItems.value.length; i++) {
+    if (selected === headItems.value[i].label) {
       headStyles.value[i] = {backgroundColor: SELECT_COLOR};
       break;
     }
@@ -197,7 +198,7 @@ function mouseOverMenu(item) {
   hoverItem.value = item;
 
   // 首页特殊不显示
-  if (item.label === HEAD_ITEMS[0].label) {
+  if (item.label === headItems.value[0].label) {
     hoverItem.value = {label: ''};
   }
 }
@@ -234,11 +235,12 @@ function gotoSchool() {
 
 // 监控
 watch(() => $route.path, () => {
-  start();
-}, {immediate: true})
+  init(start, headItems);
+})
 
-start();
+const headItems = ref([]);
 
+init(start, headItems);
 </script>
 
 <style scoped>

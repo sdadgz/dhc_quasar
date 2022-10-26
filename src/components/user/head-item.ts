@@ -1,3 +1,0 @@
-interface HeadItem{
-  label: string,
-}

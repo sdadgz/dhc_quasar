@@ -28,8 +28,8 @@
 
               <!--      俩按钮        -->
               <q-card-section class="row justify-between">
-                <q-btn label="重置" color="secondary" @click="resetFirstTitleForm"/>
-                <q-btn label="提交" color="primary" @click="commitFirstTitle"/>
+                <q-btn label="重置" color="secondary" @click="resetFirstTitleForm" icon="clear_all"/>
+                <q-btn label="提交" color="primary" @click="commitFirstTitle" icon="upload"/>
               </q-card-section>
             </q-card>
           </q-dialog>
@@ -229,7 +229,9 @@ function start() {
   getFirstTitle();
 }
 
-init(start);
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 <style scoped>

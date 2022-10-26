@@ -125,8 +125,7 @@ import {
 import {api} from "boot/axios";
 import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
-import {goto, max, sleep, sub} from "components/Tools";
-import {HEAD_ITEMS} from "components/main/head-item";
+import {goto, init, max, sleep, sub} from "components/Tools";
 
 const $route = useRoute();
 const $router = useRouter();
@@ -323,10 +322,10 @@ async function start() {
   const id = $route.query[`${ESSAY_UNIQUE_ID}`];
   if (id) {
     await getEssayDetail(id);
-  } else if (second.value === HEAD_ITEMS[0].children[0].label) {
+  } else if (second.value === headItems.value[0].children[0].label) {
     // 轮播图
     await getCarousel();
-  } else if (second.value === HEAD_ITEMS[0].children[HEAD_ITEMS[0].children.length - 1].label) {
+  } else if (second.value === headItems.value[0].children[headItems.value[0].children.length - 1].label) {
     // 友情连接
     showFriendLink.value = true;
   } else {
@@ -337,10 +336,12 @@ async function start() {
 
 // 监控
 watch(() => $route.fullPath, () => {
-  start();
+  init(start, headItems);
 })
 
-start();
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 

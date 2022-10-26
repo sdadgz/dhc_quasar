@@ -59,16 +59,16 @@ export const USER_COLUMNS: table[] = [
 // 一级标题
 export const FIRST_TITLE_COLUMNS: table[] = [
   {label: 'id', field: 'id', align: "center"},
-  {label: '一级标题', field: 'title', align: "center", name: 'title'},
-  {label: '优先级', field: 'order', align: "center", name: "order"},
+  {label: '一级标题（点击编辑）', field: 'title', align: "center", name: 'title'},
+  {label: '优先级（点击编辑）', field: 'order', align: "center", name: "order"},
 ]
 
 // 二级标题
 export const SECOND_TITLE_COLUMNS: table[] = [
   {label: 'id', field: 'id', align: "center"},
   {label: '一级标题', field: 'firstTitle.title', align: "center"},
-  {label: '二级标题', field: 'title', align: "center", name: 'title'},
-  {label: '优先级', field: 'order', align: "center", name: 'order'},
+  {label: '二级标题（点击编辑）', field: 'title', align: "center", name: 'title'},
+  {label: '优先级（点击编辑）', field: 'order', align: "center", name: 'order'},
 ]
 
 // 接口
