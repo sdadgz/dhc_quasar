@@ -24,7 +24,7 @@
         <span class="col-auto">一级标题</span>
         <q-btn-dropdown class="col-auto" color="secondary" :label="videoFirst">
           <q-list>
-            <q-item v-for="item in HEAD_ITEMS" clickable v-close-popup
+            <q-item v-for="item in headItems" clickable v-close-popup
                     @click="videoFirst = item.label;resetVideoSecond()">
               <q-item-section>
                 {{ item.label }}
@@ -38,7 +38,7 @@
       <div class="column col-auto">
         <span class="col-auto">二级标题</span>
         <q-btn-dropdown class="col-auto" color="info" :label="videoSecond">
-          <q-list v-for="father in HEAD_ITEMS">
+          <q-list v-for="father in headItems">
             <div v-if="father.label === videoFirst">
               <q-item v-for="item in father.children" v-close-popup clickable
                       @click="videoSecond = item.label">
@@ -78,7 +78,6 @@ import {SERVER_NAME} from "components/Models";
 import {ref, watch} from "vue";
 import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {useRouter} from "vue-router";
-import {HEAD_ITEMS} from "components/main/head-item";
 import {
   CAROUSEL_HEIGHT,
   CAROUSEL_WIDTH,
@@ -107,7 +106,7 @@ import {
   copy,
   deleteHandler,
   getRows,
-  goto,
+  goto, init,
   notNull, recoverHandler,
   repeatArr,
   setTime,
@@ -395,7 +394,9 @@ watch(() => imgSelected.value, () => {
   updateImgMorph();
 }, {deep: true})
 
-start();
+const headItems = ref([]);
+
+init(start, headItems);
 </script>
 
 <style scoped>
