@@ -1,5 +1,5 @@
 <template>
-  <div class="flex row justify-center">
+  <div class="flex row justify-center desktop-only">
     <div class="width-1200 col-auto">
       <div class="cont row overflow-hidden" :style="{height: CAROUSEL_HEIGHT+'px'}">
         <!--    轮播图    -->

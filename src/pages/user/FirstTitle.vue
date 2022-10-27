@@ -118,9 +118,9 @@
             :max="pageTotal"
             direction-links
             boundary-numbers
-            :max-pages=""
+            :max-pages="pageMax"
             v-model="currentPage"
-            @click="pageHandler"
+            @click="getFirstTitle"
           />
         </div>
 
@@ -138,9 +138,12 @@
 import {ref} from "vue";
 import {FIRST_TITLE_COLUMNS} from "components/user/table";
 import {emptyToNull, getIdList, getRows, getSelectedString, init, sleep} from "components/Tools";
-import {CODE_200, DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE, ZERO} from "components/MagicValue";
+import {CODE_200, DEFAULT_DELAY, EMPTY_STRING, PAGE_MAX, PAGE_SIZE, START_PAGE, ZERO} from "components/MagicValue";
 import {api} from "boot/axios";
 import {CommFail, CommSeccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
+
+// 分页
+const pageMax = ref(PAGE_MAX);
 
 // 删除
 function deleteHandler() {

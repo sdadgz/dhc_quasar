@@ -131,6 +131,19 @@
           <q-spinner-gears size="50px" color="primary"/>
         </q-inner-loading>
       </q-card-section>
+
+      <!--     分页     -->
+      <div class="q-pa-lg flex flex-center" v-if="pageTotal > 0">
+        <q-pagination
+          :max="pageTotal"
+          direction-links
+          boundary-numbers
+          :max-pages="pageMax"
+          v-model="currentPage"
+          @click="getSecondTitle"
+        />
+      </div>
+
     </q-card>
   </div>
 </template>
@@ -139,10 +152,22 @@
 
 import {SECOND_TITLE_COLUMNS} from "components/user/table";
 import {ref, watch} from "vue";
-import {CODE_200, DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE, UNDEFINED, ZERO} from "components/MagicValue";
+import {
+  CODE_200,
+  DEFAULT_DELAY,
+  EMPTY_STRING,
+  PAGE_MAX,
+  PAGE_SIZE,
+  START_PAGE,
+  UNDEFINED,
+  ZERO
+} from "components/MagicValue";
 import {api} from "boot/axios";
 import {emptyToNull, getIdList, getRows, getSelectedString, init, sleep} from "components/Tools";
 import {CommFail, CommSeccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
+
+// 分页
+const pageMax = ref(PAGE_MAX);
 
 // 删除
 function deleteSelected() {
