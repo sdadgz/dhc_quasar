@@ -46,7 +46,7 @@
                 v-model="props.row.title"
                 v-slot="scope"
                 title="修改标题"
-                @before-show="beforeShowHandler(props.row[`essay.title`],props.row.essayId)"
+                @before-show="beforeShowHandler(props.row[`essay.title`], props.row.essayId)"
               >
                 <transition
                   appear
@@ -80,7 +80,7 @@
                 v-model="props.row.field"
                 v-slot="scope"
                 title="修改位置"
-                @before-show="beforeShowHandler(props.row.field,props.row.id);"
+                @before-show="beforeShowHandler(props.row.field, props.row.id);"
               >
                 <transition
                   appear
@@ -98,7 +98,7 @@
                         <span class="col-auto">一级标题</span>
                         <q-btn-dropdown class="col-auto" color="secondary" :label="firstField">
                           <q-list>
-                            <q-item v-for="item in HEAD_ITEMS" clickable v-close-popup
+                            <q-item v-for="item in headItems" clickable v-close-popup
                                     @click="tableFirstFieldHandler(item)">
                               <q-item-section>
                                 {{ item.label }}
@@ -122,7 +122,7 @@
                           </q-list>
                           <!--       缺省，显示全部       -->
                           <q-list v-else>
-                            <template v-for="list in HEAD_ITEMS">
+                            <template v-for="list in headItems">
                               <q-item v-for="item in list.children" clickable v-close-popup
                                       @click="tableSecondFieldHandler(item)">
                                 <q-item-section>
@@ -138,7 +138,7 @@
 
                     <!--          提交重置按钮            -->
                     <div class="row justify-between">
-                      <q-btn class="col-auto" @click="beforeShowHandler(props.row.field,props.row.id)"
+                      <q-btn class="col-auto" @click="beforeShowHandler(props.row.field, props.row.id)"
                              color="secondary" label="重置"/>
                       <q-btn class="col-auto" @click="tableFieldSave" color="primary" label="提交"
                              v-close-popup/>
@@ -210,7 +210,7 @@
             <span class="col-auto">一级标题</span>
             <q-btn-dropdown class="col-auto" color="secondary" :label="essayLabel">
               <q-list>
-                <q-item v-for="item in HEAD_ITEMS" clickable v-close-popup @click="essayHandler_1(item)">
+                <q-item v-for="item in headItems" clickable v-close-popup @click="essayHandler_1(item)">
                   <q-item-section>
                     {{ item.label }}
                   </q-item-section>
@@ -232,7 +232,7 @@
               </q-list>
               <!--       缺省，显示全部       -->
               <q-list v-else>
-                <template v-for="list in HEAD_ITEMS">
+                <template v-for="list in headItems">
                   <q-item v-for="item in list.children" clickable v-close-popup @click="essayHandler_2(item)">
                     <q-item-section>
                       {{ item.label }}
@@ -289,7 +289,6 @@ import {
   START_PAGE,
   UNDEFINED, ZERO
 } from "components/MagicValue";
-import {HEAD_ITEMS} from "components/main/head-item";
 import {SERVER_NAME} from "components/Models";
 import {api} from "boot/axios";
 import {getRows, init, sleep} from "components/Tools";
@@ -344,9 +343,9 @@ function getHeadSon() {
   const first = firstField.value;
   let arr = [];
   arr.push({label: UNDEFINED});
-  for (let i = 0; i < HEAD_ITEMS.length; i++) {
-    if (first === HEAD_ITEMS[i].label) {
-      arr = arr.concat(HEAD_ITEMS[i].children);
+  for (let i = 0; i < headItems.value.length; i++) {
+    if (first === headItems.value[i].label) {
+      arr = arr.concat(headItems.value[i].children);
     }
   }
   return arr;
@@ -550,7 +549,7 @@ function essayCommit() {
 // 根据二级匹配唯一的一级
 function matching(val) {
   const ansArr = [];
-  HEAD_ITEMS.forEach(item => {
+  headItems.value.forEach(item => {
     item.children.forEach(child => {
       if (child.label === val) {
         ansArr.push(item.label);
