@@ -1,5 +1,9 @@
 <template>
-  <q-layout view="hHh Lpr fFf">
+  <span class="mobile-only full-height full-width">
+    不支持手机端访问，未开发
+  </span>
+
+  <q-layout class="desktop-only" view="hHh Lpr fFf">
 
     <!--  通用头部  -->
     <header>
@@ -245,11 +249,11 @@ init(headItems, start);
 
 <style scoped>
 
-.footer-span-div{
+.footer-span-div {
   margin-top: 10px;
 }
 
-.footer-span{
+.footer-span {
   margin-left: 50px;
 }
 
