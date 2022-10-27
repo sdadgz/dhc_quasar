@@ -235,12 +235,12 @@ function gotoSchool() {
 
 // 监控
 watch(() => $route.path, () => {
-  init(start, headItems);
+  init(headItems, start);
 })
 
 const headItems = ref([]);
 
-init(start, headItems);
+init(headItems, start);
 </script>
 
 <style scoped>

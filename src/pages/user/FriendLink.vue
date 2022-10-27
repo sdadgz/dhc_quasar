@@ -695,9 +695,18 @@ watch(() => imgSelected.value, () => {
 
 const headItems = ref([]);
 
-init(start, headItems);
+init(headItems, start);
 </script>
 
 <style scoped>
+
+.animated {
+  transition: all .35s ease-in-out;
+}
+
+.selected {
+  background-color: #999999;
+  transform: scale(0.9);
+}
 
 </style>

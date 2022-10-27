@@ -165,9 +165,11 @@ export function getSelectedString(e: any) {
 }
 
 // 初始化获取一二级标题
-export async function init(fun: () => void, ref: Ref) {
+export async function init(ref: Ref, fun?: () => void) {
   ref.value = await getHeadItem();
-  fun();
+  if (fun) {
+    fun();
+  }
 }
 
 // 获取一二级标题

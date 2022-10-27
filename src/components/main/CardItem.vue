@@ -29,7 +29,7 @@ const $router = useRouter();
 // 去更多
 function gotoMore() {
   const first = headItems.value[0].label;
-  const second = headItems.value[0].children[headItems[0].value.children.length - 1].label;
+  const second = headItems.value[0].children[headItems.value[0].children.length - 1].label;
   $router.push('/' + first + LEVER + second);
 }
 
@@ -60,7 +60,7 @@ function start() {
 
 const headItems = ref([]);
 
-init(start, headItems);
+init(headItems, start);
 </script>
 
 <style scoped>

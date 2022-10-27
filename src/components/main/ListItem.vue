@@ -85,9 +85,10 @@ const headItems = ref([]);
 watch(() => headItems.value, () => {
   first.value = headItems.value[0].label;
   second.value = headItems.value[0].children[index].label;
+  start();
 }, {deep: true})
 
-init(start, headItems);
+init(headItems);
 </script>
 
 <style scoped>

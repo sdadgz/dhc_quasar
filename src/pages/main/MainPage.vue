@@ -336,12 +336,12 @@ async function start() {
 
 // 监控
 watch(() => $route.fullPath, () => {
-  init(start, headItems);
+  init(headItems, start);
 })
 
 const headItems = ref([]);
 
-init(start, headItems);
+init(headItems, start);
 </script>
 
 

@@ -396,7 +396,7 @@ watch(() => imgSelected.value, () => {
 
 const headItems = ref([]);
 
-init(start, headItems);
+init(headItems, start);
 </script>
 
 <style scoped>
