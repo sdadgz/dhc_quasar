@@ -34,6 +34,7 @@
             </q-card>
           </q-dialog>
         </q-btn>
+        <q-btn label="删除" icon="delete_forever" color="red" @click="deleteHandler"/>
       </q-card-section>
 
       <!--   表   -->
@@ -111,6 +112,18 @@
           </template>
         </q-table>
 
+        <!--     分页     -->
+        <div class="q-pa-lg flex flex-center" v-if="pageTotal > 0">
+          <q-pagination
+            :max="pageTotal"
+            direction-links
+            boundary-numbers
+            :max-pages=""
+            v-model="currentPage"
+            @click="pageHandler"
+          />
+        </div>
+
         <!--     加载     -->
         <q-inner-loading :showing="firstTitleLoading">
           <q-spinner-gears size="50px" color="primary"/>
@@ -124,10 +137,23 @@
 
 import {ref} from "vue";
 import {FIRST_TITLE_COLUMNS} from "components/user/table";
-import {emptyToNull, getRows, getSelectedString, init, sleep} from "components/Tools";
-import {DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE, ZERO} from "components/MagicValue";
+import {emptyToNull, getIdList, getRows, getSelectedString, init, sleep} from "components/Tools";
+import {CODE_200, DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE, ZERO} from "components/MagicValue";
 import {api} from "boot/axios";
-import {CommFail, CommSeccess} from "components/notifyTools";
+import {CommFail, CommSeccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
+
+// 删除
+function deleteHandler() {
+  DeleteConformNew(getIdList(firstTitleSelected.value), '/firstTitle', () => {
+    getFirstTitle();
+    resetSelected();
+  })
+}
+
+// 重置选中
+function resetSelected() {
+  firstTitleSelected.value = [];
+}
 
 const insertShow = ref(false);
 

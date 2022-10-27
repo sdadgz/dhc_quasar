@@ -98,7 +98,7 @@
                 </q-td>
 
                 <!--         图片         -->
-                <q-td key="img" :props="props" class="cursor-pointer" title="查看原图">
+                <q-td key="img" :props="props" style="cursor: zoom-in" title="查看原图">
                   <q-img
                     :src="props.row[`img.reduceUrl`] !== null ?
                        props.row[`img.reduceUrl`] : props.row[`img.url`]"

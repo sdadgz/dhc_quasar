@@ -177,6 +177,7 @@ async function getHeadItem() {
   if (timeOut()) {
     return await api.get('/headItem').then(res => {
       localStorage.setItem(HEAD_ITEMS_STRING, JSON.stringify(res.data));
+      localStorage.setItem(TIME_STRING, new Date().valueOf().toString())
       return res.data;
     })
   }
@@ -192,9 +193,17 @@ export function emptyToNull(str: string | number) {
 function timeOut() {
   const now = new Date().valueOf();
   const time = Number.parseInt(localStorage.getItem(TIME_STRING));
-  if (!isNaN(time) && time + TIME_OUT_LONG > now) {
-    return false;
+  return isNaN(time) || time + TIME_OUT_LONG < now;
+}
+
+// 获取idList
+export function getIdList(lists: any[], type?: string): number[] {
+  const res: number[] = [];
+  if (!type) {
+    type = 'id';
   }
-  localStorage.setItem(TIME_STRING, now.toString());
-  return true;
+  lists.forEach(item => {
+    res.push(item[`${type}`]);
+  })
+  return res;
 }

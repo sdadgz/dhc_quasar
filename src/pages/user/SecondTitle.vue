@@ -48,6 +48,7 @@
             </q-card>
           </q-dialog>
         </q-btn>
+        <q-btn label="删除" icon="delete_forever" color="red" @click="deleteSelected"/>
       </q-card-section>
 
       <!--   表   -->
@@ -138,10 +139,23 @@
 
 import {SECOND_TITLE_COLUMNS} from "components/user/table";
 import {ref, watch} from "vue";
-import {DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE, UNDEFINED, ZERO} from "components/MagicValue";
+import {CODE_200, DEFAULT_DELAY, EMPTY_STRING, PAGE_SIZE, START_PAGE, UNDEFINED, ZERO} from "components/MagicValue";
 import {api} from "boot/axios";
-import {emptyToNull, getRows, getSelectedString, init, sleep} from "components/Tools";
-import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
+import {emptyToNull, getIdList, getRows, getSelectedString, init, sleep} from "components/Tools";
+import {CommFail, CommSeccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
+
+// 删除
+function deleteSelected() {
+  DeleteConformNew(getIdList(secondTitleSelected.value), '/firstTitle', () => {
+    getSecondTitle();
+    resetSelected();
+  });
+}
+
+// 重置选中
+function resetSelected() {
+  secondTitleSelected.value = [];
+}
 
 // 新增按钮
 const showInsert = ref(false);

@@ -59,6 +59,7 @@ export function CommWarn(message: any) {
   })
 }
 
+// 删除
 export function DeleteConform(fun: () => void) {
   Notify.create({
     message: '确定要删除所选项目吗？',
@@ -72,5 +73,34 @@ export function DeleteConform(fun: () => void) {
         label: '取消', color: 'white'
       }
     ]
+  })
+}
+
+// 新删除
+export function DeleteConformNew(idList: number[], url: string, fun?: () => void) {
+  DeleteConform(() => {
+    // 至少选择一个
+    if (idList.length < 1) {
+      CommWarn("至少选一个啊");
+      return;
+    }
+
+    api.delete(url, {
+      data: {
+        "idList": idList
+      }
+    }).then(res => {
+      if (res.code === CODE_200) {
+        CommSeccess("删除成功");
+      } else {
+        CommFail("删除失败");
+      }
+    }).catch(res => {
+      CommFail("删除失败");
+    }).then(res => {
+      if (fun) {
+        fun();
+      }
+    })
   })
 }
