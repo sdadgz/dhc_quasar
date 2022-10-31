@@ -46,6 +46,18 @@
                  :loading="firstTitleLoading" :pagination="firstTitlePagination"
                  :selected-rows-label="getSelectedString">
 
+          <!--     右上     -->
+          <template #top-right>
+            <q-input v-model="fieldInput" @blur="getFirstTitle" @keyup.enter="getFirstTitle"
+                     style="width: 200px" placeholder="搜索一级标题">
+              <template #append>
+                <q-icon name="search" class="cursor-pointer" @click="getFirstTitle"/>
+                <q-icon name="close" class="cursor-pointer" @click="resetFieldInput"
+                        v-if="fieldInput && fieldInput.length > 0"/>
+              </template>
+            </q-input>
+          </template>
+
           <!--     标题     -->
           <template #body-cell-title="props">
             <q-td :props="props" title="点击编辑" class="cursor-pointer">
@@ -141,6 +153,14 @@ import {emptyToNull, getIdList, getRows, getSelectedString, init, sleep} from "c
 import {CODE_200, DEFAULT_DELAY, EMPTY_STRING, PAGE_MAX, PAGE_SIZE, START_PAGE, ZERO} from "components/MagicValue";
 import {api} from "boot/axios";
 import {CommFail, CommSeccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
+
+// 输入框
+const fieldInput = ref(EMPTY_STRING);
+
+// 重置输入框
+function resetFieldInput() {
+  fieldInput.value = EMPTY_STRING;
+}
 
 // 分页
 const pageMax = ref(PAGE_MAX);
@@ -241,7 +261,8 @@ async function getFirstTitle() {
   await api.get('/firstTitle', {
     params: {
       currentPage: currentPage.value,
-      pageSize: firstTitlePageSize.value
+      pageSize: firstTitlePageSize.value,
+      title: fieldInput.value
     }
   }).then(res => {
     const lists = res.data.lists;

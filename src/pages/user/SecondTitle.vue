@@ -60,6 +60,18 @@
                  :loading="secondTitleLoading" :pagination="secondTitlePagination"
                  :selected-rows-label="getSelectedString">
 
+          <!--     右上     -->
+          <template #top-right>
+            <q-input v-model="fieldInput" @blur="getSecondTitle" @keyup.enter="getSecondTitle"
+                     style="width: 200px" placeholder="搜索一二级标题">
+              <template #append>
+                <q-icon name="search" class="cursor-pointer" @click="getSecondTitle"/>
+                <q-icon name="close" class="cursor-pointer" @click="resetFieldInput"
+                        v-if="fieldInput && fieldInput.length > 0"/>
+              </template>
+            </q-input>
+          </template>
+
           <!--     标题     -->
           <template #body-cell-title="props">
             <q-td :props="props" title="点击编辑" class="cursor-pointer">
@@ -165,6 +177,14 @@ import {
 import {api} from "boot/axios";
 import {emptyToNull, getIdList, getRows, getSelectedString, init, sleep} from "components/Tools";
 import {CommFail, CommSeccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
+
+// 搜索输入框
+const fieldInput = ref(EMPTY_STRING);
+
+// 充值输入框
+function resetFieldInput() {
+  fieldInput.value = EMPTY_STRING;
+}
 
 // 分页
 const pageMax = ref(PAGE_MAX);
@@ -287,7 +307,8 @@ async function getSecondTitle() {
   await api.get('/secondTitle', {
     params: {
       currentPage: currentPage.value,
-      pageSize: secondTitlePageSize.value
+      pageSize: secondTitlePageSize.value,
+      title: fieldInput.value
     }
   }).then(res => {
     const lists = res.data.lists;
