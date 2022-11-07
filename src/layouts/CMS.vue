@@ -3,13 +3,16 @@
     <!--  头部  -->
     <q-header>
       <q-toolbar>
-        <q-icon name="list" size="36px" class="cursor-pointer" @click="drawer = !drawer"
+        <q-icon name="list" size="36px" class="cursor-pointer desktop-only" @click="drawer = !drawer"
+                style="padding: 16px 0"/>
+        <q-icon name="list" size="36px" class="cursor-pointer mobile-only"
+                @click="True = true"
                 style="padding: 16px 0"/>
 
         <!--    面包屑    -->
         <q-breadcrumbs style="font-size: 18px">
           <q-breadcrumbs-el style="color: white;margin-left: 20px" label="后台管理系统"
-                            @click="to('')" class="cursor-pointer"/>
+                            @click="to(EMPTY_STRING)" class="cursor-pointer"/>
           <q-breadcrumbs-el :label="subTitle"/>
         </q-breadcrumbs>
       </q-toolbar>
