@@ -47,7 +47,10 @@
       <!--    菜单    -->
       <div class="col-auto">
         <q-list separator bordered>
-          <q-item style="background-color: #4a85e2" v-for="i in headItems.length">
+          <q-item v-for="i in headItems.length"
+                  clickable
+                  style="background-color: #4a85e2;color: black"
+                  :to="headItems[i-1].label">
             <q-item-section>
               {{ headItems[i - 1].label }}
             </q-item-section>
@@ -145,11 +148,11 @@ import {useRoute, useRouter} from "vue-router";
 import ListItem from "components/main/ListItem.vue";
 import CardItem from "components/main/CardItem.vue";
 
-// 首页一级索引
-const firstIndex = ref(0);
-
 const $route = useRoute();
 const $router = useRouter();
+
+// 首页一级索引
+const firstIndex = ref(0);
 
 const imgArr = ref([]); // 图片数组
 const slide = ref();

@@ -22,7 +22,7 @@
                 <span class="sub-title">{{ createTime }}</span>
               </div>
               <!--     内容     -->
-              <div v-html="text" style="padding: 30px 20px"></div>
+              <div v-html="text" style="padding: 30px 20px;overflow-wrap: break-word"></div>
             </div>
 
             <!--      展示友情连接      -->
