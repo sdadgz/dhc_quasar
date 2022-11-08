@@ -3,10 +3,7 @@
     <!--  头部  -->
     <q-header>
       <q-toolbar>
-        <q-icon name="list" size="36px" class="cursor-pointer desktop-only" @click="drawer = !drawer"
-                style="padding: 16px 0"/>
-        <q-icon name="list" size="36px" class="cursor-pointer mobile-only"
-                @click="True = true"
+        <q-icon name="list" size="36px" class="cursor-pointer" @click="drawer = !drawer;True = true"
                 style="padding: 16px 0"/>
 
         <!--    面包屑    -->
@@ -15,6 +12,10 @@
                             @click="to(EMPTY_STRING)" class="cursor-pointer"/>
           <q-breadcrumbs-el :label="subTitle"/>
         </q-breadcrumbs>
+
+        <!--    回家    -->
+        <q-space/>
+        <q-icon name="home" size="30px" class="float-right cursor-pointer" @click="goHome"/>
       </q-toolbar>
     </q-header>
 
@@ -52,7 +53,7 @@
 import {ref, watch} from "vue";
 import {SERVER_NAME} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
-import {EMPTY_STRING, LEVER} from "components/MagicValue";
+import {EMPTY_STRING, HOME, LEVER} from "components/MagicValue";
 import {DRAWER_LIST} from "components/user/DrawerList";
 
 const $route = useRoute();
@@ -66,6 +67,11 @@ const True = ref(true);
 const drawerHover = ref(false);
 const logoUrl = ref(SERVER_NAME + '/static/cms_logo.png');
 const subTitle = ref(EMPTY_STRING);
+
+// 回家
+function goHome(){
+  $router.push(HOME);
+}
 
 // 跳转到
 function to(second) {

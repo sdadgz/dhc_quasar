@@ -1,5 +1,68 @@
 <template>
-  <div class="flex row justify-center">
+  <!-- 手机独享 -->
+  <div class="column mobile-only">
+    <div class="mobile-item col">
+      <!--    轮播图    -->
+      <q-carousel animated
+                  v-model="slide"
+                  infinite
+                  :autoplay="autoplay"
+                  :arrows="!autoplay"
+                  class="full-width"
+                  height="56vw"
+                  transition-prev="slide-right"
+                  transition-next="slide-left"
+                  @mouseenter="autoplay = false"
+                  @mouseleave="autoplay = true"
+                  swipeable>
+
+        <!--     内容     -->
+        <q-carousel-slide :name="item.id"
+                          v-for="item in imgArr"
+                          :img-src="item.img.reduceUrl"
+                          class="cursor-pointer"
+                          @click="carouselGoto(item.essayId)">
+          <template v-slot>
+            <div class="absolute-bottom carousel-text">
+              {{ item.essay.title }}
+            </div>
+          </template>
+        </q-carousel-slide>
+
+        <!--    底下那个蓝白的格子      -->
+        <template #control>
+          <q-carousel-control position="bottom-right" :offset="[50,10]">
+              <span v-for="index in imgArr"
+                    class="pagination-box animated"
+                    @click="slide = index.id"
+                    :class="slide === index.id ? 'selected-box' : ''"/>
+          </q-carousel-control>
+        </template>
+      </q-carousel>
+    </div>
+
+    <!--   中间双   -->
+    <div class="row mobile-item">
+      <!--    菜单    -->
+      <div class="col-auto">
+        <q-list separator bordered>
+          <q-item v-for="i in headItems.length">
+            <q-item-section>
+              {{ headItems[i-1].label }}
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+
+      <!--    右侧单例    -->
+      <div class="col-all">
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 桌面独享 -->
+  <div class="flex row justify-center desktop-only">
     <div class="width-1200 col-auto">
       <div class="cont row overflow-hidden" :style="{height: CAROUSEL_HEIGHT+'px'}">
         <!--    轮播图    -->
@@ -13,11 +76,15 @@
                     transition-prev="slide-right"
                     transition-next="slide-left"
                     @mouseenter="autoplay = false"
-                    @mouseleave="autoplay = true">
+                    @mouseleave="autoplay = true"
+                    swipeable>
 
           <!--     内容     -->
-          <q-carousel-slide :name="item.id" v-for="item in imgArr" :img-src="item.img.reduceUrl"
-                            class="cursor-pointer" @click="carouselGoto(item.essayId)">
+          <q-carousel-slide :name="item.id"
+                            v-for="item in imgArr"
+                            :img-src="item.img.reduceUrl"
+                            class="cursor-pointer"
+                            @click="carouselGoto(item.essayId)">
             <template v-slot>
               <div class="absolute-bottom carousel-text">
                 {{ item.essay.title }}
@@ -28,7 +95,9 @@
           <!--    底下那个蓝白的格子      -->
           <template #control>
             <q-carousel-control position="bottom-right" :offset="[50,10]">
-              <span v-for="index in imgArr" class="pagination-box animated" @click="slide = index.id"
+              <span v-for="index in imgArr"
+                    class="pagination-box animated"
+                    @click="slide = index.id"
                     :class="slide === index.id ? 'selected-box' : ''"/>
             </q-carousel-control>
           </template>
@@ -39,7 +108,6 @@
         <div class="col">
           <ListItem style="margin: 0" :index="1"/>
         </div>
-
       </div>
 
       <!--    其余    -->
@@ -139,6 +207,10 @@ init(headItems, start);
 .cont {
   background-color: white;
   margin: 20px 0 0;
+}
+
+.mobile-item {
+  margin: 6px;
 }
 
 </style>

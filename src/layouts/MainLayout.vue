@@ -1,69 +1,93 @@
 <template>
-  <span class="mobile-only full-height full-width">
-    不支持手机端访问，未开发
-  </span>
-
-  <q-layout class="desktop-only" view="hHh Lpr fFf">
-
-    <!--  通用头部  -->
-    <header>
-      <div style="min-width: 1200px;height: 200px">
-        <!--    图片    -->
-        <q-img :src="banner" class="full-width full-height">
-          <div class="absolute-center head" style="background-color: unset">
-            <!--      标题      -->
-            <span class="cursor-pointer super-link" style="font-size: 44px;" @click="goHome">
-              石家庄市数字医疗康复技术创新中心
-            </span>
-            <div class="float-right" style="width: 380px">
-              <!--       头链接       -->
-              <div class="head_list">
-                <span @click="gotoLogin" class="super-link">登录</span>
-                <span @click="gotoSchool" class="super-link">石家庄学院</span>
-              </div>
-
-              <!--       图片       -->
-              <q-img :src="banner_text" style="margin-top: 40px;" class="float-right"/>
-
-            </div>
-          </div>
-        </q-img>
+  <!-- 手机独享 -->
+  <q-layout class="mobile-only" view="hHh Lpr fFf">
+    <!--   头部   -->
+    <q-img :src="banner">
+      <div class="text-white bg-unset full-width row justify-between">
+        <span class="col-auto" @click="goHome">石家庄市数字医疗康复技术创新中心</span>
+        <span class="col-auto" @click="gotoLogin">登录</span>
       </div>
-      <!--    面包屑    -->
-      <div class="head-background row justify-center" style="min-width: 1200px">
-        <div class="width-1200 col-auto row justify-center">
-          <div
-            class="head-item col cursor-pointer text-white"
-            v-for="i in headItems.length"
-            @mouseover="mouseOverMenu(headItems[i-1])"
-            @mouseout="mouseOutMenu"
-            :style="headStyles[i-1]"
-          >
-            <!--      label      -->
-            <div @click="headHandler(headItems[i-1])">
-              {{ headItems[i - 1].label }}
-            </div>
-            <!--      下拉菜单      -->
-            <q-slide-transition v-show="headItems[i-1].label === hoverItem.label"
-                                style="position: relative;top: -1.04%">
-              <q-list dense bordered>
-                <q-item clickable
-                        style="z-index: 1"
-                        class="head-background head-item"
-                        dense
-                        v-for="child in headItems[i-1].children"
-                        @mouseover="mouseOverMenu(headItems[i-1])"
-                        @mouseout="mouseOutMenu"
-                        @click="sonHeadHandler(headItems[i-1], child)"
-                >
-                  <q-item-section style="z-index: 1">{{ child.label }}</q-item-section>
-                </q-item>
-              </q-list>
-            </q-slide-transition>
-          </div>
+    </q-img>
+
+    <!--  内容  -->
+    <q-page-container>
+      <router-view/>
+      <div class="mobile-footer-container full-width row justify-center">
+        <!--     左侧图标     -->
+        <div class="float-left" style="margin: auto;height: 100%">
+          <img class="cursor-pointer" :src="footer_icon" alt="footer_icon" @click="goHome"/>
+        </div>
+
+        <!--    内容      -->
+        <div class="col column p-10">
+          <span>承办单位：石家庄市数字医疗康复技术创新中心</span>
+          <span>主办单位：石家庄学院</span>
+          <span>电话：0311-66617215</span>
+          <span>地址：石家庄市高新技术开发区珠峰大街288号</span>
         </div>
       </div>
-    </header>
+    </q-page-container>
+
+  </q-layout>
+
+  <!-- 桌面独享 -->
+  <q-layout class="desktop-only" view="hHh Lpr fFf">
+    <!--  通用头部  -->
+    <div style="min-width: 1200px;height: 200px">
+      <!--    图片    -->
+      <q-img :src="banner" class="full-width full-height">
+        <div class="absolute-center head" style="background-color: unset">
+          <!--      标题      -->
+          <span class="cursor-pointer super-link" style="font-size: 44px;" @click="goHome">
+            石家庄市数字医疗康复技术创新中心
+          </span>
+          <div class="float-right" style="width: 380px">
+            <!--       头链接       -->
+            <div class="head_list">
+              <span @click="gotoLogin" class="super-link">登录</span>
+              <span @click="gotoSchool" class="super-link">石家庄学院</span>
+            </div>
+
+            <!--       图片       -->
+            <q-img :src="banner_text" style="margin-top: 40px;" class="float-right"/>
+          </div>
+        </div>
+      </q-img>
+    </div>
+
+    <!--    面包屑    -->
+    <div class="head-background row justify-center" style="min-width: 1200px">
+      <div class="width-1200 col-auto row justify-center">
+        <div class="head-item col cursor-pointer text-white"
+             v-for="i in headItems.length"
+             @mouseover="mouseOverMenu(headItems[i-1])"
+             @mouseout="mouseOutMenu"
+             :style="headStyles[i-1]"
+        >
+          <!--      label      -->
+          <div @click="headHandler(headItems[i-1])">
+            {{ headItems[i - 1].label }}
+          </div>
+          <!--      下拉菜单      -->
+          <q-slide-transition v-show="headItems[i-1].label === hoverItem.label"
+                              style="position: relative;top: -1.04%">
+            <q-list dense bordered>
+              <q-item clickable
+                      style="z-index: 1"
+                      class="head-background head-item"
+                      dense
+                      v-for="child in headItems[i-1].children"
+                      @mouseover="mouseOverMenu(headItems[i-1])"
+                      @mouseout="mouseOutMenu"
+                      @click="sonHeadHandler(headItems[i-1], child)"
+              >
+                <q-item-section style="z-index: 1">{{ child.label }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-slide-transition>
+        </div>
+      </div>
+    </div>
 
     <!--  内容  -->
     <q-page-container>
@@ -92,7 +116,6 @@
         </div>
       </div>
     </q-page-container>
-
   </q-layout>
 </template>
 
@@ -213,11 +236,9 @@ function mouseOutMenu() {
   canReset.value = true;
 
   setTimeout(() => {
-
     if (canReset.value) {
       hoverItem.value = {label: ''};
     }
-
   }, 233)
 
 }
@@ -249,6 +270,10 @@ init(headItems, start);
 
 <style scoped>
 
+.bg-unset {
+  background-color: unset;
+}
+
 .footer-span-div {
   margin-top: 10px;
 }
@@ -272,6 +297,17 @@ init(headItems, start);
   margin-top: 20px;
   min-width: 1200px;
   background-color: #125ca8;
+}
+
+.mobile-footer-container {
+  background-color: #125ca8;
+  width: 100%;
+  margin-top: 6px;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.6;
+  position: relative;
 }
 
 .head-item {
@@ -347,6 +383,10 @@ body {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
   background-color: #018EE8;
+}
+
+.p-10 {
+  padding: 10px;
 }
 
 </style>

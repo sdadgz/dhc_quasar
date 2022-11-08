@@ -10,7 +10,7 @@
     </div>
 
     <!--  右侧表单  -->
-    <div class="col column justify-center p-4">
+    <div class="col column justify-center">
       <!--   标题链接   -->
       <div class="col-auto row justify-center">
         <strong @click="gotoUser" class="super-link link col-auto"
