@@ -2,7 +2,7 @@
   <div class="cont column">
     <!-- 标题 -->
     <div class="full-width col row justify-between" style="margin-bottom: 10px">
-      <span class="title">友情连接</span>
+      <span class="title">友情链接</span>
       <span class="sub-title" @click="gotoMore">更多>></span>
     </div>
 

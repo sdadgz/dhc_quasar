@@ -33,8 +33,9 @@ import {init} from "components/Tools";
 
 const $router = useRouter();
 
-const props = defineProps(['index']);
-const index = props.index;
+const props = defineProps(['secondIndex', 'firstIndex']);
+const index = props.secondIndex;
+const firstIndex = props.firstIndex;
 
 const lists = ref([]); // 获取的内容
 
@@ -45,11 +46,12 @@ function goto(id) {
 
 // 跳转
 function gotoEssay(id, field) {
-  let routeUrl = $router.resolve({
-    path: '/' + headItems.value[0].label + LEVER + field,
-    query: {[`${ESSAY_UNIQUE_ID}`]: id}
-  })
-  window.open(routeUrl.href, '_blank');
+  // let routeUrl = $router.resolve({
+  //   path: '/' + headItems.value[firstIndex].label + LEVER + field,
+  //   query: {[`${ESSAY_UNIQUE_ID}`]: id}
+  // })
+  // window.open(routeUrl.href, '_blank');
+  $router.push('/' + headItems.value[firstIndex].label + LEVER + field);
 }
 
 // 获取列表分页
@@ -83,8 +85,8 @@ let second = ref(EMPTY_STRING);
 const headItems = ref([]);
 
 watch(() => headItems.value, () => {
-  first.value = headItems.value[0].label;
-  second.value = headItems.value[0].children[index].label;
+  first.value = headItems.value[firstIndex].label;
+  second.value = headItems.value[firstIndex].children[index].label;
   start();
 }, {deep: true})
 

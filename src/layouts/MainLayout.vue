@@ -81,7 +81,7 @@
                       @mouseout="mouseOutMenu"
                       @click="sonHeadHandler(headItems[i-1], child)"
               >
-                <q-item-section style="z-index: 1">{{ child.label }}</q-item-section>
+                <q-item-section style="z-index: 1" class="text-overflow-hidden">{{ child.label }}</q-item-section>
               </q-item>
             </q-list>
           </q-slide-transition>
@@ -316,6 +316,12 @@ init(headItems, start);
   font-size: 16px;
   height: 50px;
   transition: all .2s ease-in-out;
+}
+
+.text-overflow-hidden{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .head-item:hover {

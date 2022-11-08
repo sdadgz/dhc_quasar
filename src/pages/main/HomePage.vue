@@ -1,6 +1,7 @@
 <template>
   <!-- 手机独享 -->
   <div class="column mobile-only">
+    <!--  轮播图  -->
     <div class="mobile-item col">
       <!--    轮播图    -->
       <q-carousel animated
@@ -42,21 +43,30 @@
     </div>
 
     <!--   中间双   -->
-    <div class="row mobile-item">
+    <div class="row mobile-item col" style="background-color: white">
       <!--    菜单    -->
       <div class="col-auto">
         <q-list separator bordered>
-          <q-item v-for="i in headItems.length">
+          <q-item style="background-color: #4a85e2" v-for="i in headItems.length">
             <q-item-section>
-              {{ headItems[i-1].label }}
+              {{ headItems[i - 1].label }}
             </q-item-section>
           </q-item>
         </q-list>
       </div>
 
       <!--    右侧单例    -->
-      <div class="col-all">
+      <div class="col">
+        <ListItem style="margin: 0" :first-index="firstIndex" :second-index="1"/>
+      </div>
+    </div>
 
+    <!--  其余  -->
+    <div v-if="headItems && headItems[firstIndex]" class="col">
+      <div class="mobile-item" v-for="i in headItems[firstIndex].children.length - 3">
+        <ListItem style="margin: 0"
+                  :first-index="firstIndex"
+                  :second-index="i+1"/>
       </div>
     </div>
   </div>
@@ -106,7 +116,7 @@
 
         <!--    落单的    -->
         <div class="col">
-          <ListItem style="margin: 0" :index="1"/>
+          <ListItem style="margin: 0" :first-index="firstIndex" :second-index="1"/>
         </div>
       </div>
 
@@ -114,8 +124,8 @@
       <div class="row" v-if="headItems && headItems[0]">
         <div class="col-4"
              :style="{paddingLeft: i % 3 === 1 ? '' : '12px'}"
-             v-for="i in headItems[0].children.length - 3">
-          <ListItem :index="i + 1"/>
+             v-for="i in headItems[firstIndex].children.length - 3">
+          <ListItem :second-index="i + 1" :first-index="firstIndex"/>
         </div>
       </div>
 
@@ -134,6 +144,9 @@ import {goto, init} from "components/Tools";
 import {useRoute, useRouter} from "vue-router";
 import ListItem from "components/main/ListItem.vue";
 import CardItem from "components/main/CardItem.vue";
+
+// 首页一级索引
+const firstIndex = ref(0);
 
 const $route = useRoute();
 const $router = useRouter();
@@ -210,7 +223,7 @@ init(headItems, start);
 }
 
 .mobile-item {
-  margin: 6px;
+  margin: 5px 10px;
 }
 
 </style>
