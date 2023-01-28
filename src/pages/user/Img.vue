@@ -54,7 +54,7 @@
                 :class="props.selected ? 'selected' : ''"
                 @click="props.selected = !props.selected"
               >
-                <q-card-section>
+                <q-card-section style="padding: 0">
                   <q-img
                     :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
                     :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
@@ -76,25 +76,19 @@
                     <q-list separator style="background-color: hotpink">
                       <!--          查看原图            -->
                       <q-item clickable v-ripple @click="goto(props.row.url)" v-close-popup>
-                        <q-item-section>
-                          查看原图
-                        </q-item-section>
+                        <q-item-section>查看原图</q-item-section>
                       </q-item>
 
                       <!--            删除            -->
                       <q-item v-if="!props.row.isDelete" clickable v-ripple v-close-popup
                               @click="deleteImgHandler([props.row.id])">
-                        <q-item-section>
-                          删除
-                        </q-item-section>
+                        <q-item-section>删除</q-item-section>
                       </q-item>
 
                       <!--           恢复             -->
                       <q-item v-else clickable v-ripple @click="recoverImg([props.row])"
                               v-close-popup>
-                        <q-item-section>
-                          恢复
-                        </q-item-section>
+                        <q-item-section>恢复</q-item-section>
                       </q-item>
                     </q-list>
                   </q-slide-transition>
@@ -170,7 +164,6 @@
           <q-btn label="重置" color="amber" @click="resetImgUploader" icon="clear_all"/>
           <q-btn label="上传" color="orange" @click="imgUploadHandler" icon="upload"/>
         </q-card-section>
-
       </q-card>
     </q-dialog>
   </div>

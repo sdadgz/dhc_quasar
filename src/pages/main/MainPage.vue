@@ -2,7 +2,6 @@
   <div class="flex row justify-center">
     <div class="width-1200 col-auto">
       <div class="container">
-
         <!--    头部面包屑    -->
         <Header/>
 
@@ -28,17 +27,48 @@
             <!--      展示友情连接      -->
             <div v-else-if="showFriendLink">
               <!--       标题       -->
-              <h6 class="text-center text-h6" style="margin: 20px;font-size: 30px;font-weight: bold;
-                color: #125ca8">
-                友情链接
+              <h6
+                  class="text-center text-h6"
+                  style="margin: 20px;font-size: 30px;font-weight: bold;
+                color: #125ca8"
+              >
+                视频
               </h6>
 
               <!--       链接       -->
               <q-infinite-scroll @load="friendLinkOnLoad" :offset="250" :disable="friendLinkDisable">
-                <div class="row">
-                  <div class="col-3 friend-link-card" v-for="item in friendLinkLists">
-                    <img class="friend-link-item cursor-pointer" @click="goto(item.url)"
-                         :src="item.img.reduceUrl ? item.img.reduceUrl : item.img.url" :alt="item.label">
+                <!--                <div class="row">-->
+                <!--                  <div class="col-3 friend-link-card" v-for="item in friendLinkLists">-->
+                <!--                    <q-img-->
+                <!--                        class="friend-link-item cursor-pointer"-->
+                <!--                         :src="item.img.reduceUrl ? item.img.reduceUrl : item.img.url"-->
+                <!--                        :alt="item.label"-->
+                <!--                        @click="goto(item.url)"-->
+                <!--                    >-->
+                <!--                  </div>-->
+                <!--                </div>-->
+
+                <div class="full-width row q-gutter-md">
+                  <div class="col-3" v-for="item in friendLinkLists">
+                    <q-img
+                        class="cursor-pointer animated rounded-borders"
+                        :src="item.img.url"
+                        :class="item.hover ? 'bokeh' : ''"
+                        @click="goto(item.url)"
+                        @mouseover="item.hover = true"
+                        @mouseout="item.hover = false"
+                    >
+                      <q-btn
+                          class="absolute-center"
+                          style="color: rgba(34,119,218,0.95)"
+                          icon="smart_display"
+                          flat
+                          size="23px"
+                      />
+                      <q-tooltip v-if="item.label">
+                        {{ item.label }}
+                      </q-tooltip>
+                    </q-img>
                   </div>
                 </div>
 
@@ -90,12 +120,12 @@
               <!--      分页       -->
               <div class="q-pa-lg flex flex-center" v-if="pageTotal > 0">
                 <q-pagination
-                  :max="pageTotal"
-                  direction-links
-                  boundary-numbers
-                  :max-pages="pageMax"
-                  v-model="currentPage"
-                  @click="pageHandler"
+                    :max="pageTotal"
+                    direction-links
+                    boundary-numbers
+                    :max-pages="pageMax"
+                    v-model="currentPage"
+                    @click="pageHandler"
                 />
               </div>
 
@@ -109,7 +139,6 @@
             <q-spinner-gears size="50px" color="primary"/>
           </q-inner-loading>
         </q-card>
-
       </div>
     </div>
   </div>
@@ -123,7 +152,7 @@ import {
   START_PAGE, EMPTY_STRING, PAGE_SIZE, SPLIT, UNDEFINED, PAGE_MAX, ESSAY_UNIQUE_ID, FRIEND_LINK_PAGE_SIZE
 } from "components/MagicValue";
 import {api} from "boot/axios";
-import {SERVER_NAME} from "components/Models";
+import {SERVER_NAME, SERVER_PREFIX} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 import {goto, init, max, sleep, sub} from "components/Tools";
 
@@ -347,6 +376,10 @@ init(headItems, start);
 
 <style scoped>
 
+.animated {
+  transition: all 123ms ease-in-out;
+}
+
 .friend-link-card {
   padding: 5px 15px;
 }
@@ -414,6 +447,11 @@ h3 {
   margin: 20px 0;
   padding: 20px 30px;
   min-height: 50vh;
+}
+
+/*  不要误删，正在使用  */
+.bokeh {
+  transform: scale(1.05);
 }
 
 </style>

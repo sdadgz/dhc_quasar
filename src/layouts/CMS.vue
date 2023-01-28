@@ -3,8 +3,14 @@
     <!--  头部  -->
     <q-header>
       <q-toolbar>
-        <q-icon name="list" size="36px" class="cursor-pointer" @click="drawer = !drawer;True = true"
-                style="padding: 16px 0"/>
+        <q-btn
+            icon="menu"
+            flat
+            round
+            dense
+            class="q-mr-sm"
+            @click="drawer = !drawer;True = true"
+        />
 
         <!--    面包屑    -->
         <q-breadcrumbs style="font-size: 18px">
@@ -20,10 +26,12 @@
     </q-header>
 
     <!--  左侧  -->
-    <q-drawer v-model="True" :mini="drawer ? !drawerHover : false" :width="250"
-              @mouseover="drawerHover = true;" @mouseout="drawerHover = false"
-              :mini-to-overlay="drawer ? drawerHover : false"
-              class="overflow-hidden">
+    <q-drawer
+        v-model="True" :mini="drawer ? !drawerHover : false" :width="250"
+        @mouseover="drawerHover = false;" @mouseout="drawerHover = false"
+        :mini-to-overlay="drawer ? drawerHover : false"
+        class="overflow-hidden"
+    >
       <q-img style="margin-top: 15px" :src="logoUrl" width="250px"/>
       <q-list>
         <!--    遍历    -->
@@ -69,7 +77,7 @@ const logoUrl = ref(SERVER_NAME + '/static/cms_logo.png');
 const subTitle = ref(EMPTY_STRING);
 
 // 回家
-function goHome(){
+function goHome() {
   $router.push(HOME);
 }
 

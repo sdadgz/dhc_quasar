@@ -2,15 +2,30 @@
   <div class="cont column">
     <!-- 标题 -->
     <div class="full-width col row justify-between" style="margin-bottom: 10px">
-      <span class="title">友情链接</span>
+      <span class="title">视频</span>
       <span class="sub-title" @click="gotoMore">更多>></span>
     </div>
 
     <!-- 列表 -->
-    <div class="full-width row">
-      <div class="col-3 friend-link-card" v-for="item in lists">
-        <img class="friend-link-item cursor-pointer" :src="item.img.url" :alt="item.label"
-             @click="goto(item.url)"/>
+    <div class="full-width row q-gutter-md">
+      <div class="col-3" v-for="item in lists">
+        <q-img
+            class="cursor-pointer animated rounded-borders"
+            :src="item.img.url"
+            :class="item.hover ? 'bokeh' : ''"
+            :alt="item.label"
+            @click="goto(item.url)"
+            @mouseover="item.hover = true"
+            @mouseout="item.hover = false"
+        >
+          <q-btn
+              class="absolute-center"
+              style="color: rgba(34,119,218,0.95)"
+              icon="smart_display"
+              flat
+              size="23px"
+          />
+        </q-img>
       </div>
     </div>
   </div>
@@ -19,11 +34,13 @@
 <script setup>
 
 import {FRIEND_LINK_PAGE_SIZE, LEVER, START_PAGE} from "components/MagicValue";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {goto, init} from "components/Tools";
 import {api} from "boot/axios";
 import {ref} from "vue";
+import {SERVER_PREFIX} from "components/Models";
 
+const $route = useRoute();
 const $router = useRouter();
 
 // 去更多
@@ -64,6 +81,15 @@ init(headItems, start);
 </script>
 
 <style scoped>
+
+.animated {
+  transition: all 123ms ease-in-out;
+}
+
+/*  不要误删，正在使用  */
+.bokeh {
+  transform: scale(1.05);
+}
 
 .friend-link-card {
   padding: 5px 15px;

@@ -51,7 +51,7 @@ function gotoEssay(id, field) {
   //   query: {[`${ESSAY_UNIQUE_ID}`]: id}
   // })
   // window.open(routeUrl.href, '_blank');
-  $router.push('/' + headItems.value[firstIndex].label + LEVER + field);
+  $router.push('/' + headItems.value[firstIndex].label + LEVER + field + '?id=' + id);
 }
 
 // 获取列表分页

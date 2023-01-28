@@ -58,11 +58,12 @@
     <!--    面包屑    -->
     <div class="head-background row justify-center" style="min-width: 1200px">
       <div class="width-1200 col-auto row justify-center">
-        <div class="head-item col cursor-pointer text-white"
-             v-for="i in headItems.length"
-             @mouseover="mouseOverMenu(headItems[i-1])"
-             @mouseout="mouseOutMenu"
-             :style="headStyles[i-1]"
+        <div
+            v-for="i in headItems.length"
+            class="head-item col cursor-pointer text-white"
+            :style="headStyles[i-1]"
+            @mouseover="mouseOverMenu(headItems[i-1])"
+            @mouseout="mouseOutMenu"
         >
           <!--      label      -->
           <div @click="headHandler(headItems[i-1])">
@@ -296,11 +297,11 @@ init(headItems, start);
 .footer-container {
   margin-top: 20px;
   min-width: 1200px;
-  background-color: #125ca8;
+  background-color: #1697e7;
 }
 
 .mobile-footer-container {
-  background-color: #125ca8;
+  background-color: #1697e7;
   width: 100%;
   margin-top: 6px;
   color: #fff;
@@ -318,14 +319,14 @@ init(headItems, start);
   transition: all .2s ease-in-out;
 }
 
-.text-overflow-hidden{
+.text-overflow-hidden {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .head-item:hover {
-  background-color: #007eff;
+  background-color: #1697e7;
 }
 
 .width-1200 {
@@ -333,7 +334,7 @@ init(headItems, start);
 }
 
 .head-background {
-  background: #125ca8;
+  background: #4056e3;
 }
 
 .head {

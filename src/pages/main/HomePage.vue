@@ -79,25 +79,29 @@
     <div class="width-1200 col-auto">
       <div class="cont row overflow-hidden" :style="{height: CAROUSEL_HEIGHT+'px'}">
         <!--    轮播图    -->
-        <q-carousel animated
-                    v-model="slide"
-                    infinite
-                    :autoplay="autoplay"
-                    :arrows="!autoplay"
-                    :style="{width: CAROUSEL_WIDTH+'px',height: CAROUSEL_HEIGHT+'px'}"
-                    class="col-auto"
-                    transition-prev="slide-right"
-                    transition-next="slide-left"
-                    @mouseenter="autoplay = false"
-                    @mouseleave="autoplay = true"
-                    swipeable>
+        <q-carousel
+            animated
+            v-model="slide"
+            infinite
+            :autoplay="autoplay"
+            :arrows="!autoplay"
+            :style="{width: CAROUSEL_WIDTH+'px',height: CAROUSEL_HEIGHT+'px'}"
+            class="col-auto"
+            transition-prev="slide-right"
+            transition-next="slide-left"
+            @mouseenter="autoplay = false"
+            @mouseleave="autoplay = true"
+            swipeable
+        >
 
           <!--     内容     -->
-          <q-carousel-slide :name="item.id"
-                            v-for="item in imgArr"
-                            :img-src="item.img.reduceUrl"
-                            class="cursor-pointer"
-                            @click="carouselGoto(item.essayId)">
+          <q-carousel-slide
+              :name="item.id"
+              v-for="item in imgArr"
+              :img-src="item.img.reduceUrl"
+              class="cursor-pointer"
+              @click="carouselGoto(item.essayId)"
+          >
             <template v-slot>
               <div class="absolute-bottom carousel-text">
                 {{ item.essay.title }}
@@ -108,13 +112,14 @@
           <!--    底下那个蓝白的格子      -->
           <template #control>
             <q-carousel-control position="bottom-right" :offset="[50,10]">
-              <span v-for="index in imgArr"
-                    class="pagination-box animated"
-                    @click="slide = index.id"
-                    :class="slide === index.id ? 'selected-box' : ''"/>
+              <span
+                  v-for="index in imgArr"
+                  class="pagination-box animated"
+                  @click="slide = index.id"
+                  :class="slide === index.id ? 'selected-box' : ''"
+              />
             </q-carousel-control>
           </template>
-
         </q-carousel>
 
         <!--    落单的    -->

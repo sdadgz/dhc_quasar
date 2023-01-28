@@ -48,7 +48,7 @@
                 :class="props.selected ? 'selected' : ''"
                 @click="props.selected = !props.selected"
               >
-                <q-card-section>
+                <q-card-section style="padding: 0">
                   <q-img
                     :src="props.row['img.reduceUrl'] === null ?
                      props.row['img.url'] : props.row['img.reduceUrl']"

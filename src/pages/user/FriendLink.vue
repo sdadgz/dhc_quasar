@@ -16,16 +16,16 @@
       <q-card-section>
         <q-card-section>
           <q-table
-            title="友情连接"
-            :columns="FRIEND_LINK_USE_COLUMNS"
-            :rows="friendLinkRows"
-            row-key="id"
-            selection="multiple"
-            hide-pagination
-            v-model:selected="friendLinkSelected"
-            :selected-rows-label="getSelectedString"
-            :loading="friendLinkLoading"
-            :pagination="friendLinkPagination"
+              title="视频"
+              :columns="FRIEND_LINK_USE_COLUMNS"
+              :rows="friendLinkRows"
+              row-key="id"
+              selection="multiple"
+              hide-pagination
+              v-model:selected="friendLinkSelected"
+              :selected-rows-label="getSelectedString"
+              :loading="friendLinkLoading"
+              :pagination="friendLinkPagination"
           >
 
             <template #body="props">
@@ -41,15 +41,15 @@
                 <q-td key="title" :props="props" class="cursor-pointer" title="点击编辑">
                   {{ props.row.label }}
                   <q-popup-edit
-                    v-model="props.row.label"
-                    v-slot="scope"
-                    title="修改标题"
-                    @before-show="friendLinkBeforeShowTitle(props.row.label)"
+                      v-model="props.row.label"
+                      v-slot="scope"
+                      title="修改标题"
+                      @before-show="friendLinkBeforeShowTitle(props.row.label)"
                   >
                     <transition
-                      appear
-                      enter-active-class="animated zoomIn"
-                      leave-active-class="animated zoomOut"
+                        appear
+                        enter-active-class="animated zoomIn"
+                        leave-active-class="animated zoomOut"
                     >
                       <div class="q-pa-md q-gutter-md">
                         <q-input v-model="friendLinkPopEdit" dense autofocus/>
@@ -71,15 +71,15 @@
                 <q-td key="url" :props="props" class="cursor-pointer" title="点击编辑">
                   {{ props.row.url }}
                   <q-popup-edit
-                    v-model="props.row.url"
-                    v-slot="scope"
-                    title="修改标题"
-                    @before-show="friendLinkBeforeShowTitle(props.row.url)"
+                      v-model="props.row.url"
+                      v-slot="scope"
+                      title="修改标题"
+                      @before-show="friendLinkBeforeShowTitle(props.row.url)"
                   >
                     <transition
-                      appear
-                      enter-active-class="animated zoomIn"
-                      leave-active-class="animated zoomOut"
+                        appear
+                        enter-active-class="animated zoomIn"
+                        leave-active-class="animated zoomOut"
                     >
                       <div class="q-pa-md q-gutter-md">
                         <q-input v-model="friendLinkPopEdit" dense autofocus/>
@@ -100,9 +100,9 @@
                 <!--         图片         -->
                 <q-td key="img" :props="props" style="cursor: zoom-in" title="查看原图">
                   <q-img
-                    :src="props.row[`img.reduceUrl`] !== null ?
+                      :src="props.row[`img.reduceUrl`] !== null ?
                        props.row[`img.reduceUrl`] : props.row[`img.url`]"
-                    width="300px" @click="goto(props.row[`img.url`])">
+                      width="300px" @click="goto(props.row[`img.url`])">
                     <div v-if="props.row[`img.isDelete`]" class="absolute-bottom text-center"
                          style="background-color: rgba(255,0,0,0.51)">
                       这张图片已被删除，但友情连接未被删除！！！
@@ -116,12 +116,12 @@
           <!--     分页     -->
           <div class="q-pa-lg flex flex-center" v-if="friendLinkPageTotal > 0">
             <q-pagination
-              :max="friendLinkPageTotal"
-              direction-links
-              boundary-numbers
-              :max-pages="pageMax"
-              v-model="friendLinkCurrentPage"
-              @click="getFriendLink"
+                :max="friendLinkPageTotal"
+                direction-links
+                boundary-numbers
+                :max-pages="pageMax"
+                v-model="friendLinkCurrentPage"
+                @click="getFriendLink"
             />
           </div>
 
@@ -142,24 +142,24 @@
 
         <!--    标题    -->
         <q-card-section class="row justify-between">
-          <strong>友情连接</strong>
+          <strong>视频</strong>
           <q-btn icon="close" dense round flat v-close-popup/>
         </q-card-section>
 
         <!--   图片表     -->
         <q-card-section>
           <q-table
-            title="图片"
-            :columns="imgColumns"
-            :rows="imgRows"
-            row-key="id"
-            hide-pagination
-            selection="multiple"
-            v-model:selected="imgSelected"
-            :selected-rows-label="getSelectedString"
-            :loading="imgTableLoading"
-            :pagination="imgPagination"
-            grid
+              title="图片"
+              :columns="imgColumns"
+              :rows="imgRows"
+              row-key="id"
+              hide-pagination
+              selection="multiple"
+              v-model:selected="imgSelected"
+              :selected-rows-label="getSelectedString"
+              :loading="imgTableLoading"
+              :pagination="imgPagination"
+              grid
           >
 
             <template v-slot:top-right>
@@ -176,14 +176,14 @@
             <template v-slot:item="props">
               <div class="q-pa-md col-md-3 col-xs-12">
                 <q-card
-                  class="animated cursor-pointer"
-                  :class="props.selected ? 'selected' : ''"
-                  @click="props.selected = !props.selected"
+                    class="animated cursor-pointer"
+                    :class="props.selected ? 'selected' : ''"
+                    @click="props.selected = !props.selected"
                 >
-                  <q-card-section>
+                  <q-card-section style="padding: 0">
                     <q-img
-                      :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
-                      :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
+                        :src="props.row.reduceUrl === null ? props.row.url : props.row.reduceUrl"
+                        :ratio="CAROUSEL_WIDTH / CAROUSEL_HEIGHT"
                     >
                       <div class="absolute-bottom text-center"
                            :style="{backgroundColor: props.row.isDelete ? 'rgba(255,0,0,.5)' : ''}">
@@ -234,12 +234,12 @@
           <!--     分页     -->
           <div class="q-pa-lg flex flex-center" v-if="imgPageTotal > 0">
             <q-pagination
-              :max="imgPageTotal"
-              direction-links
-              boundary-numbers
-              :max-pages="pageMax"
-              v-model="imgCurrentPage"
-              @click="imgPageHandler"
+                :max="imgPageTotal"
+                direction-links
+                boundary-numbers
+                :max-pages="pageMax"
+                v-model="imgCurrentPage"
+                @click="imgPageHandler"
             />
           </div>
 
@@ -247,17 +247,27 @@
           <q-inner-loading :showing="imgTableLoading">
             <q-spinner-gears size="50px" color="primary"/>
           </q-inner-loading>
-
         </q-card-section>
 
         <!--    悬浮title    -->
         <q-card-section>
-          <q-input :rules="notNull" v-model="friendLinkLabel" placeholder="友情连接标题"/>
+          <q-input :rules="notNull" v-model="friendLinkLabel" placeholder="标题"/>
         </q-card-section>
 
         <!--    地址    -->
+        <!--          <q-input :rules="notNull" v-model="friendLinkUrl" placeholder="友情连接地址"/>-->
+
+        <!--    上传器    -->
         <q-card-section>
-          <q-input :rules="notNull" v-model="friendLinkUrl" placeholder="友情连接地址"/>
+          <q-uploader
+              ref="videoUploader"
+              label="上传视频"
+              accept="video/*"
+              multiple
+              hide-upload-btn
+              @uploaded="uploadFinish"
+              @finish="getFile();getEssay()" :factory="videoUploadFn"
+          />
         </q-card-section>
 
         <!--    按钮    -->
@@ -268,11 +278,9 @@
 
         <!--   tips    -->
         <q-card-section>
-          关于：上面图片表选中一个图片作为友情连接图片
+          关于：上面图片表选中一个图片作为封面
         </q-card-section>
-
       </q-card>
-
     </q-dialog>
   </div>
 
@@ -281,14 +289,14 @@
 <script setup>
 
 import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
-import {deleteHandler, getRows, goto, init, notNull, recoverHandler, repeatArr, sleep, subArr} from "components/Tools";
+import {deleteHandler, getRows, goto, init, notNull, repeatArr, sleep} from "components/Tools";
 import {ref, watch} from "vue";
 import {
   CAROUSEL_HEIGHT,
-  CAROUSEL_WIDTH, CODE_200,
+  CAROUSEL_WIDTH,
   DEFAULT_DELAY,
   EMPTY_STRING,
-  FRIEND_LINK_PAGE_SIZE, HOME, IMG_PAGE_SIZE, PAGE_MAX, PAGE_SIZE,
+  FRIEND_LINK_PAGE_SIZE, IMG_PAGE_SIZE, PAGE_MAX, PAGE_SIZE,
   SPLIT,
   START_PAGE,
   UNDEFINED,
@@ -303,7 +311,66 @@ import {
   FRIEND_LINK_USE_COLUMNS,
   IMG_COLUMNS
 } from "components/user/table";
-import {HEAD_ITEMS} from "components/main/head-item";
+import {SERVER_NAME, SERVER_PREFIX} from "components/Models";
+
+// 修改友情链接为视频专区
+const videoFirst = ref();
+const videoSecond = ref();
+const uploadDone = ref(false);
+
+// 图片上传之后
+function uploadFinish(info) {
+  const res = JSON.parse(info.xhr.response);
+  if (res.code === '499') {
+    // 未登录
+    CommFail("未登录");
+    window.location.href = SERVER_PREFIX + '#/user/login';
+  } else if (res.code !== '200') {
+    // 出现异常
+    CommFail(res.msg);
+  } else {
+    // 正常处理
+    api.get('/essay/text', {
+      params: {
+        id: res.data.id
+      }
+    }).then(r => {
+      friendLinkUrl.value = r.data.text;
+      uploadDone.value = true;
+    })
+    CommSeccess("上传成功");
+  }
+}
+
+// 视频上传工厂
+function videoUploadFn() {
+  return new Promise(resolve => {
+    resolve({
+      "url": SERVER_NAME + '/essay/video',
+      "formFields": [
+        {
+          name: 'title',
+          value: friendLinkLabel.value
+        },
+        {
+          name: 'field',
+          value: videoFirst.value + (videoSecond.value === UNDEFINED ? '' : SPLIT + videoSecond.value)
+        }
+      ],
+      "fieldName": "file",
+      "headers": [{
+        "name": "token",
+        "value": localStorage.getItem("token")
+      }]
+    })
+  })
+}
+
+// 设置一二级标题
+function setTitle() {
+  videoFirst.value = headItems.value[0].label;
+  videoSecond.value = headItems.value[0].children[headItems.value[0].children.length - 1].label;
+}
 
 // 上传弹窗
 const showUpload = ref(false);
@@ -470,9 +537,16 @@ const friendLinkUrl = ref(EMPTY_STRING); // 友情连接地址
 const friendLinkImgId = ref(ZERO); // 友情连接图片
 
 // 提交友情连接
-function commitFriendLink() {
+async function commitFriendLink() {
+  uploadDone.value = false;
+  await videoUploader && videoUploader.value.upload();
+
+  while (!uploadDone.value) {
+    await sleep(2333);
+  }
+
   // 未填写input
-  if (friendLinkLabel.value.length <= 0 && friendLinkUrl.value.length <= 0) {
+  if (friendLinkLabel.value.length <= 0 || friendLinkUrl.value.length <= 0) {
     CommWarn("请完善表单");
     return;
   }
@@ -522,7 +596,7 @@ function resetFriendLinkSelected() {
   friendLinkSelected.value = [];
 }
 
-const carouselMorph = ref('true'); // 轮播图全选按钮变形
+// const carouselMorph = ref('true'); // 轮播图全选按钮变形
 
 // 获取轮播图
 async function getCarousel() {
@@ -551,7 +625,7 @@ const carouselPageTotal = ref(3);
 const carouselPageSize = ref(PAGE_SIZE);
 const carouselQuery = ref(EMPTY_STRING);
 const carouselRows = ref([]);
-const carouselSelected = ref([]);
+// const carouselSelected = ref([]);
 const carouselTableLoading = ref(true);
 const imgQuery = ref(EMPTY_STRING); // 图片查询
 const imgSelectedBtnMorph = ref('true');
@@ -567,14 +641,14 @@ function imgIsEmpty() {
 }
 
 // 当前页是否选中轮播图
-function carouselIsEmpty() {
-  if (!carouselSelected || !carouselRows) {
-    return true;
-  }
-  const s = getIdList(carouselSelected.value);
-  const r = getIdList(carouselRows.value);
-  return repeatArr(s, r);
-}
+// function carouselIsEmpty() {
+//   if (!carouselSelected || !carouselRows) {
+//     return true;
+//   }
+//   const s = getIdList(carouselSelected.value);
+//   const r = getIdList(carouselRows.value);
+//   return repeatArr(s, r);
+// }
 
 // 获取数组中的idList
 function getIdList(arr) {
@@ -673,6 +747,7 @@ function start() {
   getEssay();
   getFriendLink();
   getFile();
+  setTitle();
 }
 
 // 更新全选按钮model
@@ -681,13 +756,13 @@ function updateImgMorph() {
 }
 
 // 更新轮播图全选按钮
-function updateCarouselMorph() {
-  carouselMorph.value = carouselIsEmpty() ? 'true' : 'false';
-}
+// function updateCarouselMorph() {
+//   carouselMorph.value = carouselIsEmpty() ? 'true' : 'false';
+// }
 
-watch(() => carouselSelected.value, () => {
-  updateCarouselMorph();
-}, {deep: true})
+// watch(() => carouselSelected.value, () => {
+//   updateCarouselMorph();
+// }, {deep: true})
 
 watch(() => imgSelected.value, () => {
   updateImgMorph();

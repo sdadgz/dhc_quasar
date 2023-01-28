@@ -1,75 +1,88 @@
 <template>
-<div class="q-pa-md row q-gutter-md">
+  <div class="q-pa-md row q-gutter-md">
 
-  <!--   上传视频   -->
-  <q-card class="q-pa-md">
-    <!--    标题    -->
-    <q-card-section><strong>上传视频</strong></q-card-section>
+    <!--   上传视频   -->
+    <q-card class="q-pa-md">
+      <!--    标题    -->
+      <q-card-section>
+        <strong>上传视频</strong>
+      </q-card-section>
 
-    <!--    用户输入标题    -->
-    <q-card-section>
-      <q-input v-model="videoInputTitle" placeholder="视频标题（默认文件名做为标题）">
-        <template #append>
-          <q-icon v-if="videoInputTitle && videoInputTitle.length >0" name="close"
-                  @click="resetVideoTitle" class="cursor-pointer"/>
-        </template>
-      </q-input>
-    </q-card-section>
+      <!--    用户输入标题    -->
+      <q-card-section>
+        <q-input v-model="videoInputTitle" placeholder="视频标题（默认文件名做为标题）">
+          <template #append>
+            <q-icon
+                v-if="videoInputTitle && videoInputTitle.length >0"
+                name="close"
+                @click="resetVideoTitle" class="cursor-pointer"
+            />
+          </template>
+        </q-input>
+      </q-card-section>
 
-    <!--    上传领域    -->
-    <q-card-section class="row justify-between">
-
-      <!--     一级     -->
-      <div class="column col-auto">
-        <span class="col-auto">一级标题</span>
-        <q-btn-dropdown class="col-auto" color="secondary" :label="videoFirst">
-          <q-list>
-            <q-item v-for="item in headItems" clickable v-close-popup
-                    @click="videoFirst = item.label;resetVideoSecond()">
-              <q-item-section>
-                {{ item.label }}
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-      </div>
-
-      <!--    二级      -->
-      <div class="column col-auto">
-        <span class="col-auto">二级标题</span>
-        <q-btn-dropdown class="col-auto" color="info" :label="videoSecond">
-          <q-list v-for="father in headItems">
-            <div v-if="father.label === videoFirst">
-              <q-item v-for="item in father.children" v-close-popup clickable
-                      @click="videoSecond = item.label">
-                <q-item-section>
-                  {{ item.label }}
-                </q-item-section>
+      <!--    上传领域    -->
+      <q-card-section class="row justify-between">
+        <!--     一级     -->
+        <div class="column col-auto">
+          <span class="col-auto">一级标题</span>
+          <q-btn-dropdown class="col-auto" color="secondary" :label="videoFirst">
+            <q-list>
+              <q-item
+                  v-for="item in headItems"
+                  v-close-popup
+                  clickable
+                  @click="videoFirst = item.label;resetVideoSecond()"
+              >
+                <q-item-section>{{ item.label }}</q-item-section>
               </q-item>
-            </div>
-          </q-list>
-        </q-btn-dropdown>
-      </div>
-    </q-card-section>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
 
-    <!--    上传器    -->
-    <q-card-section>
-      <q-uploader label="上传视频" accept="video/*" ref="videoUploader" multiple hide-upload-btn
-                  @uploaded="uploadFinish" @finish="getFile();getEssay()" :factory="videoUploadFn"/>
-    </q-card-section>
+        <!--    二级      -->
+        <div class="column col-auto">
+          <span class="col-auto">二级标题</span>
+          <q-btn-dropdown class="col-auto" color="info" :label="videoSecond">
+            <q-list v-for="father in headItems">
+              <div v-if="father.label === videoFirst">
+                <q-item
+                    v-for="item in father.children"
+                    v-close-popup
+                    clickable
+                    @click="videoSecond = item.label"
+                >
+                  <q-item-section>{{ item.label }}</q-item-section>
+                </q-item>
+              </div>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
+      </q-card-section>
 
-    <!--    按钮    -->
-    <q-card-section class="row justify-between">
-      <q-btn label="重置" icon="clear_all" color="secondary" @click="resetVideo"/>
-      <q-btn label="提交" icon="upload" color="blue-14" @click="commitVideoHandler"/>
-    </q-card-section>
+      <!--    上传器    -->
+      <q-card-section>
+        <q-uploader
+            ref="videoUploader"
+            label="上传视频"
+            accept="video/*"
+            multiple
+            hide-upload-btn
+            @uploaded="uploadFinish"
+            @finish="getFile();getEssay()" :factory="videoUploadFn"
+        />
+      </q-card-section>
 
-    <!--    tips    -->
-    <q-card-section>关于：轮播图和友情链接不在这里上传</q-card-section>
+      <!--    按钮    -->
+      <q-card-section class="row justify-between">
+        <q-btn label="重置" icon="clear_all" color="secondary" @click="resetVideo"/>
+        <q-btn label="提交" icon="upload" color="blue-14" @click="commitVideoHandler"/>
+      </q-card-section>
 
-  </q-card>
-
-</div>
+      <!--    tips    -->
+      <q-card-section>关于：轮播图和视频专栏不在这里上传</q-card-section>
+    </q-card>
+  </div>
 </template>
 
 <script setup>

@@ -19,7 +19,7 @@ export function sub(x: number, y: number) {
 }
 
 // 返回大
-export function max(num: number, max: number) {
+export function max(num: number, max: number): number {
   return num > max ? num : max;
 }
 
@@ -106,7 +106,7 @@ export function uploadFinish(info) {
   if (res.code === '499') {
     // 未登录
     CommFail("未登录");
-    window.location.href = SERVER_PREFIX + '/user/login';
+    window.location.href = SERVER_PREFIX + '#/user/login';
   } else if (res.code !== '200') {
     // 出现异常
     CommFail(res.msg);
