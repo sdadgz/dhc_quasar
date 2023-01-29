@@ -4,7 +4,7 @@
     <div class="backgroundImg col-md-8 col-xs-0">
       <q-img :src="backgroundImg" class="full-height" position="0 0">
         <div class="left-bottom-title p-4">
-          <span style="color: rgba(255,255,255,.5)">数字医疗康复技术创新中心</span>
+          <span style="color: rgba(255,255,255,.5)">石家庄市科技特派团</span>
         </div>
       </q-img>
     </div>
@@ -14,7 +14,7 @@
       <!--   标题链接   -->
       <div class="col-auto row justify-center">
         <strong @click="gotoUser" class="super-link link col-auto"
-                style="font-size: 14px">数字医疗康复技术创新中心后台</strong>
+                style="font-size: 14px">石家庄市科技特派团后台</strong>
       </div>
       <!--   简介   -->
       <div class="col-auto row justify-center">
@@ -64,7 +64,7 @@
       <!--   最下面的一串东东   -->
       <div class="col-auto row justify-center">
         <span class="col-auto" style="color: #868e96;">Copyright © 2022 &nbsp;</span>
-        <span @click="goHome" class="col-auto link super-link">数字医疗康复技术创新中心</span>
+        <span @click="goHome" class="col-auto link super-link">石家庄市科技特派团</span>
         <span class="col-auto" style="color: #868e96;">&nbsp; All right reserved</span>
       </div>
     </div>

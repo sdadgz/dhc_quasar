@@ -4,7 +4,7 @@
     <!--   头部   -->
     <q-img :src="banner">
       <div class="text-white bg-unset full-width row justify-between">
-        <span class="col-auto" @click="goHome">石家庄市数字医疗康复技术创新中心</span>
+        <span class="col-auto" @click="goHome">石家庄市科技特派团</span>
         <span class="col-auto" @click="gotoLogin">登录</span>
       </div>
     </q-img>
@@ -20,7 +20,7 @@
 
         <!--    内容      -->
         <div class="col column p-10">
-          <span>承办单位：石家庄市数字医疗康复技术创新中心</span>
+          <span>承办单位：石家庄市科技特派团</span>
           <span>主办单位：石家庄学院</span>
           <span>电话：0311-66617215</span>
           <span>地址：石家庄市高新技术开发区珠峰大街288号</span>
@@ -39,7 +39,7 @@
         <div class="absolute-center head" style="background-color: unset">
           <!--      标题      -->
           <span class="cursor-pointer super-link" style="font-size: 44px;" @click="goHome">
-            石家庄市数字医疗康复技术创新中心
+            石家庄市科技特派团
           </span>
           <div class="float-right" style="width: 380px">
             <!--       头链接       -->
@@ -104,7 +104,7 @@
           <div class="col column">
             <!--      上      -->
             <div class="col-auto footer-span-div">
-              <span class="footer-span">承办单位：石家庄市数字医疗康复技术创新中心</span>
+              <span class="footer-span">承办单位：石家庄市科技特派团</span>
               <span class="footer-span">主办单位：石家庄学院</span>
             </div>
 

@@ -12,7 +12,7 @@ export const QUESTION_MARK = '?';
 export const EQ = '=';
 
 // 某些位置的值
-export const POSITION_HOME = '创新中心'; // 位置面包屑
+export const POSITION_HOME = '石家庄市科技特派团'; // 位置面包屑
 export const PAGE_MAX = 13;
 export const ESSAY_UNIQUE_ID = 'id'; // essay的唯一标识名称
 export const HOME_LIST_MAX_SIZE = 10;
