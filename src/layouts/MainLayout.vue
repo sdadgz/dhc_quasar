@@ -38,9 +38,15 @@
       <q-img :src="banner" class="full-width full-height">
         <div class="absolute-center head" style="background-color: unset">
           <!--      标题      -->
-          <span class="cursor-pointer super-link" style="font-size: 44px;" @click="goHome">
+          <span
+              class="cursor-pointer super-link"
+              style="font-size: 44px;"
+              @click="goHome"
+          >
             石家庄市科技特派团
           </span>
+
+          <!--     悬浮至右侧     -->
           <div class="float-right" style="width: 380px">
             <!--       头链接       -->
             <div class="head_list">
@@ -51,6 +57,10 @@
             <!--       图片       -->
             <q-img :src="banner_text" style="margin-top: 40px;" class="float-right"/>
           </div>
+
+          <br/>
+          <span style="font-size: 22px;color: red;font-weight: lighter">石家庄市专精特新“小巨人”企业科技特派团</span>
+
         </div>
       </q-img>
     </div>

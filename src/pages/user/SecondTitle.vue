@@ -1,12 +1,21 @@
 <template>
   <div class="q-pa-md q-gutter-md row">
     <q-card class="q-pa-md">
-
       <!--   一堆按钮   -->
       <q-card-section class="q-pa-md q-gutter-md">
-        <q-btn label="刷新" icon="refresh" color="blue-14" :loading="secondTitleRefreshBtnLoading"
-               @click="refreshBtnHandler"/>
-        <q-btn label="新增" icon="edit" color="secondary" @click="insertBtnHandler">
+        <q-btn
+            label="刷新"
+            icon="refresh"
+            color="blue-14"
+            :loading="secondTitleRefreshBtnLoading"
+            @click="refreshBtnHandler"
+        />
+        <q-btn
+            label="新增"
+            icon="edit"
+            color="secondary"
+            @click="insertBtnHandler"
+        >
           <!--     新增按钮弹出dialog     -->
           <q-dialog v-model="showInsert">
             <q-card class="q-pa-md q-gutter-md">
@@ -77,15 +86,15 @@
             <q-td :props="props" title="点击编辑" class="cursor-pointer">
               {{ props.row.title }}
               <q-popup-edit
-                v-model="props.row.title"
-                v-slot="scope"
-                title="修改标题"
-                @before-show="beforeShowSecondTitle(props.row.title, props.row.id, props.row.order)"
+                  v-model="props.row.title"
+                  v-slot="scope"
+                  title="修改标题"
+                  @before-show="beforeShowSecondTitle(props.row.title, props.row.id, props.row.order)"
               >
                 <transition
-                  appear
-                  enter-active-class="animated zoomIn"
-                  leave-active-class="animated zoomOut"
+                    appear
+                    enter-active-class="animated zoomIn"
+                    leave-active-class="animated zoomOut"
                 >
                   <div class="q-pa-md q-gutter-md">
                     <q-input v-model="secondTitleTitle" dense autofocus v-close-popup
@@ -110,15 +119,15 @@
             <q-td :props="props" class="cursor-pointer" title="点击编辑">
               {{ props.row.order }}
               <q-popup-edit
-                v-model="props.row.order"
-                v-slot="scope"
-                title="修改标题"
-                @before-show="beforeShowSecondTitle(props.row.title, props.row.id, props.row.order)"
+                  v-model="props.row.order"
+                  v-slot="scope"
+                  title="修改标题"
+                  @before-show="beforeShowSecondTitle(props.row.title, props.row.id, props.row.order)"
               >
                 <transition
-                  appear
-                  enter-active-class="animated zoomIn"
-                  leave-active-class="animated zoomOut"
+                    appear
+                    enter-active-class="animated zoomIn"
+                    leave-active-class="animated zoomOut"
                 >
                   <div class="q-pa-md q-gutter-md">
                     <q-input v-model="secondTitleOrder" dense autofocus type="number"/>
@@ -147,12 +156,12 @@
       <!--     分页     -->
       <div class="q-pa-lg flex flex-center" v-if="pageTotal > 0">
         <q-pagination
-          :max="pageTotal"
-          direction-links
-          boundary-numbers
-          :max-pages="pageMax"
-          v-model="currentPage"
-          @click="getSecondTitle"
+            :max="pageTotal"
+            direction-links
+            boundary-numbers
+            :max-pages="pageMax"
+            v-model="currentPage"
+            @click="getSecondTitle"
         />
       </div>
 
@@ -191,7 +200,7 @@ const pageMax = ref(PAGE_MAX);
 
 // 删除
 function deleteSelected() {
-  DeleteConformNew(getIdList(secondTitleSelected.value), '/firstTitle', () => {
+  DeleteConformNew(getIdList(secondTitleSelected.value), '/secondTitle', () => {
     getSecondTitle();
     resetSelected();
   });

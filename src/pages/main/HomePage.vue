@@ -4,18 +4,20 @@
     <!--  轮播图  -->
     <div class="mobile-item col">
       <!--    轮播图    -->
-      <q-carousel animated
-                  v-model="slide"
-                  infinite
-                  :autoplay="autoplay"
-                  :arrows="!autoplay"
-                  class="full-width"
-                  height="56vw"
-                  transition-prev="slide-right"
-                  transition-next="slide-left"
-                  @mouseenter="autoplay = false"
-                  @mouseleave="autoplay = true"
-                  swipeable>
+      <q-carousel
+          v-model="slide"
+          class="full-width"
+          height="56vw"
+          infinite
+          swipeable
+          animated
+          :autoplay="autoplay"
+          :arrows="!autoplay"
+          transition-prev="slide-right"
+          transition-next="slide-left"
+          @mouseenter="autoplay = false"
+          @mouseleave="autoplay = true"
+      >
 
         <!--     内容     -->
         <q-carousel-slide :name="item.id"
