@@ -11,8 +11,8 @@ const routes = [
         path: '/satm',
         component: () => import('layouts/SATM.vue'),
         children: [
-            {path: '', component: import('pages/satm/Main.vue')},
-            {path: 'content', component: import('pages/main/MainPage.vue')},
+            {path: '', component: () => import('pages/satm/Main.vue')},
+            {path: 'content', component: () => import('pages/main/MainPage.vue')},
         ]
     },
     {

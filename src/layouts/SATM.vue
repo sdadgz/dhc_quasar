@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <!--  头  -->
-    <q-header reveal-offset="250" elevated>
+    <q-header :reveal-offset="250" elevated>
       <q-toolbar class="bg-red-5">
         <!--    菜单    -->
         <q-btn class="q-mr-sm" icon="menu" flat round dense/>
@@ -62,5 +62,14 @@ init(headItems, start);
 </script>
 
 <style scoped>
+
+</style>
+
+<style>
+
+body {
+  max-width: 2560px;
+  margin: 0 auto;
+}
 
 </style>
