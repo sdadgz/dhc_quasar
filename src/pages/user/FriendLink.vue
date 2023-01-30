@@ -317,6 +317,7 @@ import {SERVER_NAME, SERVER_PREFIX} from "components/Models";
 const videoFirst = ref();
 const videoSecond = ref();
 const uploadDone = ref(false);
+const videoEssayId = ref();
 
 // 图片上传之后
 function uploadFinish(info) {
@@ -330,6 +331,7 @@ function uploadFinish(info) {
     CommFail(res.msg);
   } else {
     // 正常处理
+    videoEssayId.value = res.data.id;
     api.get('/essay/text', {
       params: {
         id: res.data.id
@@ -497,7 +499,7 @@ function updateFriendLink(title, url, id) {
   api.put('/friendLink/update', {
     id: id,
     label: title,
-    url: url
+    url: url,
   }).then(res => {
     CommSeccess("修改成功");
   }).catch(res => {
@@ -563,7 +565,8 @@ async function commitFriendLink() {
   api.post('/friendLink/upload', {
     label: friendLinkLabel.value,
     url: friendLinkUrl.value,
-    imgId: friendLinkImgId.value
+    imgId: friendLinkImgId.value,
+    essayId: videoEssayId.value
   }).then(res => {
     CommSeccess("上传成功");
   }).catch(res => {

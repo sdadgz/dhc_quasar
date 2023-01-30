@@ -40,7 +40,7 @@
           <!--      标题      -->
           <span
               class="cursor-pointer super-link"
-              style="font-size: 44px;"
+              style="font-size: 30px;"
               @click="goHome"
           >
             石家庄市科技特派团
@@ -59,7 +59,9 @@
           </div>
 
           <br/>
-          <span style="font-size: 22px;color: red;font-weight: lighter">石家庄市专精特新“小巨人”企业科技特派团</span>
+          <span class="cursor-pointer super-link" style="font-size: 30px">
+            石家庄市专精特新“小巨人”企业科技特派团
+          </span>
 
         </div>
       </q-img>
@@ -307,7 +309,7 @@ init(headItems, start);
 .footer-container {
   margin-top: 20px;
   min-width: 1200px;
-  background-color: #1697e7;
+  background-color: #e52b3b;
 }
 
 .mobile-footer-container {
@@ -336,7 +338,7 @@ init(headItems, start);
 }
 
 .head-item:hover {
-  background-color: #1697e7;
+  background-color: #f1067c;
 }
 
 .width-1200 {
@@ -344,7 +346,7 @@ init(headItems, start);
 }
 
 .head-background {
-  background: #4056e3;
+  background: #e15d80;
 }
 
 .head {

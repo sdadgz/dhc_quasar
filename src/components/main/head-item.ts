@@ -1,7 +1,7 @@
 export const SELECT_COLOR = '#007eff';
 export const UNSELECT_COLOR = '#125ca8';
 
-export const HEAD_ITEMS: head[] = [
+export const HEAD_ITEMS: Head[] = [
   {
     label: "首页",
     children: [
@@ -88,7 +88,7 @@ export const HEAD_ITEMS: head[] = [
   }
 ]
 
-interface head{
+export interface Head {
   label: string,
-  children?: head[]
+  children?: Head[]
 }

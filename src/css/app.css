@@ -1,1 +1,23 @@
 /* app global css */
+
+/*   超链接   */
+.super-link {
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+
+/*   超链接悬浮   */
+.super-link:hover {
+    color: rgb(17, 141, 241);
+}
+
+/*   超链接   */
+.super-pink-link {
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+
+/*   超链接悬浮   */
+.super-pink-link:hover {
+    color: rgb(225, 20, 20);
+}

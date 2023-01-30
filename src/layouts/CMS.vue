@@ -21,7 +21,7 @@
 
         <!--    回家    -->
         <q-space/>
-        <q-icon name="home" size="30px" class="float-right cursor-pointer" @click="goHome"/>
+        <q-icon name="logout" size="30px" class="float-right cursor-pointer" @click="goHome"/>
       </q-toolbar>
     </q-header>
 

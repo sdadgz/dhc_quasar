@@ -373,7 +373,6 @@ const headItems = ref([]);
 init(headItems, start);
 </script>
 
-
 <style scoped>
 
 .animated {
@@ -455,7 +454,6 @@ h3 {
 }
 
 </style>
-
 
 <style>
 

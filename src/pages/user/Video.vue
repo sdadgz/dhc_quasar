@@ -1,6 +1,5 @@
 <template>
   <div class="q-pa-md row q-gutter-md">
-
     <!--   上传视频   -->
     <q-card class="q-pa-md">
       <!--    标题    -->
@@ -80,7 +79,7 @@
       </q-card-section>
 
       <!--    tips    -->
-      <q-card-section>关于：轮播图和视频专栏不在这里上传</q-card-section>
+      <q-card-section>关于：轮播图不在这里上传</q-card-section>
     </q-card>
   </div>
 </template>
