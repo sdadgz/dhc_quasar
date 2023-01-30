@@ -1,5 +1,10 @@
 /* app global css */
 
+/*   动画   */
+.animated {
+    transition: all .3s ease-in-out;
+}
+
 /*   超链接   */
 .super-link {
     transition: all .2s ease-in-out;

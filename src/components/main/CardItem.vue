@@ -14,6 +14,7 @@
             :src="item.img.url"
             :class="item.hover ? 'bokeh' : ''"
             :alt="item.label"
+            :ratio="16/9"
             @click="goto(item.url)"
             @mouseover="item.hover = true"
             @mouseout="item.hover = false"
