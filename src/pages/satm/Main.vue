@@ -6,8 +6,8 @@
         <!--  轮播图  -->
         <div class="grid-carousel">
           <div class="grid-2">
-            <VideoCard :img="carouselArray[0] && carouselArray[0].img.url"/>
-            <VideoCard :img="carouselArray[0] && carouselArray[0].img.url"/>
+            <VideoCard :img="backgroundImg1"/>
+            <VideoCard :img="backgroundImg1"/>
           </div>
           <q-carousel
               v-model="carouselCurrentId"
@@ -47,6 +47,7 @@
           />
         </div>
       </div>
+      <q-separator/>
 
       <!--  第一张图片  -->
       <div v-if="gridColumns > 2" class="grid-4-6 q-py-lg q-mb-lg">
@@ -54,13 +55,25 @@
         <q-img :src="backgroundImg1" style="top: 30px;left: 100px" width="80%" height="90%"/>
       </div>
       <ListItem v-else class="q-mb-lg" :first-index="0" :second-index="1"/>
+      <q-separator/>
 
       <!--  第二张图片  -->
       <div v-if="gridColumns > 2" class="grid-2 q-py-lg q-mb-lg">
         <q-img :src="backgroundImg2" style="top: 40px" width="70%"/>
-        <ListItem :first-index="0" :second-index="2"/>
+        <ListItem :style="{padding: '40px ' + layoutPadding}" :first-index="0" :second-index="2"/>
       </div>
       <ListItem class="q-mb-lg" v-else :first-index="0" :second-index="2"/>
+
+      <!--   其他所有   -->
+      <div :class="gridColumns > 2 && 'grid-2'" v-if="headItems[0]">
+        <ListItem
+            v-for="i in headItems[0].children.length - headItemUseCount"
+            class="q-mb-lg"
+            :class="gridColumns > 2 && 'q-pa-lg'"
+            :first-index="0"
+            :second-index="3 + i - 1"
+        />
+      </div>
 
     </div>
   </div>
@@ -86,6 +99,10 @@ const $router = useRouter();
 // 其他所有 =========================================================
 const backgroundImg1 = SERVER_NAME + STATIC_SRC + 'background_img_1.png';
 const backgroundImg2 = SERVER_NAME + STATIC_SRC + 'background_img_2.png';
+
+// 首页多少个已被使用
+const headItemUseCount = 4;
+const headItemStartIndex = 3;
 
 // 轮播图 ==============================================================
 const carouselCurrentId = ref();
