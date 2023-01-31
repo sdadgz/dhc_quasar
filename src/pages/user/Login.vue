@@ -74,7 +74,7 @@
 <script setup>
 
 import {ref} from "vue";
-import {SERVER_NAME} from "components/Models";
+import {SERVER_NAME, STATIC_SRC} from "components/Models";
 import {useRouter} from "vue-router";
 import {api} from "boot/axios";
 import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
@@ -82,7 +82,7 @@ import {HOME} from "components/MagicValue";
 
 const $router = useRouter();
 
-const backgroundImg = ref(SERVER_NAME + '/static/login_background.jpg'); // 背景图地址
+const backgroundImg = ref(SERVER_NAME +STATIC_SRC+ 'login_background.jpg'); // 背景图地址
 
 const username = ref(localStorage.getItem("username"));
 const usernameRef = ref(null);

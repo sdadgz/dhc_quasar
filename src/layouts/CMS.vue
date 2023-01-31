@@ -59,7 +59,7 @@
 <script setup>
 
 import {ref, watch} from "vue";
-import {SERVER_NAME} from "components/Models";
+import {SERVER_NAME, STATIC_SRC} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 import {EMPTY_STRING, HOME, LEVER} from "components/MagicValue";
 import {DRAWER_LIST} from "components/user/DrawerList";
@@ -73,7 +73,7 @@ const drawerList = ref(DRAWER_LIST);
 const drawer = ref(false);
 const True = ref(true);
 const drawerHover = ref(false);
-const logoUrl = ref(SERVER_NAME + '/static/cms_logo.png');
+const logoUrl = ref(SERVER_NAME + STATIC_SRC + 'cms_logo.png');
 const subTitle = ref(EMPTY_STRING);
 
 // 回家

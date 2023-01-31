@@ -135,7 +135,7 @@
 <script setup>
 
 import {ref, watch} from "vue";
-import {SERVER_NAME} from "components/Models";
+import {SERVER_NAME, STATIC_SRC} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 import {SELECT_COLOR, UNSELECT_COLOR} from "components/main/head-item";
 import {HOME} from "components/MagicValue";
@@ -145,10 +145,10 @@ const $router = useRouter();
 const $route = useRoute();
 
 // 头部-图片
-const banner = ref(SERVER_NAME + "/static/banner.png");
-const banner_text = ref(SERVER_NAME + "/static/banner_text.png");
+const banner = ref(SERVER_NAME + STATIC_SRC + "banner.png");
+const banner_text = ref(SERVER_NAME + STATIC_SRC + "banner_text.png");
 const school = ref("https://www.sjzc.edu.cn/");
-const footer_icon = ref(SERVER_NAME + '/static/footer_icon.png');
+const footer_icon = ref(SERVER_NAME + STATIC_SRC+'footer_icon.png');
 
 // 头部-下拉菜单
 const hoverItem = ref({label: ''});

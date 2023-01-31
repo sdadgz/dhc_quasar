@@ -1,11 +1,11 @@
 <template>
   <div class="q-pa-lg">
-    <!--  第一个区域，视频区  -->
     <div class="container">
-      <div class="grid">
+      <!--  第一个区域，视频区  -->
+      <div class="grid q-mb-lg">
         <!--  轮播图  -->
         <div class="grid-carousel">
-          <div class="grid-carousel-hidden">
+          <div class="grid-2">
             <VideoCard :img="carouselArray[0] && carouselArray[0].img.url"/>
             <VideoCard :img="carouselArray[0] && carouselArray[0].img.url"/>
           </div>
@@ -47,13 +47,22 @@
           />
         </div>
       </div>
+
+      <!--  第一张图片  -->
+      <div v-if="gridColumns > 2" class="grid-4-6 q-py-lg q-mb-lg">
+        <ListItem :style="{padding: '40px ' + layoutPadding}" :first-index="0" :second-index="1"/>
+        <q-img :src="backgroundImg1" style="top: 30px;left: 100px" width="80%" height="90%"/>
+      </div>
+      <ListItem v-else class="q-mb-lg" :first-index="0" :second-index="1"/>
+
+      <!--  第二张图片  -->
+      <div v-if="gridColumns > 2" class="grid-2 q-py-lg q-mb-lg">
+        <q-img :src="backgroundImg2" style="top: 40px" width="70%"/>
+        <ListItem :first-index="0" :second-index="2"/>
+      </div>
+      <ListItem class="q-mb-lg" v-else :first-index="0" :second-index="2"/>
+
     </div>
-
-    <!--  第二个区域  -->
-    <div>
-
-    </div>
-
   </div>
 </template>
 
@@ -67,10 +76,16 @@ import {useRouter} from "vue-router";
 import VideoCard from "../../components/satm/VideoCard.vue";
 import {VideoDefaultCurrentPage, VideoDefaultPageSize} from "../../components/satm/Satm";
 import {Head} from "../../components/main/head-item";
+import {SERVER_NAME, STATIC_SRC} from "../../components/Models";
+import ListItem from "../../components/satm/ListItem.vue";
 
 // 刀
 const $q = useQuasar();
 const $router = useRouter();
+
+// 其他所有 =========================================================
+const backgroundImg1 = SERVER_NAME + STATIC_SRC + 'background_img_1.png';
+const backgroundImg2 = SERVER_NAME + STATIC_SRC + 'background_img_2.png';
 
 // 轮播图 ==============================================================
 const carouselCurrentId = ref();
@@ -152,12 +167,16 @@ init(headItems, start);
   position: relative;
 }
 
-.grid-carousel-hidden {
+.grid-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 20px;
-  width: 100%;
-  height: 100%;
+}
+
+.grid-4-6 {
+  display: grid;
+  grid-template-columns: 4fr 6fr;
+  grid-gap: 20px;
 }
 
 </style>
