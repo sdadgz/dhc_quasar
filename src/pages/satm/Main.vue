@@ -38,12 +38,13 @@
         </div>
 
         <!--  其他所有  -->
-        <div v-for="video in videoList">
+        <div v-for="i in videoLength">
           <!--    组件，视频    -->
           <VideoCard
-              :img="video.img.reduceUrl || video.img.url || ''"
-              :label="video.label || ''"
-              :essay-id="video.essayId"
+              v-if="videoList[i - 1]"
+              :img="videoList[i - 1].img.reduceUrl || videoList[i - 1].img.url || ''"
+              :label="videoList[i - 1].label || ''"
+              :essay-id="videoList[i - 1].essayId"
           />
         </div>
       </div>
@@ -51,7 +52,10 @@
 
       <!--  第一张图片  -->
       <div v-if="gridColumns > 2" class="grid-4-6 q-py-lg q-mb-lg">
-        <ListItem :style="{padding: '40px ' + layoutPadding}" :first-index="0" :second-index="1"/>
+        <transition enter-active-class="animated slideInLeft">
+          <ListItem v-if="showFirst" :style="{padding: '40px ' + layoutPadding}" :first-index="0" :second-index="1"/>
+          <div v-else v-intersection="showFirstHandler"/>
+        </transition>
         <q-img :src="backgroundImg1" style="top: 30px;left: 100px" width="80%" height="90%"/>
       </div>
       <ListItem v-else class="q-mb-lg" :first-index="0" :second-index="1"/>
@@ -60,7 +64,10 @@
       <!--  第二张图片  -->
       <div v-if="gridColumns > 2" class="grid-2 q-py-lg q-mb-lg">
         <q-img :src="backgroundImg2" style="top: 40px" width="70%"/>
-        <ListItem :style="{padding: '40px ' + layoutPadding}" :first-index="0" :second-index="2"/>
+        <transition enter-active-class="animated slideInRight">
+          <ListItem v-if="showSecond" :style="{padding: '40px ' + layoutPadding}" :first-index="0" :second-index="2"/>
+          <div v-else v-intersection="showSecondHandler"/>
+        </transition>
       </div>
       <ListItem class="q-mb-lg" v-else :first-index="0" :second-index="2"/>
 
@@ -71,10 +78,22 @@
             class="q-mb-lg"
             :class="gridColumns > 2 && 'q-pa-lg'"
             :first-index="0"
-            :second-index="3 + i - 1"
+            :second-index="headItemStartIndex + i - 1"
         />
       </div>
 
+      <!--   其他视频   -->
+      <div class="grid" v-if="videoList.length">
+        <div v-for="i in videoList.length - videoLength">
+          <!--    组件，视频    -->
+          <VideoCard
+              v-if="videoList[i - 1 + videoLength]"
+              :img="videoList[i - 1 + videoLength].img.reduceUrl || videoList[i - 1 + videoLength].img.url || ''"
+              :label="videoList[i - 1 + videoLength].label || ''"
+              :essay-id="videoList[i - 1 + videoLength].essayId"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -83,7 +102,7 @@
 
 import {api} from "../../boot/axios";
 import {ref, watch} from "vue";
-import {init} from "../../components/Tools";
+import {init, sleep} from "../../components/Tools";
 import {useQuasar} from "quasar";
 import {useRouter} from "vue-router";
 import VideoCard from "../../components/satm/VideoCard.vue";
@@ -96,13 +115,21 @@ import ListItem from "../../components/satm/ListItem.vue";
 const $q = useQuasar();
 const $router = useRouter();
 
-// 其他所有 =========================================================
+// 两个图片 和 其他所有 =========================================================
 const backgroundImg1 = SERVER_NAME + STATIC_SRC + 'background_img_1.png';
 const backgroundImg2 = SERVER_NAME + STATIC_SRC + 'background_img_2.png';
+const showFirst = ref(false);
+const showSecond = ref(false);
 
-// 首页多少个已被使用
-const headItemUseCount = 4;
-const headItemStartIndex = 3;
+// 第一个图片旁边的列表监听
+function showFirstHandler(res) {
+  showFirst.value = res.isIntersecting;
+}
+
+// 第一个图片旁边的列表监听
+function showSecondHandler(res) {
+  showSecond.value = res.isIntersecting;
+}
 
 // 轮播图 ==============================================================
 const carouselCurrentId = ref();
@@ -120,6 +147,9 @@ function getCarousel() {
 // 视频 =================================================================
 const videoList = ref([]);
 
+// 最上面显示几条视频
+const videoLength = ref(0);
+
 // 获取video
 function getVideo() {
   api.get('/friendLink/page', {
@@ -136,6 +166,10 @@ function getVideo() {
 }
 
 // --------------------------------------------------------------
+
+// 首页多少个已被使用
+const headItemUseCount = 4;
+const headItemStartIndex = 3;
 
 // 网格列数
 const gridColumns = ref(2);
@@ -156,6 +190,7 @@ function start() {
 watch(() => $q.screen.width, (value, oldValue, onCleanup) => {
   gridColumns.value = value < 1000 && 2 || value < 1100 && 3 || value < 1500 && 4 || 5;
   layoutPadding.value = gridColumns.value < 5 ? '0' : '100px';
+  videoLength.value = gridColumns.value === 5 && 6 || gridColumns.value === 4 && 4 || gridColumns.value < 4 && 2;
 }, {immediate: true})
 
 // 头

@@ -267,18 +267,23 @@ function setTime(time) {
 
 // 设置essay领域
 function setField() {
-  first.value = $route.params.first;
-  second.value = $route.params.second;
+  // 老一代，依旧支持，灰度更新
+  if ($route.params.first) {
+    first.value = $route.params.first;
+    second.value = $route.params.second;
 
-  let queryField = EMPTY_STRING;
-  if (first.value) {
-    queryField = first.value;
-    if (second.value) {
-      queryField += SPLIT + second.value;
+    let queryField = EMPTY_STRING;
+    if (first.value) {
+      queryField = first.value;
+      if (second.value) {
+        queryField += SPLIT + second.value;
+      }
     }
+    field.value = queryField;
+  } else {
+    // 新生代
+    field.value = $route.query.field;
   }
-  field.value = queryField;
-
 }
 
 // 获取essay
