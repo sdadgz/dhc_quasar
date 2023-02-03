@@ -9,12 +9,13 @@
         <!--            <VideoCard :img="backgroundImg1"/>-->
         <!--          </div>-->
         <q-carousel
+            ref="carouselRef"
             v-model="carouselCurrentId"
             class="rounded-borders shadow-6"
+            :height="carouselHeight"
             infinite
             swipeable
             animated
-            height="93%"
             :autoplay="carouselAutoPlay"
             :arrows="!carouselAutoPlay"
             transition-prev="slide-right"
@@ -135,6 +136,11 @@ const carouselCurrentId = ref();
 const carouselArray = ref([]);
 const carouselAutoPlay = ref(true);
 
+// 轮播图ref
+const carouselRef = ref();
+
+const carouselHeight = ref('100%')
+
 // 获取轮播图
 function getCarousel() {
   api.get('/carousel').then(res => {
@@ -143,11 +149,16 @@ function getCarousel() {
   })
 }
 
+// 获取轮播图高度
+function setCarouselHeight(): string {
+  return carouselRef.value && String(carouselRef.value.$el.offsetWidth / 16 * 9) + 'px' || '100%';
+}
+
 // 视频 =================================================================
 const videoList = ref([]);
 
 // 最上面显示几条视频
-const videoLength = ref(0);
+// const videoLength = ref(0);
 const newVideoLength = ref(0);
 
 // 视频的ref
@@ -195,8 +206,9 @@ watch(() => $q.screen.width, (value, oldValue, onCleanup) => {
   newGridColumns.value = value < 1000 && 1 || value < 1500 && 2 || 3;
   gridColumns.value = value < 1000 && 2 || value < 1100 && 3 || value < 1500 && 4 || 5;
   layoutPadding.value = gridColumns.value < 5 ? '0' : '100px';
-  videoLength.value = gridColumns.value === 5 && 6 || gridColumns.value === 4 && 4 || gridColumns.value < 4 && 2;
+  // videoLength.value = gridColumns.value === 5 && 6 || gridColumns.value === 4 && 4 || gridColumns.value < 4 && 2;
   newVideoLength.value = newGridColumns.value - 1;
+  carouselHeight.value = setCarouselHeight();
 }, {immediate: true})
 
 // 头
