@@ -59,7 +59,7 @@
           </div>
 
           <br/>
-          <span class="cursor-pointer super-link" style="font-size: 30px">
+          <span class="cursor-pointer super-link" style="font-size: 30px" @click="goHome">
             石家庄市专精特新“小巨人”企业科技特派团
           </span>
 

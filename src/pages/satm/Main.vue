@@ -2,45 +2,44 @@
   <div class="q-pa-lg">
     <div class="container">
       <!--  第一个区域，视频区  -->
-      <div class="grid q-mb-lg">
+      <div class="new-grid q-mb-lg">
         <!--  轮播图  -->
-        <div class="grid-carousel">
-          <div class="grid-2">
-            <VideoCard :img="backgroundImg1"/>
-            <VideoCard :img="backgroundImg1"/>
-          </div>
-          <q-carousel
-              v-model="carouselCurrentId"
-              class="rounded-borders shadow-6"
-              style="position: absolute;top: 0;right: 0;left: 0;bottom: 0;height: 100%;width: 100%;"
-              infinite
-              swipeable
-              animated
-              :autoplay="carouselAutoPlay"
-              :arrows="!carouselAutoPlay"
-              transition-prev="slide-right"
-              transition-next="slide-left"
-              @mouseenter="carouselAutoPlay = false"
-              @mouseleave="carouselAutoPlay = true"
+        <!--          <div class="grid-2">-->
+        <!--            <VideoCard :img="backgroundImg1"/>-->
+        <!--            <VideoCard :img="backgroundImg1"/>-->
+        <!--          </div>-->
+        <q-carousel
+            v-model="carouselCurrentId"
+            class="rounded-borders shadow-6"
+            infinite
+            swipeable
+            animated
+            height="93%"
+            :autoplay="carouselAutoPlay"
+            :arrows="!carouselAutoPlay"
+            transition-prev="slide-right"
+            transition-next="slide-left"
+            @mouseenter="carouselAutoPlay = false"
+            @mouseleave="carouselAutoPlay = true"
+        >
+          <q-carousel-slide
+              v-for="carousel in carouselArray"
+              class="cursor-pointer"
+              :name="carousel.id"
+              :img-src="carousel.img.reduceUrl || carousel.img.url"
+              @click="gotoEssay(carousel.essayId)"
           >
-            <q-carousel-slide
-                v-for="carousel in carouselArray"
-                class="cursor-pointer"
-                :name="carousel.id"
-                :img-src="carousel.img.reduceUrl || carousel.img.url"
-                @click="gotoEssay(carousel.essayId)"
-            >
-              <q-tooltip>
-                {{ carousel.essay.title }}
-              </q-tooltip>
-            </q-carousel-slide>
-          </q-carousel>
-        </div>
+            <q-tooltip>
+              {{ carousel.essay.title }}
+            </q-tooltip>
+          </q-carousel-slide>
+        </q-carousel>
 
         <!--  其他所有  -->
-        <div v-for="i in videoLength">
+        <div v-for="i in newVideoLength">
           <!--    组件，视频    -->
           <VideoCard
+              ref="videoCardRef"
               v-if="videoList[i - 1]"
               :img="videoList[i - 1].img.reduceUrl || videoList[i - 1].img.url || ''"
               :label="videoList[i - 1].label || ''"
@@ -84,18 +83,16 @@
 
       <!--   其他视频   -->
       <div class="grid" v-if="videoList.length">
-        <div v-for="i in videoList.length - videoLength">
+        <div v-for="i in videoList.length - newVideoLength">
           <!--    组件，视频    -->
           <VideoCard
-              v-if="videoList[i - 1 + videoLength]"
-              :img="videoList[i - 1 + videoLength].img.reduceUrl || videoList[i - 1 + videoLength].img.url || ''"
-              :label="videoList[i - 1 + videoLength].label || ''"
-              :essay-id="videoList[i - 1 + videoLength].essayId"
+              v-if="videoList[i - 1 + newVideoLength]"
+              :img="videoList[i - 1 + newVideoLength].img.reduceUrl || videoList[i - 1 + newVideoLength].img.url || ''"
+              :label="videoList[i - 1 + newVideoLength].label || ''"
+              :essay-id="videoList[i - 1 + newVideoLength].essayId"
           />
         </div>
       </div>
-
-
     </div>
   </div>
 </template>
@@ -104,7 +101,7 @@
 
 import {api} from "../../boot/axios";
 import {ref, watch} from "vue";
-import {init, sleep} from "../../components/Tools";
+import {init} from "../../components/Tools";
 import {useQuasar} from "quasar";
 import {useRouter} from "vue-router";
 import VideoCard from "../../components/satm/VideoCard.vue";
@@ -151,6 +148,10 @@ const videoList = ref([]);
 
 // 最上面显示几条视频
 const videoLength = ref(0);
+const newVideoLength = ref(0);
+
+// 视频的ref
+const videoCardRef = ref();
 
 // 获取video
 function getVideo() {
@@ -175,7 +176,7 @@ const headItemStartIndex = 3;
 
 // 网格列数
 const gridColumns = ref(2);
-const newGridColumns = ref(1);
+const newGridColumns = ref(3);
 const layoutPadding = ref('100px');
 
 // 点击轮播图
@@ -195,6 +196,7 @@ watch(() => $q.screen.width, (value, oldValue, onCleanup) => {
   gridColumns.value = value < 1000 && 2 || value < 1100 && 3 || value < 1500 && 4 || 5;
   layoutPadding.value = gridColumns.value < 5 ? '0' : '100px';
   videoLength.value = gridColumns.value === 5 && 6 || gridColumns.value === 4 && 4 || gridColumns.value < 4 && 2;
+  newVideoLength.value = newGridColumns.value - 1;
 }, {immediate: true})
 
 // 头
@@ -209,6 +211,12 @@ init(headItems, start);
   margin: 0 auto;
   max-width: calc(1920 + 2 * v-bind(layoutPadding));
   padding: 0 v-bind(layoutPadding);
+}
+
+.new-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(v-bind(newGridColumns), 1fr);
 }
 
 .grid {

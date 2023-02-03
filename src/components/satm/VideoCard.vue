@@ -35,6 +35,11 @@ function gotoEssay(id: number | string) {
   $router.push('/satm/content?id=' + id);
 }
 
+// 展示我有多高
+const showImgHeight = () => {
+  return this.width.toString();
+}
+
 </script>
 
 <style scoped>
