@@ -145,7 +145,7 @@ const $router = useRouter();
 const $route = useRoute();
 
 // 头部-图片
-const banner = ref(SERVER_NAME + STATIC_SRC + "banner.png");
+const banner = ref(SERVER_NAME + STATIC_SRC + "new_banner.png");
 const banner_text = ref(SERVER_NAME + STATIC_SRC + "banner_text.png");
 const school = ref("https://www.sjzc.edu.cn/");
 const footer_icon = ref(SERVER_NAME + STATIC_SRC+'footer_icon.png');

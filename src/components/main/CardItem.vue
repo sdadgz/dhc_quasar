@@ -7,8 +7,8 @@
     </div>
 
     <!-- 列表 -->
-    <div class="full-width row q-gutter-md">
-      <div class="col-3" v-for="item in lists">
+    <div class="full-width row q-pa-md">
+      <div class="col-3 q-pa-sm" v-for="item in lists">
         <q-img
             class="cursor-pointer animated rounded-borders"
             :src="item.img.url"
@@ -23,8 +23,8 @@
               class="absolute-center"
               style="color: rgba(34,119,218,0.95)"
               icon="smart_display"
-              flat
               size="23px"
+              flat
           />
         </q-img>
       </div>

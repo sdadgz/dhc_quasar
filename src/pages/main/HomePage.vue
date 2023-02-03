@@ -132,9 +132,11 @@
 
       <!--    其余    -->
       <div class="row" v-if="headItems && headItems[0]">
-        <div class="col-4"
-             :style="{paddingLeft: i % 3 === 1 ? '' : '12px'}"
-             v-for="i in headItems[firstIndex].children.length - 3">
+        <div
+            v-for="i in headItems[firstIndex].children.length - 3"
+            class="col-4"
+            :style="{paddingLeft: i % 3 === 1 ? '' : '12px'}"
+        >
           <ListItem :second-index="i + 1" :first-index="firstIndex"/>
         </div>
       </div>

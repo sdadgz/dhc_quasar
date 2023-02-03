@@ -94,6 +94,8 @@
           />
         </div>
       </div>
+
+
     </div>
   </div>
 </template>
@@ -173,6 +175,7 @@ const headItemStartIndex = 3;
 
 // 网格列数
 const gridColumns = ref(2);
+const newGridColumns = ref(1);
 const layoutPadding = ref('100px');
 
 // 点击轮播图
@@ -188,6 +191,7 @@ function start() {
 
 // 监控屏幕宽度
 watch(() => $q.screen.width, (value, oldValue, onCleanup) => {
+  newGridColumns.value = value < 1000 && 1 || value < 1500 && 2 || 3;
   gridColumns.value = value < 1000 && 2 || value < 1100 && 3 || value < 1500 && 4 || 5;
   layoutPadding.value = gridColumns.value < 5 ? '0' : '100px';
   videoLength.value = gridColumns.value === 5 && 6 || gridColumns.value === 4 && 4 || gridColumns.value < 4 && 2;
