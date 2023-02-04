@@ -94,6 +94,8 @@
           />
         </div>
       </div>
+
+      <!--  todo 页脚   -->
     </div>
   </div>
 </template>
@@ -101,7 +103,7 @@
 <script setup lang="ts">
 
 import {api} from "../../boot/axios";
-import {ref, watch} from "vue";
+import {onMounted, onUpdated, ref, watch} from "vue";
 import {init} from "../../components/Tools";
 import {useQuasar} from "quasar";
 import {useRouter} from "vue-router";
@@ -208,13 +210,22 @@ watch(() => $q.screen.width, (value, oldValue, onCleanup) => {
   layoutPadding.value = gridColumns.value < 5 ? '0' : '100px';
   // videoLength.value = gridColumns.value === 5 && 6 || gridColumns.value === 4 && 4 || gridColumns.value < 4 && 2;
   newVideoLength.value = newGridColumns.value - 1;
-  carouselHeight.value = setCarouselHeight();
+  // carouselHeight.value = setCarouselHeight();
 }, {immediate: true})
 
 // 头
 const headItems = ref([] as Head[]);
 
 init(headItems, start);
+
+// 生命周期钩子
+onMounted(() => {
+  carouselHeight.value = setCarouselHeight();
+})
+
+onUpdated(()=>{
+  carouselHeight.value = setCarouselHeight();
+})
 </script>
 
 <style scoped>

@@ -16,6 +16,12 @@
       </q-toolbar>
     </q-header>
 
+    <!-- todo 左侧drawer  -->
+    <q-drawer>
+
+    </q-drawer>
+
+    <!--  内容  -->
     <q-page-container :class="$q.platform.is.desktop && 'q-px-lg'">
       <router-view/>
     </q-page-container>
@@ -25,6 +31,8 @@
 
     </q-footer>
   </q-layout>
+
+  <!-- todo 右下角体验旧版 -->
 </template>
 
 <script setup lang="ts">
