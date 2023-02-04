@@ -3,38 +3,37 @@
     <div class="container">
       <!--  第一个区域，视频区  -->
       <div class="new-grid q-mb-lg">
-        <!--  轮播图  -->
-        <!--          <div class="grid-2">-->
-        <!--            <VideoCard :img="backgroundImg1"/>-->
-        <!--            <VideoCard :img="backgroundImg1"/>-->
-        <!--          </div>-->
-        <q-carousel
-            ref="carouselRef"
-            v-model="carouselCurrentId"
-            class="rounded-borders shadow-6"
-            :height="carouselHeight"
-            infinite
-            swipeable
-            animated
-            :autoplay="carouselAutoPlay"
-            :arrows="!carouselAutoPlay"
-            transition-prev="slide-right"
-            transition-next="slide-left"
-            @mouseenter="carouselAutoPlay = false"
-            @mouseleave="carouselAutoPlay = true"
-        >
-          <q-carousel-slide
-              v-for="carousel in carouselArray"
-              class="cursor-pointer"
-              :name="carousel.id"
-              :img-src="carousel.img.reduceUrl || carousel.img.url"
-              @click="gotoEssay(carousel.essayId)"
-          >
-            <q-tooltip>
-              {{ carousel.essay.title }}
-            </q-tooltip>
-          </q-carousel-slide>
-        </q-carousel>
+        <!--    轮播图容器，防止样式污染    -->
+        <div>
+          <q-responsive :ratio="16/9" style="width: 100%">
+            <q-carousel
+                ref="carouselRef"
+                v-model="carouselCurrentId"
+                class="rounded-borders shadow-6"
+                infinite
+                swipeable
+                animated
+                transition-prev="slide-right"
+                transition-next="slide-left"
+                :autoplay="carouselAutoPlay"
+                :arrows="!carouselAutoPlay"
+                @mouseenter="carouselAutoPlay = false"
+                @mouseleave="carouselAutoPlay = true"
+            >
+              <q-carousel-slide
+                  v-for="carousel in carouselArray"
+                  class="cursor-pointer"
+                  :name="carousel.id"
+                  :img-src="carousel.img.reduceUrl || carousel.img.url"
+                  @click="gotoEssay(carousel.essayId)"
+              >
+                <q-tooltip>
+                  {{ carousel.essay.title }}
+                </q-tooltip>
+              </q-carousel-slide>
+            </q-carousel>
+          </q-responsive>
+        </div>
 
         <!--  其他所有  -->
         <div v-for="i in newVideoLength">
@@ -141,7 +140,7 @@ const carouselAutoPlay = ref(true);
 // 轮播图ref
 const carouselRef = ref();
 
-const carouselHeight = ref('100%')
+// const carouselHeight = ref('100%');
 
 // 获取轮播图
 function getCarousel() {
@@ -217,15 +216,15 @@ watch(() => $q.screen.width, (value, oldValue, onCleanup) => {
 const headItems = ref([] as Head[]);
 
 init(headItems, start);
-
-// 生命周期钩子
-onMounted(() => {
-  carouselHeight.value = setCarouselHeight();
-})
-
-onUpdated(()=>{
-  carouselHeight.value = setCarouselHeight();
-})
+//
+// // 生命周期钩子
+// onMounted(() => {
+//   carouselHeight.value = setCarouselHeight();
+// })
+//
+// onUpdated(()=>{
+//   carouselHeight.value = setCarouselHeight();
+// })
 </script>
 
 <style scoped>

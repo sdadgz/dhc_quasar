@@ -18,18 +18,15 @@
 
     <!-- todo 左侧drawer  -->
     <q-drawer>
-
+      asd
     </q-drawer>
 
     <!--  内容  -->
     <q-page-container :class="$q.platform.is.desktop && 'q-px-lg'">
       <router-view/>
+      <!-- todo 页脚  -->
     </q-page-container>
 
-    <!--  页脚  -->
-    <q-footer>
-
-    </q-footer>
   </q-layout>
 
   <!-- todo 右下角体验旧版 -->
