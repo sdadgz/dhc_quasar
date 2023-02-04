@@ -18,13 +18,23 @@
 
     <!-- todo 左侧drawer  -->
     <q-drawer>
-      asd
+
     </q-drawer>
 
     <!--  内容  -->
     <q-page-container :class="$q.platform.is.desktop && 'q-px-lg'">
       <router-view/>
       <!-- todo 页脚  -->
+      <q-toolbar class="bg-red-5 row">
+        <q-icon class="q-ma-lg" :name="'img:' + footerIcon" size="5em"/>
+        <div class="col-md-2"/>
+        <div class="col row q-my-lg" style="font-size: 1.1em">
+          <span class="col-md-4 col-shrink q-mx-lg">承办单位：石家庄市科技特派团</span>
+          <span class="col-md-4 col-shrink q-mx-lg">主办单位：石家庄学院</span>
+          <span class="col-md-4 col-shrink q-mx-lg">电话：0311-66617215</span>
+          <span class="col-md-4 col-shrink q-mx-lg">地址：石家庄市高新技术开发区珠峰大街288号</span>
+        </div>
+      </q-toolbar>
     </q-page-container>
 
   </q-layout>
@@ -39,10 +49,14 @@ import {init} from "../components/Tools";
 import {useRouter} from "vue-router";
 import {api} from "../boot/axios";
 import {useQuasar} from "quasar";
+import {SERVER_NAME, SERVER_PREFIX, STATIC_SRC} from "../components/Models";
 
 // 刀
 const $q = useQuasar();
 const $router = useRouter();
+
+// 图标
+const footerIcon = SERVER_NAME + STATIC_SRC + 'footer_icon.png';
 
 // 去登录页
 function goLogin() {

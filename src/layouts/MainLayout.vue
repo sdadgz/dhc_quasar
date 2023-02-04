@@ -62,7 +62,6 @@
           <span class="cursor-pointer super-link" style="font-size: 30px" @click="goHome">
             石家庄市专精特新“小巨人”企业科技特派团
           </span>
-
         </div>
       </q-img>
     </div>
@@ -85,16 +84,17 @@
           <q-slide-transition v-show="headItems[i-1].label === hoverItem.label"
                               style="position: relative;top: -1.04%">
             <q-list dense bordered>
-              <q-item clickable
-                      style="z-index: 1"
-                      class="head-background head-item"
-                      dense
-                      v-for="child in headItems[i-1].children"
-                      @mouseover="mouseOverMenu(headItems[i-1])"
-                      @mouseout="mouseOutMenu"
-                      @click="sonHeadHandler(headItems[i-1], child)"
+              <q-item
+                  v-for="child in headItems[i-1].children"
+                  class="head-background head-item"
+                  style="z-index: 1"
+                  clickable
+                  dense
+                  @mouseover="mouseOverMenu(headItems[i-1])"
+                  @mouseout="mouseOutMenu"
+                  @click="sonHeadHandler(headItems[i-1], child)"
               >
-                <q-item-section style="z-index: 1" class="text-overflow-hidden">{{ child.label }}</q-item-section>
+                <q-item-section class="text-overflow-hidden" style="z-index: 1">{{ child.label }}</q-item-section>
               </q-item>
             </q-list>
           </q-slide-transition>
@@ -148,7 +148,7 @@ const $route = useRoute();
 const banner = ref(SERVER_NAME + STATIC_SRC + "new_banner.png");
 const banner_text = ref(SERVER_NAME + STATIC_SRC + "banner_text.png");
 const school = ref("https://www.sjzc.edu.cn/");
-const footer_icon = ref(SERVER_NAME + STATIC_SRC+'footer_icon.png');
+const footer_icon = ref(SERVER_NAME + STATIC_SRC + 'footer_icon.png');
 
 // 头部-下拉菜单
 const hoverItem = ref({label: ''});
