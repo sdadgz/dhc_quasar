@@ -130,6 +130,13 @@
       </div>
     </q-page-container>
   </q-layout>
+
+  <!--  右下角体验新版 -->
+  <q-card class="fixed-bottom-right q-ma-lg cursor-pointer" @click="goHome">
+    <q-card-section style="font-size: 0.8em;padding: 0.8em;line-height: 1">
+      体验<br/>新版
+    </q-card-section>
+  </q-card>
 </template>
 
 <script setup>

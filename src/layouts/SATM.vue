@@ -7,8 +7,8 @@
         <q-btn class="q-mr-sm" icon="menu" flat round dense/>
         <!--    标题    -->
         <q-toolbar-title>
-          <span>石家庄市科技特派团</span>
-          <span class="desktop-only q-ml-lg">石家庄市专精特新“小巨人”企业科技特派团</span>
+          <span @click="goHome">石家庄市科技特派团</span>
+          <span class="desktop-only q-ml-lg" @click="goHome">石家庄市专精特新“小巨人”企业科技特派团</span>
         </q-toolbar-title>
         <!--    按钮    -->
         <q-btn label="登录" flat rounded @click="goLogin"/>
@@ -24,9 +24,9 @@
     <!--  内容  -->
     <q-page-container :class="$q.platform.is.desktop && 'q-px-lg'">
       <router-view/>
-      <!-- todo 页脚  -->
+      <!--  页脚  -->
       <q-toolbar class="bg-red-5 row">
-        <q-icon class="q-ma-lg" :name="'img:' + footerIcon" size="5em"/>
+        <q-icon class="q-ma-lg cursor-pointer" :name="'img:' + footerIcon" size="5em" @click="goHome"/>
         <div class="col-md-2"/>
         <div class="col row q-my-lg" style="font-size: 1.1em">
           <span class="col-md-4 col-shrink q-mx-lg">承办单位：石家庄市科技特派团</span>
@@ -36,10 +36,14 @@
         </div>
       </q-toolbar>
     </q-page-container>
-
   </q-layout>
 
-  <!-- todo 右下角体验旧版 -->
+  <!--  右下角体验旧版 -->
+  <q-card class="fixed-bottom-right q-ma-lg cursor-pointer" @click="goOldHome">
+    <q-card-section style="font-size: 0.8em;padding: 0.8em;line-height: 1">
+      体验<br/>旧版
+    </q-card-section>
+  </q-card>
 </template>
 
 <script setup lang="ts">
@@ -57,6 +61,16 @@ const $router = useRouter();
 
 // 图标
 const footerIcon = SERVER_NAME + STATIC_SRC + 'footer_icon.png';
+
+// 回家
+function goHome() {
+  $router.push('/');
+}
+
+// 回老家
+function goOldHome() {
+  $router.push('/首页');
+}
 
 // 去登录页
 function goLogin() {
