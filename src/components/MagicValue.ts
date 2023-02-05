@@ -22,7 +22,7 @@ export const CAROUSEL_HEIGHT = 394;
 // 动画时长
 export const DEFAULT_DELAY = 666;
 // 友情连接
-export const FRIEND_LINK_PAGE_SIZE = 8;
+export const FRIEND_LINK_PAGE_SIZE = 4;
 // 超时时长
 export const TIME_OUT_LONG = 1000 * 60 * 6;
 export const TIME_OUT_MIN = 1000;

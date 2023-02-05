@@ -13,6 +13,7 @@ const routes = [
         children: [
             {path: '', component: () => import('pages/satm/Main.vue')},
             {path: 'content', component: () => import('pages/main/MainPage.vue')},
+            {path: 'other', component: () => import('pages/satm/Other.vue')}
         ]
     },
     {

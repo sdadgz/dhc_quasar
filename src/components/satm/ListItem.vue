@@ -9,7 +9,12 @@
     <q-separator/>
 
     <!--   内容   -->
-    <q-item v-for="item in lists" clickable @click="gotoContent(item.id)">
+    <q-item
+        v-for="item in lists"
+        v-ripple
+        clickable
+        :to="'/satm/content?id='+item.id"
+    >
       <q-item-section style="max-width: 10px;color: #999999">●</q-item-section>
       <q-item-section>
         {{ item.title }}

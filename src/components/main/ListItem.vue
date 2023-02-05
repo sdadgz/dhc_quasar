@@ -8,7 +8,7 @@
 
     <!--  列  -->
     <q-list class="col">
-      <q-item v-for="item in lists" class="super-link" clickable @click="goto(item.id)">
+      <q-item v-for="item in lists" v-ripple class="super-link" clickable @click="goto(item.id)">
         <q-item-section style="max-width: 10px;color: #999999">●</q-item-section>
         <q-item-section>
           <span>

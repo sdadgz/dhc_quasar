@@ -71,7 +71,7 @@
       <ListItem class="q-mb-lg" v-else :first-index="0" :second-index="2"/>
 
       <!--   其他所有   -->
-      <div :class="gridColumns > 2 && 'grid-2'" v-if="headItems[0]">
+      <div v-if="headItems[0]" :class="gridColumns > 2 && 'grid-2'">
         <ListItem
             v-for="i in headItems[0].children.length - headItemUseCount"
             class="q-mb-lg"
@@ -83,7 +83,7 @@
 
       <!--   其他视频   -->
       <div class="grid" v-if="videoList.length">
-        <div v-for="i in videoList.length - newVideoLength">
+        <div v-for="i in Math.min(videoList.length - newVideoLength, gridColumns) ">
           <!--    组件，视频    -->
           <VideoCard
               v-if="videoList[i - 1 + newVideoLength]"
@@ -93,8 +93,6 @@
           />
         </div>
       </div>
-
-      <!--  todo 页脚   -->
     </div>
   </div>
 </template>
@@ -205,7 +203,7 @@ function start() {
 // 监控屏幕宽度
 watch(() => $q.screen.width, (value, oldValue, onCleanup) => {
   newGridColumns.value = value < 1000 && 1 || value < 1500 && 2 || 3;
-  gridColumns.value = value < 1000 && 2 || value < 1100 && 3 || value < 1500 && 4 || 5;
+  gridColumns.value = value < 1000 && 2 || value < 1100 && 3 || 4;
   layoutPadding.value = gridColumns.value < 5 ? '0' : '100px';
   // videoLength.value = gridColumns.value === 5 && 6 || gridColumns.value === 4 && 4 || gridColumns.value < 4 && 2;
   newVideoLength.value = newGridColumns.value - 1;

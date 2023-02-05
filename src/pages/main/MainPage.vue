@@ -3,12 +3,11 @@
     <div class="width-1200 col-auto">
       <div class="container">
         <!--    头部面包屑    -->
-        <Header/>
+        <Header :first-index="props.firstIndex"/>
 
         <!--    本体    -->
         <q-card flat square style="min-height: 50vh">
           <div v-if="!loading">
-
             <!--    展示具体文章    -->
             <div v-if="showEssay">
               <!--     标题     -->
@@ -100,7 +99,7 @@
             <div class="q-pa-md q-gutter-sm" v-else>
               <!--       标题       -->
               <div class="row" style="border-bottom: 1px solid #ddd;padding-bottom: 26px">
-                <h3 class="page-title">{{ second === EMPTY_STRING ? first : second }}</h3>
+                <h3 class="page-title">{{ second || first }}</h3>
               </div>
 
               <!--       分页列表       -->
@@ -156,8 +155,12 @@ import {SERVER_NAME, SERVER_PREFIX} from "components/Models";
 import {useRoute, useRouter} from "vue-router";
 import {goto, init, max, sleep, sub} from "components/Tools";
 
+// 刀
 const $route = useRoute();
 const $router = useRouter();
+
+// 传参
+const props = defineProps(['firstIndex']);
 
 const showVideo = ref(false);
 
@@ -353,6 +356,10 @@ const showFriendLink = ref(false);
 
 async function start() {
   loading.value = true;
+  // 屎山上拉屎，根据直接组件传参确定一二级标题
+  if (props.firstIndex) { // 非0，0是首页不走这里
+    first.value = headItems.value[props.firstIndex].label;
+  }
   const id = $route.query[`${ESSAY_UNIQUE_ID}`];
   if (id) {
     await getEssayDetail(id);

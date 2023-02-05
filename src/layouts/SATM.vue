@@ -4,7 +4,7 @@
     <q-header :reveal-offset="250" elevated>
       <q-toolbar class="bg-red-5">
         <!--    菜单    -->
-        <q-btn class="q-mr-sm" icon="menu" flat round dense/>
+        <q-btn class="q-mr-sm" icon="menu" flat round dense @click="drawer = !drawer"/>
         <!--    标题    -->
         <q-toolbar-title>
           <span @click="goHome">石家庄市科技特派团</span>
@@ -16,9 +16,21 @@
       </q-toolbar>
     </q-header>
 
-    <!-- todo 左侧drawer  -->
-    <q-drawer>
-
+    <!-- 左侧drawer  -->
+    <q-drawer v-model="drawer" class="col-shrink bg-grey-2 text-primary">
+      <q-list separator bordered>
+        <q-item
+            v-for="item in headItems"
+            v-ripple clickable
+            class="animated"
+            :class="item.label === field && 'drawer-selected'"
+            :to="'/satm/other?field=' + item.label"
+        >
+          <q-item-section>
+            {{ item.label }}
+          </q-item-section>
+        </q-item>
+      </q-list>
     </q-drawer>
 
     <!--  内容  -->
@@ -28,7 +40,7 @@
       <q-toolbar class="bg-red-5 row">
         <q-icon class="q-ma-lg cursor-pointer" :name="'img:' + footerIcon" size="5em" @click="goHome"/>
         <div class="col-md-2"/>
-        <div class="col row q-my-lg" style="font-size: 1.1em">
+        <div class="col row q-my-lg" style="font-size: min(1.1em, 3vw)">
           <span class="col-md-4 col-shrink q-mx-lg">承办单位：石家庄市科技特派团</span>
           <span class="col-md-4 col-shrink q-mx-lg">主办单位：石家庄学院</span>
           <span class="col-md-4 col-shrink q-mx-lg">电话：0311-66617215</span>
@@ -48,16 +60,25 @@
 
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {init} from "../components/Tools";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {api} from "../boot/axios";
 import {useQuasar} from "quasar";
 import {SERVER_NAME, SERVER_PREFIX, STATIC_SRC} from "../components/Models";
 
 // 刀
 const $q = useQuasar();
+const $route = useRoute();
 const $router = useRouter();
+
+// 左侧drawer ====================================
+const drawer = ref(false);
+
+// 最上面url中的field
+const field = ref('首页');
+
+// -----------------------------------------------------------------------------
 
 // 图标
 const footerIcon = SERVER_NAME + STATIC_SRC + 'footer_icon.png';
@@ -87,6 +108,11 @@ function start() {
 
 }
 
+// 监视
+watch(() => $route.query.field, (value) => {
+  field.value = <string>value || '首页';
+})
+
 // 头
 const headItems = ref([]);
 
@@ -95,6 +121,18 @@ init(headItems, start);
 </script>
 
 <style scoped>
+
+/*  别手欠删了，在使用  */
+.drawer-selected {
+  color: #00b0ff;
+  font-weight: bold;
+  font-size: 1.3em;
+  border-right: #007bff solid 3px;
+}
+
+.animated {
+  transition: all .1s ease-in-out;
+}
 
 </style>
 

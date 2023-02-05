@@ -16,11 +16,15 @@
 
 import {useRoute, useRouter} from "vue-router";
 import {ref, watch} from "vue";
-import {sleep} from "components/Tools";
+import {init, sleep} from "components/Tools";
 import {HOME, LEVER, POSITION_HOME, UNDEFINED} from "components/MagicValue";
 
-const $router = useRouter();
+// 刀
 const $route = useRoute();
+const $router = useRouter();
+
+// 传参
+const props = defineProps(['firstIndex']);
 
 const show = ref(true);
 
@@ -37,8 +41,13 @@ const secondTo = ref(HOME);
 // 面包屑初始化
 function breadInit() {
   firstLabel.value = $route.params.first;
-  firstTo.value = LEVER + firstLabel.value;
   secondLabel.value = $route.params.second;
+  // 屎山上拉屎
+  if (props.firstIndex) {
+    firstLabel.value = headItems.value[props.firstIndex].label;
+  }
+
+  firstTo.value = LEVER + firstLabel.value;
   secondTo.value = firstTo.value + LEVER + secondLabel.value;
 }
 
@@ -52,8 +61,9 @@ watch(() => $route.params, () => {
   start();
 }, {immediate: true})
 
-start();
+const headItems = ref([]);
 
+init(headItems, start);
 </script>
 
 
