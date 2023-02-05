@@ -1,15 +1,14 @@
 <template>
   <div class="cont column">
     <!--  标题  -->
-    <div class="full-width col row justify-between" style="margin-bottom: 10px">
+    <div class="col full-width row justify-between" style="margin-bottom: 10px">
       <span class="title">{{ second }}</span>
       <span class="sub-title" @click="goto(null)">更多>></span>
     </div>
 
     <!--  列  -->
-    <q-list>
-      <q-item v-for="item in lists" clickable v-ripple @click="goto(item.id)"
-              class="super-link">
+    <q-list class="col">
+      <q-item v-for="item in lists" class="super-link" clickable @click="goto(item.id)">
         <q-item-section style="max-width: 10px;color: #999999">●</q-item-section>
         <q-item-section>
           {{ item.title }}
@@ -19,7 +18,6 @@
         </q-item-section>
       </q-item>
     </q-list>
-
   </div>
 </template>
 
@@ -51,7 +49,7 @@ function gotoEssay(id, field) {
   //   query: {[`${ESSAY_UNIQUE_ID}`]: id}
   // })
   // window.open(routeUrl.href, '_blank');
-  $router.push('/' + headItems.value[firstIndex].label + LEVER + field + '?id=' + id);
+  $router.push('/' + headItems.value[firstIndex].label + LEVER + field + (id && '?id=' + id || ''));
 }
 
 // 获取列表分页

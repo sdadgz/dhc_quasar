@@ -28,6 +28,7 @@ import {ref, watch} from "vue";
 import {EMPTY_STRING, HOME_LIST_MAX_SIZE, LEVER, SPLIT} from "../MagicValue";
 import {api} from "../../boot/axios";
 import {init} from "../Tools";
+import {ListItemsLength} from "./Satm";
 
 // 传参
 const props = defineProps(['firstIndex', 'secondIndex']);
@@ -68,7 +69,7 @@ async function getContext() {
   await api.get('/essay/page', {
     params: {
       currentPage: 1,
-      pageSize: HOME_LIST_MAX_SIZE,
+      pageSize: ListItemsLength,
       field: first.value + SPLIT + second.value
     }
   }).then(res => {

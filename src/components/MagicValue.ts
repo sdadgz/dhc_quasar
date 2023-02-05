@@ -15,7 +15,7 @@ export const EQ = '=';
 export const POSITION_HOME = '石家庄市科技特派团'; // 位置面包屑
 export const PAGE_MAX = 13;
 export const ESSAY_UNIQUE_ID = 'id'; // essay的唯一标识名称
-export const HOME_LIST_MAX_SIZE = 10;
+export const HOME_LIST_MAX_SIZE = 6;
 // 主页轮播图大小
 export const CAROUSEL_WIDTH = 700;
 export const CAROUSEL_HEIGHT = 394;

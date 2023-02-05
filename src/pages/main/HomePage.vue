@@ -100,7 +100,7 @@
           <q-carousel-slide
               :name="item.id"
               v-for="item in imgArr"
-              :img-src="item.img.reduceUrl"
+              :img-src="item.img.reduceUrl || item.img.url"
               class="cursor-pointer"
               @click="carouselGoto(item.essayId)"
           >
@@ -131,12 +131,12 @@
       </div>
 
       <!--    其余    -->
-      <div class="row" v-if="headItems && headItems[0]">
-        <div
-            v-for="i in headItems[firstIndex].children.length - 3"
-            class="col-4"
-            :style="{paddingLeft: i % 3 === 1 ? '' : '12px'}"
-        >
+      <div
+          v-if="headItems && headItems[0]"
+          class="row q-py-md"
+          style="display: grid;grid-template-columns: repeat(3, 1fr);grid-gap: 12px"
+      >
+        <div v-for="i in headItems[firstIndex].children.length - 3" class="bg-white">
           <ListItem :second-index="i + 1" :first-index="firstIndex"/>
         </div>
       </div>
