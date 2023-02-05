@@ -14,7 +14,7 @@
       <q-item-section>
         {{ item.title }}
       </q-item-section>
-      <q-item-section style="text-align: right">
+      <q-item-section class="col-shrink">
         {{ setTime(item.createTime) }}
       </q-item-section>
     </q-item>

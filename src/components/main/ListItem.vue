@@ -11,9 +11,11 @@
       <q-item v-for="item in lists" class="super-link" clickable @click="goto(item.id)">
         <q-item-section style="max-width: 10px;color: #999999">●</q-item-section>
         <q-item-section>
+          <span>
           {{ item.title }}
+          </span>
         </q-item-section>
-        <q-item-section style="text-align: right">
+        <q-item-section class="col-shrink">
           {{ setTime(item.createTime) }}
         </q-item-section>
       </q-item>
