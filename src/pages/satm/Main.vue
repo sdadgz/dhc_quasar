@@ -82,13 +82,14 @@
       </div>
 
       <!--   其他视频   -->
-      <strong
-          class="text-primary text-h4 cursor-pointer"
+      <div
+          class="text-primary text-h4 cursor-pointer text-center"
           style="font-size: min(2.125em, 5.5vw)"
-          @click="gotoContent(null)"
+          @click="gotoVideo"
       >
-        {{ second }}
-      </strong>
+        <strong v-if="headItems.length"> {{ headItems[0].children[headItems[0].children.length - 1].label }} </strong>
+      </div>
+      <q-separator/>
       <div class="grid" v-if="videoList.length">
         <div v-for="i in Math.min(videoList.length - newVideoLength, gridColumns) ">
           <!--    组件，视频    -->
@@ -116,6 +117,7 @@ import {VideoDefaultCurrentPage, VideoDefaultPageSize} from "../../components/sa
 import {Head} from "../../components/main/head-item";
 import {SERVER_NAME, STATIC_SRC} from "../../components/Models";
 import ListItem from "../../components/satm/ListItem.vue";
+import {SPLIT} from "../../components/MagicValue";
 
 // 刀
 const $q = useQuasar();
@@ -183,6 +185,13 @@ function getVideo() {
 
     videoList.value = list;
   })
+}
+
+// 总跳转
+function gotoVideo() {
+  $router.push('/satm/content' +
+      '?field=' + headItems.value[0].label + SPLIT +
+      headItems.value[0].children[headItems.value[0].children.length - 1].label);
 }
 
 // --------------------------------------------------------------
