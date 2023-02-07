@@ -82,6 +82,13 @@
       </div>
 
       <!--   其他视频   -->
+      <strong
+          class="text-primary text-h4 cursor-pointer"
+          style="font-size: min(2.125em, 5.5vw)"
+          @click="gotoContent(null)"
+      >
+        {{ second }}
+      </strong>
       <div class="grid" v-if="videoList.length">
         <div v-for="i in Math.min(videoList.length - newVideoLength, gridColumns) ">
           <!--    组件，视频    -->

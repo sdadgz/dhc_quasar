@@ -2,7 +2,11 @@
   <q-list>
     <!--   头   -->
     <q-item>
-      <q-item-section class="text-primary text-h4 cursor-pointer" @click="gotoContent(null)">
+      <q-item-section
+          class="text-primary text-h4 cursor-pointer"
+          style="font-size: min(2.125em, 5.5vw)"
+          @click="gotoContent(null)"
+      >
         <strong> {{ second }}</strong>
       </q-item-section>
     </q-item>
@@ -13,7 +17,7 @@
         v-for="item in lists"
         v-ripple
         clickable
-        :to="'/satm/content?id='+item.id"
+        :to="'/satm/content?id=' + item.id"
     >
       <q-item-section style="max-width: 10px;color: #999999">●</q-item-section>
       <q-item-section>
