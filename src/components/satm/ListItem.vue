@@ -54,7 +54,8 @@ const lists = ref([]);
 // 总跳转
 function gotoContent(id) {
   $router.push('/satm/content' + (id ? '?id=' + id :
-      '?field=' + headItems.value[firstIndex].label + SPLIT + headItems.value[firstIndex].children[secondIndex].label));
+      '?field=' + headItems.value[firstIndex].label + SPLIT +
+      headItems.value[firstIndex].children[secondIndex].label));
 }
 
 // 跳转

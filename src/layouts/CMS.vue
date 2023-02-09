@@ -21,7 +21,8 @@
 
         <!--    回家    -->
         <q-space/>
-        <q-icon name="logout" size="30px" class="float-right cursor-pointer" @click="goHome"/>
+        <q-btn icon="home" label="回到首页" flat @click="goHome"/>
+        <q-btn icon="logout" label="退出登录" flat @click="logout"/>
       </q-toolbar>
     </q-header>
 
@@ -79,6 +80,12 @@ const subTitle = ref(EMPTY_STRING);
 // 回家
 function goHome() {
   $router.push(HOME);
+}
+
+// 退出登录
+function logout(){
+  localStorage.removeItem("token");
+  $router.push('/user/login');
 }
 
 // 跳转到

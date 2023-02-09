@@ -3,7 +3,6 @@
 
     <!--   注册海克斯科技用户   -->
     <q-card class="q-pa-md" style="width: 460px;">
-
       <!--    标题    -->
       <q-card-section>
         <strong>注册新用户</strong>
@@ -31,6 +30,40 @@
       </q-card-section>
     </q-card>
 
+    <!--  修改密码  -->
+    <q-card class="q-pa-md" style="width: 460px">
+      <!--   标题   -->
+      <q-card-section>
+        <strong>修改密码</strong>
+      </q-card-section>
+
+      <!--    用户名    -->
+      <q-card-section>
+        <q-input v-model="updatePasswordUsername" label="用户名" :rules="notNull"/>
+      </q-card-section>
+
+      <!--   旧密码   -->
+      <q-card-section>
+        <q-input v-model="updatePasswordOldPassword" label="旧密码" :rules="notNull"/>
+      </q-card-section>
+
+      <!--    密码    -->
+      <q-card-section>
+        <q-input v-model="updatePasswordNewPassword" label="密码" :rules="notNull" type="password"/>
+      </q-card-section>
+
+      <!--    确认密码    -->
+      <q-card-section>
+        <q-input v-model="updatePasswordNewPasswordConfirm" label="确认密码" :rules="updatePasswordSameRule" type="password"/>
+      </q-card-section>
+
+      <!--    按钮    -->
+      <q-card-section class="row justify-between">
+        <q-btn label="重置" icon="clear_all" color="secondary" @click="updatePasswordReset"/>
+        <q-btn label="提交" icon="upload" color="primary" @click="updatePasswordHandler"/>
+      </q-card-section>
+    </q-card>
+
     <!--  用户表  -->
     <q-card class="q-pa-md">
       <q-table title="用户" :columns="userColumns" :rows="userRows" row-key="id" hide-pagination
@@ -41,15 +74,15 @@
           <q-td :props="props" class="cursor-pointer" title="点击编辑">
             {{ props.row.name }}
             <q-popup-edit
-              v-model="props.row.name"
-              v-slot="scope"
-              title="修改标题"
-              @before-show="beforeShowUsernameHandler(props.row.name, props.row.id)"
+                v-model="props.row.name"
+                v-slot="scope"
+                title="修改标题"
+                @before-show="beforeShowUsernameHandler(props.row.name, props.row.id)"
             >
               <transition
-                appear
-                enter-active-class="animated zoomIn"
-                leave-active-class="animated zoomOut"
+                  appear
+                  enter-active-class="animated zoomIn"
+                  leave-active-class="animated zoomOut"
               >
                 <div class="q-pa-md q-gutter-md">
                   <q-input v-model="nameInput" dense autofocus @keyup.enter="updateUsernameHandler"
@@ -89,6 +122,51 @@ import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
 import {api} from "boot/axios";
 import {USER_COLUMNS} from "components/user/table";
 
+// region 修改密码 ============================================
+const updatePasswordUsername = ref(); // 用户名
+const updatePasswordOldPassword = ref(); // 旧密码
+const updatePasswordNewPassword = ref(); // 新密码
+const updatePasswordNewPasswordConfirm = ref(); // 新密码确认密码
+
+// 修改密码的确认密码
+const updatePasswordSameRule = ref([(val) => (val && val === updatePasswordNewPassword.value && val.length > 0) || '两次输入的密码不同']);
+
+// 重置
+function updatePasswordReset() {
+  updatePasswordUsername.value = '';
+  updatePasswordOldPassword.value = '';
+  updatePasswordNewPassword.value = '';
+  updatePasswordNewPasswordConfirm.value = '';
+}
+
+// 确认
+function updatePasswordHandler() {
+  if (!updatePasswordNewPassword.value || !updatePasswordUsername.value || !updatePasswordOldPassword.value ||
+      !updatePasswordNewPasswordConfirm.value || !updatePasswordNewPassword.value) {
+    CommWarn("完成表单");
+    return;
+  }
+  if (updatePasswordNewPassword.value !== updatePasswordNewPasswordConfirm.value) {
+    CommWarn("两次密码输入不一致");
+    return;
+  }
+
+  api.put('/user/password', null, {
+    params: {
+      username: updatePasswordUsername.value,
+      oldPassword: updatePasswordOldPassword.value,
+      newPassword: updatePasswordNewPassword.value
+    }
+  }).then(res => {
+    res.data ? CommSeccess("修改成功") : CommWarn("修改失败");
+    localStorage.removeItem("token");
+  })
+}
+
+// endregion
+
+// region 历史遗留，其他所有 ==================================================
+
 const nameInput = ref(EMPTY_STRING);
 const userId = ref(EMPTY_STRING);
 
@@ -122,7 +200,7 @@ const registerUsername = ref(EMPTY_STRING);
 const registerPassword = ref(EMPTY_STRING);
 const registerPasswordP = ref(EMPTY_STRING);
 const sameRule = ref([(val) => (val && val === registerPassword.value && val.length > 0)
-  || '两次输入的密码不同']);
+    || '两次输入的密码不同']);
 const currentPage = ref(START_PAGE);
 const pageTotal = ref(4);
 const name = ref(EMPTY_STRING);
@@ -137,7 +215,7 @@ function resetRegister() {
 // 提交注册
 function commitRegister() {
   if (registerUsername.value.length < 1 || registerPassword.value.length < 1 ||
-    registerPasswordP.value !== registerPassword.value) {
+      registerPasswordP.value !== registerPassword.value) {
     CommWarn("请完善表单");
     return;
   }
@@ -173,6 +251,8 @@ async function getUser() {
   })
   userLoading.value = false;
 }
+
+// endregion
 
 function start() {
   getUser();

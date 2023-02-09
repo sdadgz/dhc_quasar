@@ -53,6 +53,7 @@ export default boot(({app}) => {
     api.interceptors.response.use(
         res => {
             if (res.data.code === '499') {
+                localStorage.removeItem("token");
                 CommFail('请重新登录');
                 window.location.href = SERVER_PREFIX + "#/user/login";
             } else if (res.data.code !== '200') {
