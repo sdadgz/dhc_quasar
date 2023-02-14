@@ -1,11 +1,12 @@
 import * as path from "path";
 import {HEAD_ITEMS} from "components/main/head-item";
 import {createRouter, createWebHistory} from "vue-router";
+import {useQuasar} from "quasar";
 
 const routes = [
     {
         path: '/',
-        redirect: '/satm' // 重定向到主页
+        component: () => import('layouts/RedirectRouter.vue')
     },
     {
         path: '/satm',

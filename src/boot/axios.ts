@@ -61,6 +61,9 @@ export default boot(({app}) => {
             } else {
                 return res.data;
             }
+        }, error => {
+            // 接管非自定义错误
+            CommFail();
         }
     )
 })

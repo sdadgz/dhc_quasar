@@ -39,13 +39,13 @@ export function CommSeccess(message: any) {
   })
 }
 
-export function CommFail(message: any) {
+export function CommFail(message?: any) {
   Notify.create({
     icon: 'error',
     color: 'negative',
     message: message,
     position: 'top',
-    group: message,
+    group: message || '出错了',
   })
 }
 
