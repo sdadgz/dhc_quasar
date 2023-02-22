@@ -50,8 +50,7 @@ export default boot(({app}) => {
     )
 
     // 响应拦截器
-    api.interceptors.response.use(
-        res => {
+    api.interceptors.response.use(res => {
             if (res.data.code === '499') {
                 localStorage.removeItem("token");
                 CommFail('请重新登录');

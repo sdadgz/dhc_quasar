@@ -295,7 +295,7 @@ async function getEssay() {
   // 更新领域
   await setField();
 
-  await api.get("/essay/page", {
+  await field.value && api.get("/essay/page", {
     params: {
       "field": field.value,
       "currentPage": currentPage.value,
@@ -377,7 +377,7 @@ async function start() {
 
 // 监控
 watch(() => $route.fullPath, () => {
-  init(headItems, start);
+  start();
 })
 
 const headItems = ref([]);

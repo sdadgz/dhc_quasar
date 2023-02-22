@@ -132,7 +132,7 @@
   </q-layout>
 
   <!--  右下角体验新版 -->
-  <q-card class="fixed-bottom-right q-ma-lg cursor-pointer" @click="goHome">
+  <q-card class="fixed-bottom-right q-ma-lg cursor-pointer" @click="goSatm">
     <q-card-section style="font-size: 0.8em;padding: 0.8em;line-height: 1">
       体验<br/>新版
     </q-card-section>
@@ -266,6 +266,11 @@ function mouseOutMenu() {
 // 回到主页
 function goHome() {
   $router.push(HOME);
+}
+
+// 体验新版
+function goSatm(){
+  $router.push("/satm");
 }
 
 // 去登录页
