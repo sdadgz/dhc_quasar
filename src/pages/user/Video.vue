@@ -49,7 +49,7 @@
                     v-for="item in father.children"
                     v-close-popup
                     clickable
-                    @click="videoSecond = item.label"
+                    @click="secondTitleHandler(item)"
                 >
                   <q-item-section>{{ item.label }}</q-item-section>
                 </q-item>
@@ -126,6 +126,7 @@ import {
   subArr,
   uploadFinish
 } from "components/Tools";
+import {banCarouselAndVideo} from "components/user/SecondTitle";
 
 // 获取文件
 async function getFile() {
@@ -165,6 +166,13 @@ function commitVideoHandler() {
   if (videoUploader) {
     videoUploader.value.upload();
   }
+}
+
+// 设置二级标题
+function secondTitleHandler(item){
+  banCarouselAndVideo(item.label, headItems.value[0].children,()=>{
+    videoSecond.value = item.label;
+  },()=>CommWarn("不在此处上传"));
 }
 
 // 重置视频

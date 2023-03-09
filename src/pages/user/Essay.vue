@@ -295,6 +295,7 @@ import {getRows, init, sleep} from "components/Tools";
 import {ESSAY_COLUMNS} from "components/user/table";
 import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {useRouter} from "vue-router";
+import {banCarouselAndVideo} from "components/user/SecondTitle";
 
 const $router = useRouter();
 
@@ -353,7 +354,9 @@ function getHeadSon() {
 
 // 二级标题点击
 function essayHandler_2(item) {
-  essayField.value = item.label;
+  banCarouselAndVideo(item.label, headItems.value[0].children,()=>{
+    essayField.value = item.label;
+  },()=>CommWarn("不在此处上传"));
 }
 
 // essay置顶

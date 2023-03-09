@@ -27,7 +27,7 @@ export const FRIEND_LINK_PAGE_SIZE = 4;
 export const TIME_OUT_LONG = 1000 * 60 * 6;
 export const TIME_OUT_MIN = 1000;
 export const TIME_STRING = 'time';
-// 之前写死的一二级标签
+// 本地存储的键
 export const HEAD_ITEMS_STRING = "headItems";
 
 // 返回code
