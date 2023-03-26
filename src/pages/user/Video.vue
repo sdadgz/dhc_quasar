@@ -88,7 +88,7 @@
 
 import {SERVER_NAME} from "components/Models";
 import {ref, watch} from "vue";
-import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
+import {CommFail, CommSuccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {useRouter} from "vue-router";
 import {
   CAROUSEL_HEIGHT,

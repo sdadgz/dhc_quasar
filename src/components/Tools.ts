@@ -2,7 +2,7 @@
 import {ESSAY_COLUMNS, table} from "./user/table";
 import {DOT, EMPTY_STRING, HEAD_ITEMS_STRING, TIME_OUT_LONG, TIME_STRING} from "./MagicValue";
 import {Ref, ref} from "vue";
-import {CommFail, CommSeccess, CommWarn} from "./notifyTools";
+import {CommFail, CommSuccess, CommWarn} from "./notifyTools";
 import {SERVER_PREFIX} from "./Models";
 import {api} from "../boot/axios";
 import {HEAD_ITEMS} from "./main/head-item";
@@ -112,14 +112,14 @@ export function uploadFinish(info) {
     CommFail(res.msg);
   } else {
     // 正常处理
-    CommSeccess("上传成功");
+    CommSuccess("上传成功");
   }
 }
 
 // 复制
 export function copy(url) {
   navigator.clipboard.writeText(url).then(() => {
-    CommSeccess("复制成功");
+    CommSuccess("复制成功");
   })
 }
 
@@ -134,7 +134,7 @@ export function deleteHandler(idList: number[], url: string, callback: () => voi
       idList: idList
     }
   }).then(res => {
-    CommSeccess("删除成功");
+    CommSuccess("删除成功");
   }).catch(res => {
     CommFail("删除失败");
   }).then(res => {
@@ -151,7 +151,7 @@ export function recoverHandler(idList: number[], url: string, callback?: () => v
   api.put(url, {
     idList: idList
   }).then(res => {
-    CommSeccess("恢复成功");
+    CommSuccess("恢复成功");
   }).catch(res => {
     CommFail("恢复失败");
   }).then(res => {

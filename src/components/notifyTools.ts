@@ -29,7 +29,7 @@ export function LoadingFail(not: any) {
 }
 
 //一般类型操作成功
-export function CommSeccess(message: any) {
+export function CommSuccess(message: any) {
   Notify.create({
     icon: 'done',
     color: 'positive',
@@ -91,7 +91,7 @@ export function DeleteConformNew(idList: number[], url: string, fun?: () => void
       }
     }).then(res => {
       if (res.code === CODE_200) {
-        CommSeccess("删除成功");
+        CommSuccess("删除成功");
       } else {
         CommFail("删除失败");
       }

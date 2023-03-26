@@ -77,7 +77,7 @@ import {ref} from "vue";
 import {SERVER_NAME, STATIC_SRC} from "components/Models";
 import {useRouter} from "vue-router";
 import {api} from "boot/axios";
-import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
+import {CommFail, CommSuccess, CommWarn} from "components/notifyTools";
 import {HOME} from "components/MagicValue";
 
 const $router = useRouter();
@@ -129,7 +129,7 @@ function loginHandler() {
     if (!res) {
       return;
     }
-    CommSeccess("登录成功");
+    CommSuccess("登录成功");
 
     const token = res.data.token;
     const databaseUsername = res.data.username;

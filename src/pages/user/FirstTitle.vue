@@ -152,7 +152,7 @@ import {FIRST_TITLE_COLUMNS} from "components/user/table";
 import {emptyToNull, getIdList, getRows, getSelectedString, init, sleep} from "components/Tools";
 import {CODE_200, DEFAULT_DELAY, EMPTY_STRING, PAGE_MAX, PAGE_SIZE, START_PAGE, ZERO} from "components/MagicValue";
 import {api} from "boot/axios";
-import {CommFail, CommSeccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
+import {CommFail, CommSuccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
 
 // 输入框
 const fieldInput = ref(EMPTY_STRING);
@@ -199,7 +199,7 @@ function commitFirstTitle() {
     title: firstTitleTitle.value,
     order: firstTitleOrder.value
   }).then(res => {
-    CommSeccess("上传成功");
+    CommSuccess("上传成功");
   }).catch(res => {
     CommFail("上传失败");
   }).then(res => {
@@ -231,7 +231,7 @@ function updateFirstTitleHandler() {
     title: emptyToNull(firstTitleTitle.value),
     order: emptyToNull(firstTitleOrder.value.toString())
   }).then(res => {
-    CommSeccess("修改成功");
+    CommSuccess("修改成功");
   }).catch(res => {
     CommFail("修改失败");
   }).then(res => {

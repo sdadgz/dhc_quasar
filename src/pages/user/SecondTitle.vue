@@ -185,7 +185,7 @@ import {
 } from "components/MagicValue";
 import {api} from "boot/axios";
 import {emptyToNull, getIdList, getRows, getSelectedString, init, sleep} from "components/Tools";
-import {CommFail, CommSeccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
+import {CommFail, CommSuccess, CommWarn, DeleteConform, DeleteConformNew} from "components/notifyTools";
 
 // 搜索输入框
 const fieldInput = ref(EMPTY_STRING);
@@ -232,7 +232,7 @@ function commitSecondTitle() {
     title: secondTitleTitle.value,
     order: secondTitleOrder.value
   }).then(res => {
-    CommSeccess("上传成功");
+    CommSuccess("上传成功");
   }).catch(res => {
     CommFail("上传失败");
   }).then(res => {
@@ -294,7 +294,7 @@ function updateSecondTitleHandler() {
     title: emptyToNull(secondTitleTitle.value),
     order: emptyToNull(secondTitleOrder.value)
   }).then(res => {
-    CommSeccess("修改成功");
+    CommSuccess("修改成功");
   }).catch(res => {
     CommFail("修改失败");
   }).then(res => {

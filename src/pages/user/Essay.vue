@@ -293,7 +293,7 @@ import {SERVER_NAME} from "components/Models";
 import {api} from "boot/axios";
 import {getRows, init, sleep} from "components/Tools";
 import {ESSAY_COLUMNS} from "components/user/table";
-import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
+import {CommFail, CommSuccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {useRouter} from "vue-router";
 import {banCarouselAndVideo} from "components/user/SecondTitle";
 
@@ -320,7 +320,7 @@ function tableFieldSave() {
   }).then(res => {
     const status = res.data.status;
     if (status) {
-      CommSeccess("修改成功");
+      CommSuccess("修改成功");
       return res;
     } else {
       CommFail("修改失败");
@@ -367,7 +367,7 @@ async function essayTopHandler(id, status) {
       status: status
     }
   }).then(res => {
-    CommSeccess("修改成功");
+    CommSuccess("修改成功");
   }).catch(res => {
     CommFail("修改失败");
   }).then(res => {
@@ -385,7 +385,7 @@ function tableTitleSave() {
   }).then(res => {
     const status = res.data.status;
     if (status) {
-      CommSeccess("修改成功");
+      CommSuccess("修改成功");
       return res;
     }
   }).catch(res => {
@@ -484,7 +484,7 @@ function deleteEssayHandler() {
     }
   }).then(res => {
     if (res.code === CODE_200) {
-      CommSeccess("删除成功");
+      CommSuccess("删除成功");
     } else {
       CommFail("删除失败");
     }
@@ -600,7 +600,7 @@ function essayUploadFinish(info) {
     CommFail(res.msg);
   } else {
     // 正常处理
-    CommSeccess("上传成功");
+    CommSuccess("上传成功");
   }
 }
 

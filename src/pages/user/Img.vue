@@ -171,7 +171,7 @@
 
 <script setup>
 
-import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
+import {CommFail, CommSuccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {
   CAROUSEL_HEIGHT,
   CAROUSEL_WIDTH,
@@ -279,7 +279,7 @@ function deleteImgHandler(idList) {
       idList: idList,
     }
   }).then(res => {
-    CommSeccess("删除成功");
+    CommSuccess("删除成功");
   }).catch(res => {
     CommFail("删除失败");
   }).then(res => {
@@ -294,7 +294,7 @@ function recoverImg(idList) {
   api.put('/img', {
     idList: idList,
   }).then(res => {
-    CommSeccess("恢复成功");
+    CommSuccess("恢复成功");
   }).catch(res => {
     CommFail("恢复失败");
   }).then(res => {
@@ -432,7 +432,7 @@ function imgUploadFinish(info) {
     CommFail(res.msg);
   } else {
     // 正常处理
-    CommSeccess("上传成功");
+    CommSuccess("上传成功");
   }
 }
 

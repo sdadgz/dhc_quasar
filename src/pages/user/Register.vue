@@ -118,7 +118,7 @@
 import {ref} from "vue";
 import {EMPTY_STRING, PAGE_SIZE, START_PAGE} from "components/MagicValue";
 import {getRows, getSelectedString, init, notNull} from "components/Tools";
-import {CommFail, CommSeccess, CommWarn} from "components/notifyTools";
+import {CommFail, CommSuccess, CommWarn} from "components/notifyTools";
 import {api} from "boot/axios";
 import {USER_COLUMNS} from "components/user/table";
 
@@ -158,7 +158,7 @@ function updatePasswordHandler() {
       newPassword: updatePasswordNewPassword.value
     }
   }).then(res => {
-    res.data ? CommSeccess("修改成功") : CommWarn("修改失败");
+    res.data ? CommSuccess("修改成功") : CommWarn("修改失败");
     localStorage.removeItem("token");
   })
 }
@@ -182,7 +182,7 @@ function updateUsernameHandler() {
     name: nameInput.value,
     id: userId.value
   }).then(res => {
-    CommSeccess("修改成功");
+    CommSuccess("修改成功");
   }).catch(res => {
     CommFail("修改失败");
   }).then(res => {
@@ -224,7 +224,7 @@ function commitRegister() {
     name: registerUsername.value,
     password: registerPassword.value
   }).then(res => {
-    CommSeccess("注册成功");
+    CommSuccess("注册成功");
   }).catch(res => {
     CommFail("注册失败");
   }).then(res => {

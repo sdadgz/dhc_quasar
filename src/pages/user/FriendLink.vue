@@ -288,7 +288,7 @@
 
 <script setup>
 
-import {CommFail, CommSeccess, CommWarn, DeleteConform} from "components/notifyTools";
+import {CommFail, CommSuccess, CommWarn, DeleteConform} from "components/notifyTools";
 import {deleteHandler, getRows, goto, init, notNull, repeatArr, sleep} from "components/Tools";
 import {ref, watch} from "vue";
 import {
@@ -340,7 +340,7 @@ function uploadFinish(info) {
       friendLinkUrl.value = r.data.text;
       uploadDone.value = true;
     })
-    CommSeccess("上传成功");
+    CommSuccess("上传成功");
   }
 }
 
@@ -405,7 +405,7 @@ function deleteImgHandler(idList) {
       idList: idList,
     }
   }).then(res => {
-    CommSeccess("删除成功");
+    CommSuccess("删除成功");
   }).catch(res => {
     CommFail("删除失败");
   }).then(res => {
@@ -420,7 +420,7 @@ function recoverImg(idList) {
   api.put('/img', {
     idList: idList,
   }).then(res => {
-    CommSeccess("恢复成功");
+    CommSuccess("恢复成功");
   }).catch(res => {
     CommFail("恢复失败");
   }).then(res => {
@@ -501,7 +501,7 @@ function updateFriendLink(title, url, id) {
     label: title,
     url: url,
   }).then(res => {
-    CommSeccess("修改成功");
+    CommSuccess("修改成功");
   }).catch(res => {
     CommFail("修改失败");
   }).then(res => {
@@ -568,7 +568,7 @@ async function commitFriendLink() {
     imgId: friendLinkImgId.value,
     essayId: videoEssayId.value
   }).then(res => {
-    CommSeccess("上传成功");
+    CommSuccess("上传成功");
   }).catch(res => {
     CommFail("上传失败");
   }).then(res => {
