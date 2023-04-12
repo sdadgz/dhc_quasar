@@ -1,5 +1,5 @@
-// 遇到问题睡大觉
-import {ESSAY_COLUMNS, table} from "./user/table";
+
+import {ESSAY_COLUMNS, Table} from "./user/table";
 import {DOT, EMPTY_STRING, HEAD_ITEMS_STRING, TIME_OUT_LONG, TIME_STRING} from "./MagicValue";
 import {Ref, ref} from "vue";
 import {CommFail, CommSuccess, CommWarn} from "./notifyTools";
@@ -9,6 +9,7 @@ import {HEAD_ITEMS} from "./main/head-item";
 
 export const notNull = ref([(val) => (val && val.length > 0) || '输入值为空']);
 
+// 遇到问题睡大觉
 export async function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -24,7 +25,7 @@ export function max(num: number, max: number): number {
 }
 
 // 生成表格行
-export function getRows(lists: any, columns: table[]) {
+export function getRows(lists: any, columns: Table[]) {
   const rows = [];
   for (let i = 0; i < lists.length; i++) {
     let obj = {};

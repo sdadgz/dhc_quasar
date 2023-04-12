@@ -1,5 +1,5 @@
 // 文章
-export const ESSAY_COLUMNS: table[] = [
+export const ESSAY_COLUMNS: Table[] = [
   {"field": "essayId", "label": "文章唯一标识", "align": "center"},
   {"field": "essay.title", "name": "title", "label": "标题（点击编辑）", "align": "center"},
   {"field": "essay.createTime", "label": "上传时间", "align": "center"},
@@ -9,7 +9,7 @@ export const ESSAY_COLUMNS: table[] = [
 ];
 
 // 图片
-export const IMG_COLUMNS: table[] = [
+export const IMG_COLUMNS: Table[] = [
   {"field": "url", "label": "原图", "align": "center", "name": "img"},
   {"field": "isDelete", "label": "是否删除", "align": "center", "name": "status"},
   {"field": "createTime", "label": "上传时间", "align": "center"},
@@ -18,7 +18,7 @@ export const IMG_COLUMNS: table[] = [
 ]
 
 // 轮播图
-export const CAROUSEL_COLUMNS: table[] = [
+export const CAROUSEL_COLUMNS: Table[] = [
   {field: 'essay.title', label: '标题', align: "center"},
   {field: 'img.url', label: '原图地址', align: "center"},
   {field: 'img.reduceUrl', label: '浓缩图地址', align: "center"},
@@ -27,7 +27,7 @@ export const CAROUSEL_COLUMNS: table[] = [
 ]
 
 // 友情链接，全部数据
-export const FRIEND_LINK_COLUMNS: table[] = [
+export const FRIEND_LINK_COLUMNS: Table[] = [
   {field: 'label', label: '标题', align: "center", name: 'title'},
   {field: 'url', label: '地址', align: "center", name: 'url'},
   {field: 'img.reduceUrl', label: '浓缩图', align: "center", name: 'img'},
@@ -36,14 +36,14 @@ export const FRIEND_LINK_COLUMNS: table[] = [
 ]
 
 // 友情连接，使用在显示表格上
-export const FRIEND_LINK_USE_COLUMNS: table[] = [
+export const FRIEND_LINK_USE_COLUMNS: Table[] = [
   {field: 'label', label: '标题', align: "center", name: 'title'},
   {field: 'url', label: '地址', align: "center", name: 'url'},
   {field: 'img.reduceUrl', label: '浓缩图', align: "center", name: 'img'},
 ]
 
 // 文件
-export const FILE_COLUMNS: table[] = [
+export const FILE_COLUMNS: Table[] = [
   {field: 'originalFilename', label: '文件名', align: "center", name: 'title'},
   {field: 'url', label: '地址', align: "center", name: 'url'},
   {field: 'isDelete', label: '是否删除', align: "center", name: 'isDelete'},
@@ -51,20 +51,20 @@ export const FILE_COLUMNS: table[] = [
 ]
 
 // 用户表
-export const USER_COLUMNS: table[] = [
+export const USER_COLUMNS: Table[] = [
   {label: '用户id', field: 'id', align: "center"},
   {label: '用户名（点击编辑）', field: 'name', align: "center", name: 'name'},
 ]
 
 // 一级标题
-export const FIRST_TITLE_COLUMNS: table[] = [
+export const FIRST_TITLE_COLUMNS: Table[] = [
   {label: 'id', field: 'id', align: "center"},
   {label: '一级标题（点击编辑）', field: 'title', align: "center", name: 'title'},
   {label: '优先级（点击编辑）', field: 'order', align: "center", name: "order"},
 ]
 
 // 二级标题
-export const SECOND_TITLE_COLUMNS: table[] = [
+export const SECOND_TITLE_COLUMNS: Table[] = [
   {label: 'id', field: 'id', align: "center"},
   {label: '一级标题', field: 'firstTitle.title', align: "center"},
   {label: '二级标题（点击编辑）', field: 'title', align: "center", name: 'title'},
@@ -72,7 +72,7 @@ export const SECOND_TITLE_COLUMNS: table[] = [
 ]
 
 // 接口
-export interface table {
+export interface Table {
   field: string,
   label: string,
   align?: 'left' | 'right' | 'center',
