@@ -31,7 +31,7 @@ export function getRows(lists: any, columns: table[]) {
     for (let j = 0; j < columns.length; j++) {
       Object.assign(obj, {[`${columns[j].field}`]: getItem(lists[i], columns[j].field)});
     }
-    // 增加id去重
+    // 增加id去重 和自己写的field中的id不冲突
     Object.assign(obj, {"id": lists[i].id});
     rows.push(obj);
   }
